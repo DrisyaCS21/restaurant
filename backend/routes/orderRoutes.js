@@ -1,4 +1,5 @@
 import express from "express";
+import { protect ,adminOnly } from "../middleware/authMiddleware.js";
 import {
   createOrder,
   getOrders,
@@ -8,7 +9,7 @@ import {
 const router = express.Router();
 
 router.post("/", createOrder);
-router.get("/", getOrders);
-router.put("/:id/status", updateOrderStatus);
+router.get("/", protect , adminOnly , getOrders);
+router.put("/:id/status", protect ,adminOnly , updateOrderStatus);
 
 export default router;

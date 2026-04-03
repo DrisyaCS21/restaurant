@@ -15,6 +15,7 @@ export const createOrder = async (req, res) => {
       items,
       totalAmount,
       status: "processing",
+      user: req.user?._id || null,
     });
 
     res.json(order);

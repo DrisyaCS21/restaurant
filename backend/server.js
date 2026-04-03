@@ -21,12 +21,17 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
-  // routes
+// menu routes
 import menuRoutes from "./routes/menuRoutes.js";
 app.use("/api/menu", menuRoutes);
 
+//order routes
 import orderRoutes from "./routes/orderRoutes.js";
 app.use("/api/orders", orderRoutes);
+
+// auth routes
+import authRoutes from "./routes/authRoutes.js";
+app.use("/api/auth", authRoutes);
 
 // server
 const PORT = 1000;
