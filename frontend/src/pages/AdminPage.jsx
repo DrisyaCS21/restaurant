@@ -23,14 +23,14 @@ const AdminPage = () => {
   }, []);
 
   const updateStatus = async (orderId, status) => {
-    try {
-      await axios.put(`http://localhost:1000/api/orders/${orderId}/status`, { status });
-      fetchOrders();
-    } catch (err) {
-      console.error("Error updating status:", err);
-      alert("Failed to update status");
-    }
-  };
+  try {
+    await axios.put(`http://localhost:1000/api/orders/${orderId}/status`, { status });
+    fetchOrders(); // refresh after update
+  } catch (err) {
+    console.error("Error updating status:", err);
+    alert("Failed to update status");
+  }
+};
 
   if (loading) return <p>Loading orders...</p>;
 

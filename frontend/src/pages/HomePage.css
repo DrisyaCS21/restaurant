@@ -1,0 +1,531 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.home-container {
+  overflow-x: hidden;
+}
+
+/* Navigation */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  padding: 1rem 0;
+}
+
+.navbar.scrolled {
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+.logo-icon {
+  font-size: 2rem;
+}
+
+.logo-text {
+  background: linear-gradient(135deg, #fff, #ffd89b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+.nav-menu a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav-menu a:hover {
+  color: #ffd89b;
+}
+
+/* Hero Section */
+.hero-section {
+  height: 100vh;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                    url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.4));
+}
+
+.hero-content {
+  text-align: center;
+  color: white;
+  z-index: 1;
+  padding: 0 2rem;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  animation: fadeInUp 1s ease;
+}
+
+.highlight {
+  color: #ffd89b;
+  display: inline-block;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  animation: fadeInUp 1s ease 0.2s both;
+}
+
+.cta-button {
+  background: linear-gradient(135deg, #ffd89b, #c7a252);
+  color: #333;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: fadeInUp 1s ease 0.4s both;
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Section Styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 3rem;
+  font-size: 1.1rem;
+}
+
+/* Dining Section */
+.dining-section {
+  padding: 80px 0;
+  background: #f9f9f9;
+}
+
+.dining-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.dining-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.dining-card:hover {
+  transform: translateY(-10px);
+}
+
+.card-image {
+  position: relative;
+  overflow: hidden;
+  height: 250px;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.dining-card:hover .card-image img {
+  transform: scale(1.1);
+}
+
+.card-overlay {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.card-tag {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+.dining-card h3 {
+  padding: 1rem 1rem 0.5rem;
+  color: #333;
+}
+
+.dining-card p {
+  padding: 0 1rem 1rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Banquet Section */
+.banquet-section {
+  padding: 80px 0;
+  background: white;
+}
+
+.banquet-showcase {
+  margin-top: 2rem;
+}
+
+.banquet-featured {
+  position: relative;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.banquet-featured img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+}
+
+.banquet-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  color: white;
+  padding: 2rem;
+}
+
+.banquet-info h3 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.banquet-features {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.banquet-features span {
+  background: rgba(255,255,255,0.2);
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.banquet-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.05);
+}
+
+.gallery-item p {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 0.5rem;
+  text-align: center;
+  margin: 0;
+}
+
+/* Access Menu Section */
+.access-menu-section {
+  padding: 80px 0;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                    url('https://thumbs.dreamstime.com/b/couple-having-romantic-dinner-restaurant-closeup-focus-glasses-champagne-210299585.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+}
+
+.access-menu-section .section-title,
+.access-menu-section .section-subtitle {
+  color: white;
+}
+
+.access-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  flex-wrap: wrap;
+  margin-top: 3rem;
+}
+
+.qr-card,
+.manual-card {
+  background: transparent;
+  padding: 2rem;
+  border-radius: 20px;
+  text-align: center;
+  min-width: 280px;
+  color: #d21010;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* .qr-icon-large {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+} */
+
+.qr-card h3,
+.manual-card h3 {
+  margin-bottom: 0.5rem;
+  color: rgb(241, 151, 54);
+}
+
+.qr-card p {
+  color: rgb(241, 151, 54);
+  margin-bottom: 1.5rem;
+}
+
+.qr-button {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.qr-button:hover {
+  transform: translateY(-2px);
+}
+
+.divider-line {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+}
+
+.table-input-elegant {
+  width: 100%;
+  padding: 0.8rem;
+  margin: 1rem 0;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.table-input-elegant:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.menu-access-button {
+  width: 100%;
+  background: transparent;
+  color:  rgb(241, 151, 54);
+  border: none;
+  padding: 0.8rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.menu-access-button:hover {
+  transform: translateY(-2px);
+}
+
+/* Footer */
+.footer {
+  background: #1a1a1a;
+  color: #999;
+  padding: 3rem 0 1rem;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.footer-section h4 {
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.footer-section p {
+  line-height: 1.6;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid #333;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 1s ease;
+}
+
+.animate-fade-in-delay {
+  animation: fadeInUp 1s ease 0.2s both;
+}
+
+.animate-fade-in-delay-2 {
+  animation: fadeInUp 1s ease 0.4s both;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .nav-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .nav-menu {
+    gap: 1rem;
+  }
+  
+  .banquet-info h3 {
+    font-size: 1.2rem;
+  }
+  
+  .banquet-features {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .access-container {
+    flex-direction: column;
+  }
+  
+  .divider-line {
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 480px) {
+  .dining-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .banquet-gallery {
+    grid-template-columns: 1fr;
+  }
+  
+  .nav-menu {
+    font-size: 0.9rem;
+  }
+}
