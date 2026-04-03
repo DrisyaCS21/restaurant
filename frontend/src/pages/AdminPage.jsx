@@ -5,7 +5,6 @@ const AdminPage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch all orders
   const fetchOrders = async () => {
     try {
       const res = await axios.get("http://localhost:1000/api/orders");
@@ -19,19 +18,17 @@ const AdminPage = () => {
 
   useEffect(() => {
     fetchOrders();
-    // Optional: refresh every 5 seconds
-    const interval = setInterval(fetchOrders, 5000);
+    const interval = setInterval(fetchOrders, 5000); // auto-refresh
     return () => clearInterval(interval);
   }, []);
 
-  // Mark order as completed
-  const completeOrder = async (orderId) => {
+  const updateStatus = async (orderId, status) => {
     try {
-      await axios.put(`http://localhost:1000/api/orders/${orderId}/complete`);
-      fetchOrders(); // refresh
+      await axios.put(`http://localhost:1000/api/orders/${orderId}/status`, { status });
+      fetchOrders();
     } catch (err) {
-      console.error("Error completing order:", err);
-      alert("Failed to complete order");
+      console.error("Error updating status:", err);
+      alert("Failed to update status");
     }
   };
 
@@ -57,10 +54,19 @@ const AdminPage = () => {
             <p>
               <strong>Total: ₹{order.items.reduce((acc, i) => acc + i.price * i.quantity, 0)}</strong>
             </p>
-            <p>Status: {order.completed ? "✅ Completed" : "⏳ Pending"}</p>
-            {!order.completed && (
-              <button onClick={() => completeOrder(order._id)}>Mark as Completed</button>
-            )}
+            
+            <p>
+              Status:{" "}
+              <select
+                value={order.status}
+                onChange={(e) => updateStatus(order._id, e.target.value)}
+              >
+                <option value="processing">Processing ⏳</option>
+                <option value="preparing">Preparing 🍳</option>
+                <option value="served">Served 🍽️</option>
+                <option value="paid">Paid 💵</option>
+              </select>
+            </p>
           </div>
         ))
       )}
