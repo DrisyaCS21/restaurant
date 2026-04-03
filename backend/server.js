@@ -27,6 +27,15 @@ app.use("/api/menu", menuRoutes);
 
 import orderRoutes from "./routes/orderRoutes.js";
 app.use("/api/orders", orderRoutes);
+// PUT /api/orders/:id/complete
+app.put("/api/orders/:id/complete", async (req, res) => {
+  const order = await Order.findById(req.params.id);
+  if (!order) return res.status(404).json({ message: "Order not found" });
+
+  order.completed = true;
+  await order.save();
+  res.json({ message: "Order marked as completed" });
+});
 // server
 const PORT = 1000;
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
