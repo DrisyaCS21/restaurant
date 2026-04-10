@@ -2,6 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
 
 dotenv.config();
 
@@ -32,6 +35,12 @@ app.use("/api/orders", orderRoutes);
 // auth routes
 import authRoutes from "./routes/authRoutes.js";
 app.use("/api/auth", authRoutes);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+//uploads folder
+app.use("/uploads", express.static("uploads"));
 
 // server
 const PORT = 1000;

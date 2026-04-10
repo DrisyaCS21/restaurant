@@ -5,24 +5,22 @@ const AddMenu = () => {
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
   const [message, setMessage] = useState('');
+  const [imageFile, setImageFile] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Create the menu object
-    const menuData = {
-      name,
-      price: Number(price), // make sure price is a number
-      category,
-    };
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("price", price);
+  formData.append("category", category);
+  formData.append("image", imageFile);
 
     try {
       const response = await fetch('http://localhost:1000/api/menu', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(menuData),
+        body: formData,
       });
 
       if (!response.ok) {
@@ -30,6 +28,7 @@ const AddMenu = () => {
       }
 
       const data = await response.json();
+      console.log('Menu added:', data);
       setMessage(`Menu added successfully! ID: ${data._id}`);
       
       // Clear form
@@ -69,6 +68,14 @@ const AddMenu = () => {
             type="text"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Image:</label>
+          <input
+            type="file"
+            onChange={(e) => setImageFile(e.target.files[0])}
             required
           />
         </div>

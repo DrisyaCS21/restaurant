@@ -167,6 +167,13 @@ const MenuPage = () => {
           {filteredMenu.map(item => (
             <div key={item._id} id={`item-${item._id}`} className="menu-card">
               <div className="menu-card-inner">
+                {item.image && (
+                  <img
+                    src={`http://localhost:1000/uploads/${item.image}`}
+                    alt={item.name}
+                    className="menu-item-image"
+                  />
+                )}
                 <div className="menu-card-content">
                   <div className="menu-item-header">
                     <h3 className="menu-item-name">{item.name}</h3>
