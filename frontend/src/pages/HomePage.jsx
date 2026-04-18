@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import './HomePage.css';
 
 const HomePage = () => {
@@ -53,6 +54,9 @@ const HomePage = () => {
             <li><a href="#home" onClick={(e) => { e.preventDefault(); scrollToSection('home'); }}>Home</a></li>
             <li><a href="#dining" onClick={(e) => { e.preventDefault(); scrollToSection('dining'); }}>Dining</a></li>
             <li><a href="#banquet" onClick={(e) => { e.preventDefault(); scrollToSection('banquet'); }}>Banquet</a></li>
+            <li>
+              <Link to="/auth">Login</Link>
+            </li>
             <li><a href="#access-menu" onClick={(e) => { e.preventDefault(); scrollToSection('access-menu'); }}>Order Now</a></li>
           </ul>
         </div>
