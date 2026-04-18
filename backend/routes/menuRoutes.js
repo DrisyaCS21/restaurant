@@ -7,4 +7,8 @@ const router = express.Router();
 router.post("/", upload.single("image"), addMenu);
 router.get("/", getMenu);
 
+console.log("DEBUG:", {
+  protect: typeof protect,
+  adminOnly: typeof adminOnly
+});
 export default router;

@@ -16,11 +16,13 @@ const generateToken = (user) => {
 
 export const signup = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
+
+    const userRole = req.body.role || "user";
 
     // Only allow "user" or "admin"
     const allowedRoles = ["admin", "user"];
-    if (!allowedRoles.includes(role)) {
+    if (!allowedRoles.includes(userRole)) {
       return res.status(400).json({ message: "Invalid role" });
     }
 
@@ -35,7 +37,7 @@ export const signup = async (req, res) => {
       name,
       email,
       password,
-      role,
+      role: userRole,
     });
 
     res.status(201).json({
