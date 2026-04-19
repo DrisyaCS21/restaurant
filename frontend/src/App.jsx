@@ -4,7 +4,7 @@ import AdminPage from "./admin/AdminPage";
 import HomePage from "./pages/HomePage";
 import AddMenu from "./admin/AddMenu";
 import AuthPage from "./pages/AuthPage";
-import UserDashboard from "./admin/UserDashboard";  // Import Dashboard from admin folder
+import UserDashboard from "./pages/UserDashboard";  // Import Dashboard from admin folder
 
 function App() {
   // Check if user is authenticated
