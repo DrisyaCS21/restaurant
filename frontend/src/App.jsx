@@ -5,7 +5,7 @@ import HomePage from "./pages/HomePage";
 import AddMenu from "./admin/AddMenu";
 import AuthPage from "./pages/AuthPage";
 import UserDashboard from "./pages/UserDashboard";  // Import Dashboard from admin folder
-
+import Sidebar from "./admin/Sidebar";
 function App() {
   // Check if user is authenticated
   const isAuthenticated = !!localStorage.getItem("token");
@@ -17,6 +17,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/sidebar" element={<Sidebar />} />
         
         {/* Protected Admin Routes - only accessible by admin */}
         <Route 
