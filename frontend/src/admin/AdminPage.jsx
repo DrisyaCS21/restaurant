@@ -70,7 +70,7 @@ function AdminPage() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    navigate("/auth");
+    navigate("/");
   };
 
   // Get status color
@@ -143,7 +143,7 @@ function AdminPage() {
     <div className="admin-page">
       {/* Navbar */}
       <div className="navbar">
-        <h1>Admin Dashboard - Order Management</h1>
+        <h1>Admin Dashboard 🌷 - Order Management</h1>
         <div className="user-info">
           <button onClick={handleLogout} className="logout-btn">
             Logout

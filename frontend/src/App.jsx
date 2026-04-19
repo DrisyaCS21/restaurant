@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MenuPage from "./pages/MenuPage";
-import AdminPage from "./pages/AdminPage";
+import AdminPage from "./admin/AdminPage";
 import HomePage from "./pages/HomePage";
 import AddMenu from "./admin/AddMenu";
 import AuthPage from "./pages/AuthPage";
-import Dashboard from "./admin/Dashboard";  // Import Dashboard from admin folder
+import UserDashboard from "./admin/UserDashboard";  // Import Dashboard from admin folder
 
 function App() {
   // Check if user is authenticated
@@ -42,7 +42,7 @@ function App() {
           path="/dashboard" 
           element={
             isAuthenticated ? 
-            <Dashboard /> : 
+            <UserDashboard /> : 
             <AuthPage />
           } 
         />

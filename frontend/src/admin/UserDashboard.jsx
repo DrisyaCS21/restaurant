@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-function Dashboard() {
+function UserDashboard() {
   const [user, setUser] = useState(null);
   const [menu, setMenu] = useState([]);
   const [cart, setCart] = useState([]);
@@ -363,4 +363,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default UserDashboard;
