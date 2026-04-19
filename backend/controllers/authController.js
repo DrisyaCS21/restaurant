@@ -17,7 +17,6 @@ const generateToken = (user) => {
 export const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
     const userRole = req.body.role || "user";
 
     // Only allow "user" or "admin"
@@ -50,6 +49,7 @@ export const signup = async (req, res) => {
     });
   
   } catch (err) {
+    console.log("Error caught:", err);
     res.status(500).json({ message: err.message });
   }
 };

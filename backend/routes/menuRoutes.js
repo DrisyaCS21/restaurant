@@ -1,6 +1,7 @@
 import express from "express";
 import { addMenu, getMenu } from "../controllers/menuController.js";
 import upload from "../middleware/upload.js";
+import { protect, adminOnly } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
