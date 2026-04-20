@@ -1,15 +1,14 @@
-// In admin/Dashboard.jsx or create a new UserDashboard.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import MenuItems from "../components/MenuItems";
 
 function UserDashboard() {
   const [user, setUser] = useState(null);
-  const [menu, setMenu] = useState([]);
   const [cart, setCart] = useState([]);
   const [tableNumber, setTableNumber] = useState("");
-  const [loading, setLoading] = useState(true);
   const [orderMessage, setOrderMessage] = useState("");
+  const [showCart, setShowCart] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,19 +21,18 @@ function UserDashboard() {
     }
     
     setUser(JSON.parse(userData));
-    fetchMenu();
+    
+    // Load cart from localStorage
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
   }, [navigate]);
 
-  const fetchMenu = async () => {
-    try {
-      const response = await axios.get("http://localhost:1000/api/menu");
-      setMenu(response.data);
-    } catch (error) {
-      console.error("Error fetching menu:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
 
   const addToCart = (item) => {
     const existingItem = cart.find(cartItem => cartItem._id === item._id);
@@ -96,6 +94,7 @@ function UserDashboard() {
       setOrderMessage("Order placed successfully!");
       setCart([]);
       setTableNumber("");
+      setShowCart(false);
       
       setTimeout(() => setOrderMessage(""), 3000);
     } catch (error) {
@@ -107,19 +106,19 @@ function UserDashboard() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("cart");
     navigate("/auth");
   };
-
-  if (loading) {
-    return <div className="loading">Loading menu...</div>;
-  }
 
   return (
     <div className="user-dashboard">
       <div className="navbar">
-        <h1>QR Restaurant</h1>
+        <h1>🍕 QR Restaurant</h1>
         <div className="user-info">
-          <span>Welcome, {user?.name}!</span>
+          <span>👋 Welcome, {user?.name}!</span>
+          <button onClick={() => setShowCart(!showCart)} className="cart-icon-btn">
+            🛒 Cart ({cart.reduce((sum, item) => sum + item.quantity, 0)})
+          </button>
           <button onClick={handleLogout} className="logout-btn">
             Logout
           </button>
@@ -128,73 +127,57 @@ function UserDashboard() {
 
       <div className="dashboard-content">
         <div className="menu-section">
-          <h2>Menu</h2>
-          <div className="menu-grid">
-            {menu.map((item) => (
-              <div key={item._id} className="menu-card">
-                {item.image && (
-                  <img 
-                    src={`http://localhost:1000/uploads/${item.image}`} 
-                    alt={item.name}
-                    className="menu-image"
-                    onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "https://via.placeholder.com/150?text=No+Image";
-                }}
-                  />
-                )}
-                <h3>{item.name}</h3>
-                <p>{item.description}</p>
-                <p className="price">${item.price}</p>
-                <button onClick={() => addToCart(item)} className="add-btn">
-                  Add to Cart
-                </button>
-              </div>
-            ))}
-          </div>
+          <h2>Our Delicious Menu</h2>
+          <MenuItems userRole="user" onAddToCart={addToCart} />
         </div>
 
-        <div className="cart-section">
-          <h2>Your Order</h2>
-          <input
-            type="number"
-            placeholder="Table Number"
-            value={tableNumber}
-            onChange={(e) => setTableNumber(e.target.value)}
-            className="table-input"
-          />
-          
-          {cart.length === 0 ? (
-            <p className="empty-cart">Cart is empty</p>
-          ) : (
-            <>
-              {cart.map((item) => (
-                <div key={item._id} className="cart-item">
-                  <div className="cart-item-info">
-                    <span className="cart-item-name">{item.name}</span>
-                    <span className="cart-item-price">${item.price}</span>
+        {showCart && (
+          <div className="cart-sidebar">
+            <div className="cart-header">
+              <h3>Your Order</h3>
+              <button onClick={() => setShowCart(false)} className="close-cart">✕</button>
+            </div>
+            
+            <input
+              type="number"
+              placeholder="Table Number *"
+              value={tableNumber}
+              onChange={(e) => setTableNumber(e.target.value)}
+              className="table-input"
+            />
+            
+            {cart.length === 0 ? (
+              <p className="empty-cart">Cart is empty</p>
+            ) : (
+              <>
+                {cart.map((item) => (
+                  <div key={item._id} className="cart-item">
+                    <div className="cart-item-info">
+                      <span className="cart-item-name">{item.name}</span>
+                      <span className="cart-item-price">₹{item.price}</span>
+                    </div>
+                    <div className="cart-item-controls">
+                      <button onClick={() => updateQuantity(item._id, item.quantity - 1)}>-</button>
+                      <span>{item.quantity}</span>
+                      <button onClick={() => updateQuantity(item._id, item.quantity + 1)}>+</button>
+                      <button onClick={() => removeFromCart(item._id)} className="remove-btn">
+                        Remove
+                      </button>
+                    </div>
                   </div>
-                  <div className="cart-item-controls">
-                    <button onClick={() => updateQuantity(item._id, item.quantity - 1)}>-</button>
-                    <span>{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item._id, item.quantity + 1)}>+</button>
-                    <button onClick={() => removeFromCart(item._id)} className="remove-btn">
-                      Remove
-                    </button>
-                  </div>
+                ))}
+                <div className="cart-total">
+                  <strong>Total: ₹{getTotalAmount().toFixed(2)}</strong>
+                  <button onClick={placeOrder} className="place-order-btn">
+                    Place Order ✅
+                  </button>
                 </div>
-              ))}
-              <div className="cart-total">
-                <strong>Total: ${getTotalAmount().toFixed(2)}</strong>
-                <button onClick={placeOrder} className="place-order-btn">
-                  Place Order
-                </button>
-              </div>
-            </>
-          )}
-          
-          {orderMessage && <div className="order-message">{orderMessage}</div>}
-        </div>
+              </>
+            )}
+            
+            {orderMessage && <div className="order-message">{orderMessage}</div>}
+          </div>
+        )}
       </div>
 
       <style>{`
@@ -210,77 +193,101 @@ function UserDashboard() {
           display: flex;
           justify-content: space-between;
           align-items: center;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+          margin: 0;
+          font-size: 24px;
+        }
+
+        .user-info {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+        }
+
+        .cart-icon-btn {
+          background: rgba(255,255,255,0.2);
+          color: white;
+          border: 1px solid white;
+          padding: 8px 15px;
+          border-radius: 5px;
+          cursor: pointer;
         }
 
         .logout-btn {
           background: rgba(255,255,255,0.2);
           color: white;
           border: 1px solid white;
-          padding: 5px 15px;
+          padding: 8px 15px;
           border-radius: 5px;
           cursor: pointer;
         }
 
         .dashboard-content {
-          display: grid;
-          grid-template-columns: 1fr 350px;
-          gap: 20px;
+          display: flex;
           padding: 20px;
+          gap: 20px;
           max-width: 1400px;
           margin: 0 auto;
         }
 
         .menu-section {
+          flex: 1;
           background: white;
           border-radius: 10px;
           padding: 20px;
         }
 
-        .menu-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-          gap: 20px;
-          margin-top: 20px;
+        .menu-section h2 {
+          margin: 0 0 20px 0;
+          color: #333;
         }
 
-        .menu-card {
-          background: white;
-          border: 1px solid #eee;
-          border-radius: 10px;
-          padding: 15px;
-          text-align: center;
-        }
-
-        .menu-image {
-          width: 100%;
-          height: 150px;
-          object-fit: cover;
-          border-radius: 5px;
-        }
-
-        .price {
-          font-size: 20px;
-          font-weight: bold;
-          color: #667eea;
-        }
-
-        .add-btn {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          border: none;
-          padding: 10px;
-          border-radius: 5px;
-          cursor: pointer;
-          width: 100%;
-        }
-
-        .cart-section {
+        .cart-sidebar {
+          width: 380px;
           background: white;
           border-radius: 10px;
           padding: 20px;
           position: sticky;
           top: 20px;
           height: fit-content;
+          max-height: calc(100vh - 100px);
+          overflow-y: auto;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateX(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        .cart-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+        }
+
+        .cart-header h3 {
+          margin: 0;
+          color: #333;
+        }
+
+        .close-cart {
+          background: none;
+          border: none;
+          font-size: 24px;
+          cursor: pointer;
+          color: #999;
         }
 
         .table-input {
@@ -355,7 +362,18 @@ function UserDashboard() {
 
         @media (max-width: 768px) {
           .dashboard-content {
-            grid-template-columns: 1fr;
+            flex-direction: column;
+          }
+          
+          .cart-sidebar {
+            width: auto;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-height: 80vh;
+            border-radius: 20px 20px 0 0;
+            z-index: 1000;
           }
         }
       `}</style>

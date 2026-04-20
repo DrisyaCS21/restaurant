@@ -4,28 +4,45 @@ import AdminPage from "./admin/AdminPage";
 import HomePage from "./pages/HomePage";
 import AddMenu from "./admin/AddMenu";
 import AuthPage from "./pages/AuthPage";
-import UserDashboard from "./pages/UserDashboard";  // Import Dashboard from admin folder
-import Sidebar from "./admin/Sidebar";
-// import ProtectedRoute from "./components/ProtectedRoute";
+import UserDashboard from "./pages/UserDashboard";
+import MenuItemsPage from "./admin/MenuItemsPage";
+import Orders from "./admin/Orders";
 function App() {
-  // Check if user is authenticated
   const isAuthenticated = !!localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/auth" element={<AuthPage />} />
-        <Route path="/sidebar" element={<Sidebar />} />
         
-        {/* Protected Admin Routes - only accessible by admin */}
+        {/* Protected Admin Routes */}
         <Route 
           path="/admin" 
           element={
             isAuthenticated && user.role === "admin" ? 
             <AdminPage /> : 
+            <AuthPage />
+          } 
+        />
+        
+        <Route 
+          path="/admin/menu" 
+          element={
+            isAuthenticated && user.role === "admin" ? 
+            <MenuItemsPage /> : 
+            <AuthPage />
+          } 
+        />
+
+         <Route 
+          path="/admin/orders" 
+          element={
+            isAuthenticated && user.role === "admin" ? 
+            <Orders /> : 
             <AuthPage />
           } 
         />
@@ -39,9 +56,9 @@ function App() {
           } 
         />
         
-        {/* Dashboard Route - accessible by both admin and users */}
+        {/* Protected User Routes */}
         <Route 
-          path="/dashboard" 
+          path="/dashboard/*" 
           element={
             isAuthenticated ? 
             <UserDashboard /> : 
