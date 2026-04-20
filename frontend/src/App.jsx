@@ -7,6 +7,8 @@ import AuthPage from "./pages/AuthPage";
 import UserDashboard from "./pages/UserDashboard";
 import MenuItemsPage from "./admin/MenuItemsPage";
 import Orders from "./admin/Orders";
+import Users from "./admin/Users";
+
 function App() {
   const isAuthenticated = !!localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -38,11 +40,20 @@ function App() {
           } 
         />
 
-         <Route 
+        <Route 
           path="/admin/orders" 
           element={
             isAuthenticated && user.role === "admin" ? 
             <Orders /> : 
+            <AuthPage />
+          } 
+        />
+
+         <Route 
+          path="/admin/users" 
+          element={
+            isAuthenticated && user.role === "admin" ? 
+            <Users /> : 
             <AuthPage />
           } 
         />
