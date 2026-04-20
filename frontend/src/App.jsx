@@ -6,6 +6,7 @@ import AddMenu from "./admin/AddMenu";
 import AuthPage from "./pages/AuthPage";
 import UserDashboard from "./pages/UserDashboard";  // Import Dashboard from admin folder
 import Sidebar from "./admin/Sidebar";
+// import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   // Check if user is authenticated
   const isAuthenticated = !!localStorage.getItem("token");
