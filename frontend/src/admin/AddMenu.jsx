@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "./Sidebar";
@@ -8,6 +8,7 @@ function AddMenu() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const fileInputRef = useRef(null); // Add ref for file input
   
   const [formData, setFormData] = useState({
     name: "",
@@ -45,6 +46,41 @@ function AddMenu() {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+      if (!validTypes.includes(file.type)) {
+        setError("Please upload a valid image (JPEG, PNG, or WEBP)");
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setError("Image size should be less than 5MB");
+        return;
+      }
+      
+      setSelectedImage(file);
+      setImagePreview(URL.createObjectURL(file));
+      setError("");
+    }
+  };
+
+  // Function to trigger file input click
+  const handleUploadClick = () => {
+    fileInputRef.current.click();
+  };
+
+  // Handle drag and drop
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const file = e.dataTransfer.files[0];
     if (file) {
       // Validate file type
       const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -130,13 +166,12 @@ function AddMenu() {
       setImagePreview(null);
       
       // Reset file input
-      const fileInput = document.getElementById("image-input");
-      if (fileInput) fileInput.value = "";
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
       
       setTimeout(() => {
         setSuccess("");
-        // Optional: Navigate to menu list after 2 seconds
-        // navigate("/admin/menu");
       }, 3000);
       
     } catch (err) {
@@ -166,9 +201,22 @@ function AddMenu() {
     setImagePreview(null);
     setError("");
     setSuccess("");
-    const fileInput = document.getElementById("image-input");
-    if (fileInput) fileInput.value = "";
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
+
+  // Check if user is admin
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  if (user.role !== "admin") {
+    return (
+      <div className="access-denied">
+        <h2>Access Denied</h2>
+        <p>You don't have permission to access this page.</p>
+        <button onClick={() => navigate("/dashboard")}>Go to Dashboard</button>
+      </div>
+    );
+  }
 
   return (
     <div className="admin-layout">
@@ -256,14 +304,19 @@ function AddMenu() {
               </div>
 
               <div className="form-group full-width">
-                <label htmlFor="image">Item Image</label>
-                <div className="image-upload-area">
+                <label>Item Image</label>
+                <div 
+                  className="image-upload-area"
+                  onClick={handleUploadClick}
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
+                >
                   <input
+                    ref={fileInputRef}
                     type="file"
-                    id="image-input"
                     accept="image/jpeg,image/jpg,image/png,image/webp"
                     onChange={handleImageChange}
-                    className="file-input"
+                    style={{ display: "none" }}
                   />
                   <div className="upload-preview">
                     {imagePreview ? (
@@ -271,10 +324,13 @@ function AddMenu() {
                         <img src={imagePreview} alt="Preview" className="preview-image" />
                         <button
                           type="button"
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setSelectedImage(null);
                             setImagePreview(null);
-                            document.getElementById("image-input").value = "";
+                            if (fileInputRef.current) {
+                              fileInputRef.current.value = "";
+                            }
                           }}
                           className="remove-image"
                         >
@@ -453,6 +509,7 @@ function AddMenu() {
           padding: 20px;
           text-align: center;
           transition: all 0.3s;
+          cursor: pointer;
         }
 
         .image-upload-area:hover {
@@ -460,16 +517,11 @@ function AddMenu() {
           background: #f9f9ff;
         }
 
-        .file-input {
-          display: none;
-        }
-
         .upload-preview {
           min-height: 200px;
         }
 
         .upload-placeholder {
-          cursor: pointer;
           padding: 40px;
           text-align: center;
         }
@@ -583,6 +635,31 @@ function AddMenu() {
 
         .reset-btn:hover {
           background: #5a6268;
+        }
+
+        .access-denied {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-height: 100vh;
+          background: #f5f5f5;
+          text-align: center;
+        }
+
+        .access-denied h2 {
+          color: #dc3545;
+          margin-bottom: 10px;
+        }
+
+        .access-denied button {
+          margin-top: 20px;
+          padding: 10px 20px;
+          background: #667eea;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
         }
 
         @media (max-width: 768px) {
