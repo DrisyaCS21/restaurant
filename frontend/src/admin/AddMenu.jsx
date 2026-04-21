@@ -149,7 +149,7 @@ function AddMenu() {
       }
 
       const response = await axios.post(
-        "http://localhost:1000/api/menu",
+        "https://restaurant-s0qk.onrender.com/api/menu",
         formDataToSend,
         getAuthConfig()
       );

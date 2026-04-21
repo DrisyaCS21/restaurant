@@ -87,7 +87,7 @@ function UserDashboard() {
         }))
       };
 
-      await axios.post("http://localhost:1000/api/orders", orderData, {
+      await axios.post("https://restaurant-s0qk.onrender.com/api/orders", orderData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

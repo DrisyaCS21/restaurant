@@ -17,7 +17,7 @@ const MenuPage = () => {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const res = await axios.get("http://localhost:1000/api/menu");
+        const res = await axios.get("https://restaurant-s0qk.onrender.com/api/menu");
         setMenu(res.data);
         setLoading(false);
       } catch (err) {
@@ -85,7 +85,7 @@ const MenuPage = () => {
     }
 
     try {
-      await axios.post("http://localhost:1000/api/orders", {
+      await axios.post("https://restaurant-s0qk.onrender.com/api/orders", {
         tableNumber,
         items: cart.map(i => ({
           name: i.name,
@@ -169,7 +169,7 @@ const MenuPage = () => {
               <div className="menu-card-inner">
                 {item.image && (
                   <img
-                    src={`http://localhost:1000/uploads/${item.image}`}
+                    src={`https://restaurant-s0qk.onrender.com/uploads/${item.image}`}
                     alt={item.name}
                     className="menu-item-image"
                   />

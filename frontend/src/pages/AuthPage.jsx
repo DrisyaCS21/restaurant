@@ -27,7 +27,7 @@ function AuthPage() {
     setMessage("");
 
     try {
-      const API_URL = "http://localhost:1000/api/auth";
+      const API_URL = "https://restaurant-s0qk.onrender.com/api/auth";
       let response;
       
       if (isLogin) {

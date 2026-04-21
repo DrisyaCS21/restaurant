@@ -13,7 +13,7 @@ function MenuItems({ userRole, onAddToCart }) {
 
   const fetchMenu = async () => {
     try {
-      const response = await axios.get("http://localhost:1000/api/menu");
+      const response = await axios.get("https://restaurant-s0qk.onrender.com/api/menu");
       setMenu(response.data);
       setError("");
     } catch (err) {
@@ -92,7 +92,7 @@ function MenuItems({ userRole, onAddToCart }) {
               {item.image && (
                 <div className="menu-image-wrapper">
                   <img 
-                    src={`http://localhost:1000/uploads/${item.image}`} 
+                    src={`https://restaurant-s0qk.onrender.com/uploads/${item.image}`} 
                     alt={item.name}
                     className="menu-image"
                     onError={(e) => {

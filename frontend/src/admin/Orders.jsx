@@ -23,7 +23,7 @@ function Orders() {
     try {
       setLoading(true);
       const response = await axios.get(
-        "http://localhost:1000/api/orders",
+        "https://restaurant-s0qk.onrender.com/api/orders",
         getAuthConfig()
       );
       setOrders(response.data);
@@ -44,7 +44,7 @@ function Orders() {
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
       await axios.put(
-        `http://localhost:1000/api/orders/${orderId}/status`,
+        `https://restaurant-s0qk.onrender.com/api/orders/${orderId}/status`,
         { status: newStatus },
         getAuthConfig()
       );

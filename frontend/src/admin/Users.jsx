@@ -21,7 +21,7 @@ function Users() {
   const fetchOrders = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:1000/api/orders",
+        "https://restaurant-s0qk.onrender.com/api/orders",
         getAuthConfig()
       );
       console.log("Orders with user data:", response.data); // Debug: Check the data
