@@ -229,9 +229,24 @@ const HomePage = () => {
             <div className="footer-section">
               <h4>Follow Us</h4>
               <div className="social-links">
-                <span>📘</span>
-                <span>📷</span>
-                <span>🐦</span>
+                <span>
+                <a 
+                  href="https://www.instagram.com/drisya_giri/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  Instagram
+                </a>
+               </span>
+                <span>
+                <a 
+                  href="https://www.linkedin.com/in/drisya-giri-0a63a824a/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  LinkedIn
+                </a>
+               </span>
               </div>
             </div>
           </div>
