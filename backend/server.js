@@ -11,7 +11,10 @@ dotenv.config();
 const app = express();
 
 // middleware
-app.use(cors());
+app.use(cors({
+  origin: "https://hoteldrisya.vercel.app",
+  credentials: true
+}));
 app.use(express.json());
 
 // test route
@@ -21,8 +24,8 @@ app.get("/", (req, res) => {
 
 // DB connect
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+  .then(() => console.log("MongoDB Connected ✅"))
+  .catch(err => console.log("MongoDB Error ❌", err));
 
 // menu routes
 import menuRoutes from "./routes/menuRoutes.js";
@@ -40,8 +43,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 //uploads folder
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // server
-const PORT = 1000;
+const PORT = process.env.PORT || 1000;
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
