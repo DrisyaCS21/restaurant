@@ -48,7 +48,7 @@ const HomePage = () => {
         <div className="nav-container">
           <div className="logo">
             <span className="logo-icon">🍽️</span>
-            <span className="logo-text">Drisya's Kitchen</span>
+            <span className="logo-text">Brother's Kitchen</span>
           </div>
           <ul className="nav-menu">
             <li><a href="#home" onClick={(e) => { e.preventDefault(); scrollToSection('home'); }}>Home</a></li>
@@ -67,7 +67,7 @@ const HomePage = () => {
         <div className="hero-overlay"></div>
         <div className="hero-content">
           <h1 className="hero-title animate-fade-in">
-            Welcome to <span className="highlight">Drisya's Kitchen</span>
+            Welcome to <span className="highlight">Brother's Kitchen</span>
           </h1>
           <p className="hero-subtitle animate-fade-in-delay">
             Experience Culinary Excellence in an Elegant Ambiance
@@ -213,7 +213,7 @@ const HomePage = () => {
         <div className="container">
           <div className="footer-content">
             <div className="footer-section">
-              <h4>Drisya's Kitchen</h4>
+              <h4>Brother's Kitchen</h4>
               <p>Fine dining experience in the heart of the city</p>
             </div>
             <div className="footer-section">
@@ -224,14 +224,14 @@ const HomePage = () => {
             <div className="footer-section">
               <h4>Contact</h4>
               <p>📞 +1 234 567 890</p>
-              <p>✉️ info@drisyaskitchen.com</p>
+              <p>✉️ info@Brotherskitchen.com</p>
             </div>
             <div className="footer-section">
               <h4>Follow Us</h4>
               <div className="social-links">
                 <span>
                 <a 
-                  href="https://www.instagram.com/drisya_giri/" 
+                  href="https://www.instagram.com" 
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
@@ -240,7 +240,7 @@ const HomePage = () => {
                </span>
                 <span>
                 <a 
-                  href="https://www.linkedin.com/in/drisya-giri-0a63a824a/" 
+                  href="https://www.linkedin.com/in" 
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
@@ -251,7 +251,7 @@ const HomePage = () => {
             </div>
           </div>
           <div className="footer-bottom">
-            <p>&copy; 2024 Drisya's Kitchen. All rights reserved.</p>
+            <p>&copy; 2024 Brother's Kitchen. All rights reserved.</p>
           </div>
         </div>
       </footer>
