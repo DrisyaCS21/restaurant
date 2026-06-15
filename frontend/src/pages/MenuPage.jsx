@@ -121,7 +121,7 @@ const MenuPage = () => {
       <header className="menu-header">
         <div className="header-content">
           <div className="restaurant-info">
-            <h1>🍽️ Drisya's Kitchen</h1>
+            <h1>🍽️ Brother's Kitchen</h1>
             <div className="table-badge">
               <span className="table-icon">🪑</span>
               <span>Table {tableNumber}</span>

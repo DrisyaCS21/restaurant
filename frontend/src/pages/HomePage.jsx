@@ -73,7 +73,7 @@ const HomePage = () => {
             Experience Culinary Excellence in an Elegant Ambiance
           </p>
           <button 
-            onClick={() => navigate("/dashboard")} 
+            onClick={() => navigate("/menu")} 
             className="cta-button animate-fade-in-delay-2"
           >
             View Our Menu
