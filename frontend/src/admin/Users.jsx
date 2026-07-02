@@ -21,7 +21,7 @@ function Users() {
   const fetchOrders = async () => {
     try {
       const response = await axios.get(
-        "https://restaurant-s0qk.onrender.com/api/orders",
+        "http://localhost:1000/api/orders",
         getAuthConfig()
       );
       console.log("Orders with user data:", response.data); // Debug: Check the data
@@ -55,7 +55,7 @@ function Users() {
         name: order.user.name,
         email: order.user.email,
         type: "registered",
-        icon: "👤",
+        icon: "ðŸ‘¤",
         badge: "Registered User"
       };
     } 
@@ -65,7 +65,7 @@ function Users() {
         name: order.customerName,
         email: order.customerEmail || "No email",
         type: "guest",
-        icon: "👋",
+        icon: "ðŸ‘‹",
         badge: "Guest User"
       };
     } 
@@ -75,7 +75,7 @@ function Users() {
         name: "Anonymous Guest",
         email: "No email",
         type: "anonymous",
-        icon: "❓",
+        icon: "â“",
         badge: "Anonymous"
       };
     }
@@ -107,19 +107,19 @@ function Users() {
           </div>
           <div className="stats-summary">
             <div className="stat-badge" style={{background: "#e3f2fd"}}>
-              <span>👤 Registered Users</span>
+              <span>ðŸ‘¤ Registered Users</span>
               <strong>{registeredOrders.length}</strong>
             </div>
             <div className="stat-badge" style={{background: "#fff3e0"}}>
-              <span>👋 Guest Orders</span>
+              <span>ðŸ‘‹ Guest Orders</span>
               <strong>{guestOrders.length}</strong>
             </div>
             <div className="stat-badge" style={{background: "#f5f5f5"}}>
-              <span>❓ Anonymous</span>
+              <span>â“ Anonymous</span>
               <strong>{anonymousOrders.length}</strong>
             </div>
             <div className="stat-badge" style={{background: "#e8f5e9"}}>
-              <span>📦 Total Orders</span>
+              <span>ðŸ“¦ Total Orders</span>
               <strong>{orders.length}</strong>
             </div>
           </div>
@@ -181,7 +181,7 @@ function Users() {
                       </td>
                       <td>Table {order.tableNumber}</td>
                       <td>{order.items.length} items</td>
-                      <td className="order-amount">₹{order.totalAmount}</td>
+                      <td className="order-amount">â‚¹{order.totalAmount}</td>
                       <td>
                         <span className={`status-badge ${order.status}`}>
                           {order.status}
@@ -209,7 +209,7 @@ function Users() {
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
                 <h2>Order Details</h2>
-                <button className="close-modal" onClick={() => setSelectedOrder(null)}>✕</button>
+                <button className="close-modal" onClick={() => setSelectedOrder(null)}>âœ•</button>
               </div>
               
               <div className="modal-body">
@@ -262,15 +262,15 @@ function Users() {
                         <tr key={idx}>
                           <td>{item.name}</td>
                           <td>x{item.quantity}</td>
-                          <td>₹{item.price}</td>
-                          <td>₹{(item.price * item.quantity).toFixed(2)}</td>
+                          <td>â‚¹{item.price}</td>
+                          <td>â‚¹{(item.price * item.quantity).toFixed(2)}</td>
                         </tr>
                       ))}
                     </tbody>
                     <tfoot>
                       <tr className="total-row">
                         <td colSpan="3"><strong>Total Amount</strong></td>
-                        <td><strong>₹{selectedOrder.totalAmount.toFixed(2)}</strong></td>
+                        <td><strong>â‚¹{selectedOrder.totalAmount.toFixed(2)}</strong></td>
                       </tr>
                     </tfoot>
                   </table>

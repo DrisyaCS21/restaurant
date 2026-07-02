@@ -12,7 +12,7 @@ const app = express();
 
 // middleware
 app.use(cors({
-  origin: "https://hoteldrisya.vercel.app",
+  origin: ["http://localhost:5173", "http://localhost:5174"],
   credentials: true
 }));
 app.use(express.json());
@@ -32,6 +32,7 @@ import menuRoutes from "./routes/menuRoutes.js";
 app.use("/api/menu", menuRoutes);
 
 //order routes
+
 import orderRoutes from "./routes/orderRoutes.js";
 app.use("/api/orders", orderRoutes);
 
@@ -44,6 +45,11 @@ const __dirname = path.dirname(__filename);
 
 //uploads folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.use("/", (req, res) => {
+  res.send("API Running...");
+});
+
 
 // server
 const PORT = process.env.PORT || 1000;

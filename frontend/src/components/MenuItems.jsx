@@ -13,7 +13,7 @@ function MenuItems({ userRole, onAddToCart }) {
 
   const fetchMenu = async () => {
     try {
-      const response = await axios.get("https://restaurant-s0qk.onrender.com/api/menu");
+      const response = await axios.get("http://localhost:1000/api/menu");
       setMenu(response.data);
       setError("");
     } catch (err) {
@@ -47,7 +47,7 @@ function MenuItems({ userRole, onAddToCart }) {
   if (error) {
     return (
       <div className="menu-error">
-        <p>❌ {error}</p>
+        <p>âŒ {error}</p>
         <button onClick={fetchMenu}>Try Again</button>
       </div>
     );
@@ -60,7 +60,7 @@ function MenuItems({ userRole, onAddToCart }) {
         <div className="search-box">
           <input
             type="text"
-            placeholder="🔍 Search menu items..."
+            placeholder="ðŸ” Search menu items..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
@@ -83,7 +83,7 @@ function MenuItems({ userRole, onAddToCart }) {
       {/* Menu Grid */}
       {filteredMenu.length === 0 ? (
         <div className="no-items">
-          <p>🍽️ No menu items found</p>
+          <p>ðŸ½ï¸ No menu items found</p>
         </div>
       ) : (
         <div className="menu-grid">
@@ -92,7 +92,7 @@ function MenuItems({ userRole, onAddToCart }) {
               {item.image && (
                 <div className="menu-image-wrapper">
                   <img 
-                    src={`https://restaurant-s0qk.onrender.com/uploads/${item.image}`} 
+                    src={`http://localhost:1000/uploads/${item.image}`} 
                     alt={item.name}
                     className="menu-image"
                     onError={(e) => {
@@ -117,7 +117,7 @@ function MenuItems({ userRole, onAddToCart }) {
                 <p className="menu-description">{item.description || "Delicious dish prepared with fresh ingredients"}</p>
                 
                 <div className="menu-footer">
-                  <span className="menu-price">₹{item.price}</span>
+                  <span className="menu-price">â‚¹{item.price}</span>
                   
                   {userRole === "admin" ? (
                     <div className="admin-badge">Admin View</div>
@@ -127,7 +127,7 @@ function MenuItems({ userRole, onAddToCart }) {
                       disabled={!item.available}
                       className={`order-btn ${!item.available ? "disabled" : ""}`}
                     >
-                      {item.available ? "Add to Cart 🛒" : "Not Available"}
+                      {item.available ? "Add to Cart ðŸ›’" : "Not Available"}
                     </button>
                   )}
                 </div>

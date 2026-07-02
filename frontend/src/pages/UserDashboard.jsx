@@ -87,7 +87,7 @@ function UserDashboard() {
         }))
       };
 
-      await axios.post("https://restaurant-s0qk.onrender.com/api/orders", orderData, {
+      await axios.post("http://localhost:1000/api/orders", orderData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -113,11 +113,11 @@ function UserDashboard() {
   return (
     <div className="user-dashboard">
       <div className="navbar">
-        <h1>🍕 QR Restaurant</h1>
+        <h1>ðŸ• QR Restaurant</h1>
         <div className="user-info">
-          <span>👋 Welcome, {user?.name}!</span>
+          <span>ðŸ‘‹ Welcome, {user?.name}!</span>
           <button onClick={() => setShowCart(!showCart)} className="cart-icon-btn">
-            🛒 Cart ({cart.reduce((sum, item) => sum + item.quantity, 0)})
+            ðŸ›’ Cart ({cart.reduce((sum, item) => sum + item.quantity, 0)})
           </button>
           <button onClick={handleLogout} className="logout-btn">
             Logout
@@ -135,7 +135,7 @@ function UserDashboard() {
           <div className="cart-sidebar">
             <div className="cart-header">
               <h3>Your Order</h3>
-              <button onClick={() => setShowCart(false)} className="close-cart">✕</button>
+              <button onClick={() => setShowCart(false)} className="close-cart">âœ•</button>
             </div>
             
             <input
@@ -154,7 +154,7 @@ function UserDashboard() {
                   <div key={item._id} className="cart-item">
                     <div className="cart-item-info">
                       <span className="cart-item-name">{item.name}</span>
-                      <span className="cart-item-price">₹{item.price}</span>
+                      <span className="cart-item-price">â‚¹{item.price}</span>
                     </div>
                     <div className="cart-item-controls">
                       <button onClick={() => updateQuantity(item._id, item.quantity - 1)}>-</button>
@@ -167,9 +167,9 @@ function UserDashboard() {
                   </div>
                 ))}
                 <div className="cart-total">
-                  <strong>Total: ₹{getTotalAmount().toFixed(2)}</strong>
+                  <strong>Total: â‚¹{getTotalAmount().toFixed(2)}</strong>
                   <button onClick={placeOrder} className="place-order-btn">
-                    Place Order ✅
+                    Place Order âœ…
                   </button>
                 </div>
               </>

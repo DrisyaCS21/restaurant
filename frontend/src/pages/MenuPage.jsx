@@ -2,8 +2,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import "./MenuPage.css";
+import { IoFastFoodOutline } from "react-icons/io5";
+import { CiShoppingCart } from "react-icons/ci";
+import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
+import { RxCross1 } from "react-icons/rx";
+import { IoBagCheckOutline } from "react-icons/io5";
+
 
 const MenuPage = () => {
+  const CurrencySymbol = "Rs"; 
   const [menu, setMenu] = useState([]);
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +24,7 @@ const MenuPage = () => {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const res = await axios.get("https://restaurant-s0qk.onrender.com/api/menu");
+        const res = await axios.get("http://localhost:1000/api/menu");
         setMenu(res.data);
         setLoading(false);
       } catch (err) {
@@ -85,7 +92,7 @@ const MenuPage = () => {
     }
 
     try {
-      await axios.post("https://restaurant-s0qk.onrender.com/api/orders", {
+      await axios.post("http://localhost:1000/api/orders", {
         tableNumber,
         items: cart.map(i => ({
           name: i.name,
@@ -121,9 +128,9 @@ const MenuPage = () => {
       <header className="menu-header">
         <div className="header-content">
           <div className="restaurant-info">
-            <h1>🍽️ Drisya's Kitchen</h1>
+            <h1> Drisya's Kitchen</h1>
             <div className="table-badge">
-              <span className="table-icon">🪑</span>
+              <span className="table-icon"><IoFastFoodOutline /></span>
               <span>Table {tableNumber}</span>
             </div>
           </div>
@@ -131,7 +138,7 @@ const MenuPage = () => {
             className={`cart-icon-button ${totalItems > 0 ? 'has-items' : ''}`}
             onClick={() => setIsCartOpen(true)}
           >
-            <span className="cart-icon">🛒</span>
+            <span className="cart-icon"><CiShoppingCart /></span>
             {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
           </button>
         </div>
@@ -169,7 +176,7 @@ const MenuPage = () => {
               <div className="menu-card-inner">
                 {item.image && (
                   <img
-                    src={`https://restaurant-s0qk.onrender.com/uploads/${item.image}`}
+                    src={`http://localhost:1000/uploads/${item.image}`}
                     alt={item.name}
                     className="menu-item-image"
                   />
@@ -177,7 +184,7 @@ const MenuPage = () => {
                 <div className="menu-card-content">
                   <div className="menu-item-header">
                     <h3 className="menu-item-name">{item.name}</h3>
-                    <span className="menu-item-price">₹{item.price}</span>
+                    <span className="menu-item-price">{CurrencySymbol} {item.price}</span>
                   </div>
                   <p className="menu-item-category">{item.category}</p>
                   {item.description && (
@@ -200,16 +207,16 @@ const MenuPage = () => {
       <div className={`cart-sidebar ${isCartOpen ? 'open' : ''}`}>
         <div className="cart-sidebar-header">
           <h3>
-            <span className="cart-icon">🛒</span>
+            <span className="cart-icon"><CiShoppingCart /></span>
             Your Order
           </h3>
-          <button className="close-cart" onClick={() => setIsCartOpen(false)}>✕</button>
+          <button className="close-cart" onClick={() => setIsCartOpen(false)}><RxCross1 /></button>
         </div>
 
         <div className="cart-sidebar-content">
           {cart.length === 0 ? (
             <div className="empty-cart">
-              <div className="empty-cart-icon">🛍️</div>
+              <div className="empty-cart-icon"><CiShoppingCart /></div>
               <p>Your cart is empty</p>
               <p className="empty-cart-subtitle">Add some delicious items from the menu</p>
             </div>
@@ -220,7 +227,7 @@ const MenuPage = () => {
                   <div key={item._id} className="cart-item">
                     <div className="cart-item-info">
                       <h4>{item.name}</h4>
-                      <p className="cart-item-price">₹{item.price}</p>
+                      <p className="cart-item-price">{CurrencySymbol} {item.price}</p>
                     </div>
                     <div className="cart-item-actions">
                       <button 
@@ -240,7 +247,7 @@ const MenuPage = () => {
                         className="remove-item"
                         onClick={() => removeFromCart(item._id)}
                       >
-                        🗑️
+                        ðŸ—‘ï¸
                       </button>
                     </div>
                   </div>
@@ -254,15 +261,15 @@ const MenuPage = () => {
                 </div>
                 <div className="summary-row total">
                   <span>Total Amount:</span>
-                  <span>₹{totalPrice}</span>
+                  <span>{CurrencySymbol} {totalPrice}</span>
                 </div>
                 <div className="summary-row tax">
                   <span>Tax (5% GST):</span>
-                  <span>₹{(totalPrice * 0.05).toFixed(2)}</span>
+                  <span>{CurrencySymbol} {(totalPrice * 0.05).toFixed(2)}</span>
                 </div>
                 <div className="summary-row grand-total">
                   <span>Grand Total:</span>
-                  <span>₹{(totalPrice * 1.05).toFixed(2)}</span>
+                  <span>{CurrencySymbol} {(totalPrice * 1.05).toFixed(2)}</span>
                 </div>
               </div>
 

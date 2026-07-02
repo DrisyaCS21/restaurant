@@ -14,6 +14,23 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const formStyle = {
+    padding: 28
+  };
+
+  const fieldStyle = {
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "10px 12px",
+    border: "1px solid #d1d5db",
+    borderRadius: 8,
+    outline: "none"
+  };
+
+  const fieldWrapperStyle = {
+    marginBottom: 12
+  };
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -27,7 +44,7 @@ function AuthPage() {
     setMessage("");
 
     try {
-      const API_URL = "https://restaurant-s0qk.onrender.com/api/auth";
+      const API_URL = "http://localhost:1000/api/auth";
       let response;
       
       if (isLogin) {
@@ -90,140 +107,119 @@ function AuthPage() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <h2>{isLogin ? "Login" : "Sign Up"}</h2>
-        
+    <div className="min-h-screen flex items-center justify-center bg-white p-5">
+      <form
+        className="w-full max-w-[360px] rounded-lg border border-gray-200 bg-white text-left text-sm text-gray-600 shadow-md"
+        style={formStyle}
+        onSubmit={handleSubmit}
+      >
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+          {isLogin ? "Login" : "Sign Up"}
+        </h2>
+
         {message && (
-          <div className={`message ${message.includes("successful") ? "success" : "error"}`}>
+          <div
+            className={`mb-4 rounded p-2 text-center ${
+              message.includes("successful")
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}
+          >
             {message}
           </div>
         )}
 
-        <form className="auth-form" onSubmit={handleSubmit}>
-          {!isLogin && (
+        {!isLogin && (
+          <div style={fieldWrapperStyle}>
+            <label htmlFor="name" className="sr-only">
+              Full Name
+            </label>
             <input
-              type="text"
+              id="name"
               name="name"
-              placeholder="Full Name"
+              style={fieldStyle}
+              type="text"
+              placeholder="Username"
               value={formData.name}
               onChange={handleChange}
               required
+              autoComplete="name"
             />
-          )}
+          </div>
+        )}
 
+        <div style={fieldWrapperStyle}>
+          <label htmlFor="email" className="sr-only">
+            Email
+          </label>
           <input
-            type="email"
+            id="email"
             name="email"
-            placeholder="Email Address"
+            style={fieldStyle}
+            type="email"
+            placeholder="Email"
             value={formData.email}
             onChange={handleChange}
             required
+            autoComplete="email"
           />
+        </div>
 
+        <div style={{ ...fieldWrapperStyle, marginBottom: 18 }}>
+          <label htmlFor="password" className="sr-only">
+            Password
+          </label>
           <input
-            type="password"
+            id="password"
             name="password"
+            style={fieldStyle}
+            type="password"
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
             required
-            minLength="6"
+            minLength={6}
+            autoComplete={isLogin ? "current-password" : "new-password"}
           />
+        </div>
 
-          {!isLogin && (
-            <select name="role" value={formData.role} onChange={handleChange}>
+        {!isLogin && (
+          <div style={{ ...fieldWrapperStyle, marginBottom: 18 }}>
+            <label htmlFor="role" className="sr-only">
+              Role
+            </label>
+            <select
+              id="role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              style={fieldStyle}
+            >
               <option value="user">Customer</option>
               <option value="admin">Admin</option>
             </select>
-          )}
+          </div>
+        )}
 
-          <button type="submit" disabled={loading}>
-            {loading ? "Processing..." : (isLogin ? "Login" : "Sign Up")}
+        <button
+          className="w-full mb-3 bg-indigo-500 hover:bg-indigo-600 transition-all active:scale-95 py-2.5 rounded text-white font-medium disabled:opacity-70 disabled:cursor-not-allowed"
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? "Processing..." : isLogin ? "Log In" : "Create Account"}
+        </button>
+
+        <p className="text-center mt-4">
+          {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+          <button
+            type="button"
+            onClick={toggleMode}
+            className="text-blue-500 underline px-4 py-5 m-5"
+          >
+            {isLogin ? "Sign Up" : "Log In"}
           </button>
-        </form>
-
-        <p onClick={toggleMode} className="toggle-link">
-          {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Login"}
         </p>
-      </div>
-
-      <style>{`
-        .auth-page {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          margin: 0;
-          padding: 20px;
-        }
-
-        .auth-container {
-          background: white;
-          padding: 40px;
-          border-radius: 10px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          width: 100%;
-          max-width: 400px;
-        }
-
-        h2 {
-          text-align: center;
-          color: #333;
-          margin-bottom: 30px;
-        }
-
-        .auth-form {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-        }
-
-        input, select {
-          padding: 12px;
-          border: 1px solid #ddd;
-          border-radius: 5px;
-          font-size: 16px;
-        }
-
-        button {
-          padding: 12px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-        }
-
-        button:disabled {
-          opacity: 0.7;
-        }
-
-        .toggle-link {
-          text-align: center;
-          margin-top: 20px;
-          color: #667eea;
-          cursor: pointer;
-        }
-
-        .message {
-          padding: 10px;
-          border-radius: 5px;
-          margin-bottom: 20px;
-          text-align: center;
-        }
-
-        .message.success {
-          background-color: #d4edda;
-          color: #155724;
-        }
-
-        .message.error {
-          background-color: #f8d7da;
-          color: #721c24;
-        }
-      `}</style>
+      </form>
     </div>
   );
 }

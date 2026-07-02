@@ -22,7 +22,7 @@ function AdminPage() {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://restaurant-s0qk.onrender.com/api/orders",
+        "http://localhost:1000/api/orders",
         getAuthConfig()
       );
       setOrders(response.data);
@@ -43,7 +43,7 @@ function AdminPage() {
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
       await axios.put(
-        `https://restaurant-s0qk.onrender.com/api/orders/${orderId}/status`,
+        `http://localhost:1000/api/orders/${orderId}/status`,
         { status: newStatus },
         getAuthConfig()
       );
@@ -66,10 +66,10 @@ function AdminPage() {
 
   const getStatusLabel = (status) => {
     switch (status) {
-      case "processing": return "🕒 Processing";
-      case "preparing": return "👨‍🍳 Preparing";
-      case "served": return "✅ Served";
-      case "paid": return "💰 Paid";
+      case "processing": return "ðŸ•’ Processing";
+      case "preparing": return "ðŸ‘¨â€ðŸ³ Preparing";
+      case "served": return "âœ… Served";
+      case "paid": return "ðŸ’° Paid";
       default: return status;
     }
   };
@@ -109,17 +109,17 @@ function AdminPage() {
               className={`tab-btn ${activeTab === "orders" ? "active" : ""}`}
               onClick={() => setActiveTab("orders")}
             >
-              📦 Orders
+              ðŸ“¦ Orders
             </button>
             <button 
               className={`tab-btn ${activeTab === "menu" ? "active" : ""}`}
               onClick={() => setActiveTab("menu")}
             >
-              🍽️ Menu Management
+              ðŸ½ï¸ Menu Management
             </button>
           </div>
           <div className="admin-info">
-            <span>👋 Welcome back!</span>
+            <span>ðŸ‘‹ Welcome back!</span>
           </div>
         </div>
 
@@ -143,7 +143,7 @@ function AdminPage() {
             {error && <div className="error-message">{error}</div>}
 
             <div className="orders-container">
-              <h2>📋 Recent Orders</h2>
+              <h2>ðŸ“‹ Recent Orders</h2>
               {orders.length === 0 ? (
                 <div className="no-orders">No orders yet</div>
               ) : (
@@ -161,7 +161,7 @@ function AdminPage() {
                       </div>
                       <div className="order-details">
                         <p className="order-time">
-                          🕐 {new Date(order.createdAt).toLocaleString()}
+                          ðŸ• {new Date(order.createdAt).toLocaleString()}
                         </p>
                         <div className="order-items">
                           <strong>Items:</strong>
@@ -204,7 +204,7 @@ function AdminPage() {
           <div className="menu-management">
             <div className="menu-header-actions">
               <button onClick={() => navigate("/admin/add-menu")} className="add-menu-btn">
-                ➕ Add New Menu Item
+                âž• Add New Menu Item
               </button>
             </div>
             <MenuItems userRole="admin" />

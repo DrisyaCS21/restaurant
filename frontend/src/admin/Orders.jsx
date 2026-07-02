@@ -23,7 +23,7 @@ function Orders() {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://restaurant-s0qk.onrender.com/api/orders",
+        "http://localhost:1000/api/orders",
         getAuthConfig()
       );
       setOrders(response.data);
@@ -44,7 +44,7 @@ function Orders() {
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
       await axios.put(
-        `https://restaurant-s0qk.onrender.com/api/orders/${orderId}/status`,
+        `http://localhost:1000/api/orders/${orderId}/status`,
         { status: newStatus },
         getAuthConfig()
       );
@@ -68,11 +68,11 @@ function Orders() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "processing": return "🕒";
-      case "preparing": return "👨‍🍳";
-      case "served": return "✅";
-      case "paid": return "💰";
-      default: return "📦";
+      case "processing": return "ðŸ•’";
+      case "preparing": return "ðŸ‘¨â€ðŸ³";
+      case "served": return "âœ…";
+      case "paid": return "ðŸ’°";
+      default: return "ðŸ“¦";
     }
   };
 
@@ -135,38 +135,38 @@ function Orders() {
             <p>Track and manage all customer orders</p>
           </div>
           <button className="refresh-btn" onClick={fetchOrders}>
-            🔄 Refresh
+            ðŸ”„ Refresh
           </button>
         </div>
 
         {/* Stats Cards */}
         <div className="stats-grid">
           <div className="stat-card total">
-            <div className="stat-icon">📦</div>
+            <div className="stat-icon">ðŸ“¦</div>
             <div className="stat-info">
               <h3>Total Orders</h3>
               <p className="stat-value">{stats.total}</p>
             </div>
           </div>
           <div className="stat-card processing">
-            <div className="stat-icon">🕒</div>
+            <div className="stat-icon">ðŸ•’</div>
             <div className="stat-info">
               <h3>Processing</h3>
               <p className="stat-value">{stats.processing}</p>
             </div>
           </div>
           <div className="stat-card preparing">
-            <div className="stat-icon">👨‍🍳</div>
+            <div className="stat-icon">ðŸ‘¨â€ðŸ³</div>
             <div className="stat-info">
               <h3>Preparing</h3>
               <p className="stat-value">{stats.preparing}</p>
             </div>
           </div>
           <div className="stat-card revenue">
-            <div className="stat-icon">💰</div>
+            <div className="stat-icon">ðŸ’°</div>
             <div className="stat-info">
               <h3>Total Revenue</h3>
-              <p className="stat-value">₹{stats.revenue.toLocaleString()}</p>
+              <p className="stat-value">â‚¹{stats.revenue.toLocaleString()}</p>
             </div>
           </div>
         </div>
@@ -184,25 +184,25 @@ function Orders() {
               className={`filter-btn ${selectedStatus === "processing" ? "active" : ""}`}
               onClick={() => setSelectedStatus("processing")}
             >
-              🕒 Processing
+              ðŸ•’ Processing
             </button>
             <button
               className={`filter-btn ${selectedStatus === "preparing" ? "active" : ""}`}
               onClick={() => setSelectedStatus("preparing")}
             >
-              👨‍🍳 Preparing
+              ðŸ‘¨â€ðŸ³ Preparing
             </button>
             <button
               className={`filter-btn ${selectedStatus === "served" ? "active" : ""}`}
               onClick={() => setSelectedStatus("served")}
             >
-              ✅ Served
+              âœ… Served
             </button>
             <button
               className={`filter-btn ${selectedStatus === "paid" ? "active" : ""}`}
               onClick={() => setSelectedStatus("paid")}
             >
-              💰 Paid
+              ðŸ’° Paid
             </button>
           </div>
           
@@ -223,7 +223,7 @@ function Orders() {
         <div className="orders-table-container">
           {filteredOrders.length === 0 ? (
             <div className="no-orders">
-              <div className="no-orders-icon">📭</div>
+              <div className="no-orders-icon">ðŸ“­</div>
               <h3>No orders found</h3>
               <p>Try adjusting your filters or search criteria</p>
             </div>
@@ -260,7 +260,7 @@ function Orders() {
                       )}
                     </td>
                     <td className="order-total">
-                      ₹{order.totalAmount.toFixed(2)}
+                      â‚¹{order.totalAmount.toFixed(2)}
                     </td>
                     <td className="order-time">
                       <div>{new Date(order.createdAt).toLocaleTimeString()}</div>
@@ -280,7 +280,7 @@ function Orders() {
                           className="view-btn"
                           onClick={() => setSelectedOrder(order)}
                         >
-                          👁️ View
+                          ðŸ‘ï¸ View
                         </button>
                         {order.status === "processing" && (
                           <button 
@@ -321,7 +321,7 @@ function Orders() {
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
                 <h2>Order Details</h2>
-                <button className="close-modal" onClick={() => setSelectedOrder(null)}>✕</button>
+                <button className="close-modal" onClick={() => setSelectedOrder(null)}>âœ•</button>
               </div>
               
               <div className="modal-body">
@@ -365,15 +365,15 @@ function Orders() {
                         <tr key={idx}>
                           <td>{item.name}</td>
                           <td>x{item.quantity}</td>
-                          <td>₹{item.price}</td>
-                          <td>₹{(item.price * item.quantity).toFixed(2)}</td>
+                          <td>â‚¹{item.price}</td>
+                          <td>â‚¹{(item.price * item.quantity).toFixed(2)}</td>
                         </tr>
                       ))}
                     </tbody>
                     <tfoot>
                       <tr className="total-row">
                         <td colSpan="3"><strong>Total Amount</strong></td>
-                        <td><strong>₹{selectedOrder.totalAmount.toFixed(2)}</strong></td>
+                        <td><strong>â‚¹{selectedOrder.totalAmount.toFixed(2)}</strong></td>
                       </tr>
                     </tfoot>
                   </table>

@@ -149,7 +149,7 @@ function AddMenu() {
       }
 
       const response = await axios.post(
-        "https://restaurant-s0qk.onrender.com/api/menu",
+        "http://localhost:1000/api/menu",
         formDataToSend,
         getAuthConfig()
       );
@@ -226,20 +226,20 @@ function AddMenu() {
         <div className="top-bar">
           <h1>Add New Menu Item</h1>
           <button onClick={() => navigate("/admin")} className="back-btn">
-            ← Back to Dashboard
+            â† Back to Dashboard
           </button>
         </div>
 
         <div className="form-container">
           {success && (
             <div className="alert success">
-              ✅ {success}
+              âœ… {success}
             </div>
           )}
           
           {error && (
             <div className="alert error">
-              ❌ {error}
+              âŒ {error}
             </div>
           )}
 
@@ -259,7 +259,7 @@ function AddMenu() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="price">Price (₹) *</label>
+                <label htmlFor="price">Price (â‚¹) *</label>
                 <input
                   type="number"
                   id="price"
@@ -334,12 +334,12 @@ function AddMenu() {
                           }}
                           className="remove-image"
                         >
-                          ✕
+                          âœ•
                         </button>
                       </div>
                     ) : (
                       <div className="upload-placeholder">
-                        <span className="upload-icon">📸</span>
+                        <span className="upload-icon">ðŸ“¸</span>
                         <p>Click or drag image here</p>
                         <small>JPEG, PNG, WEBP (max 5MB)</small>
                       </div>
@@ -363,7 +363,7 @@ function AddMenu() {
 
             <div className="form-actions">
               <button type="submit" disabled={loading} className="submit-btn">
-                {loading ? "Adding..." : "➕ Add Menu Item"}
+                {loading ? "Adding..." : "âž• Add Menu Item"}
               </button>
               <button type="button" onClick={resetForm} className="reset-btn">
                 Reset Form
