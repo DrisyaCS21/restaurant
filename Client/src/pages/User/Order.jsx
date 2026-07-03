@@ -29,7 +29,13 @@ const Order = () => {
                     const userOrders = await res.json()
                     setOrders(userOrders) // already sorted by backend
                     
-                    if (!selectedOrder && userOrders.length > 0) {
+                    // Update selected order if it exists in the new data
+                    if (selectedOrder) {
+                        const updatedSelected = userOrders.find(o => o._id === selectedOrder._id)
+                        if (updatedSelected) {
+                            setSelectedOrder(updatedSelected)
+                        }
+                    } else if (userOrders.length > 0) {
                         const active = userOrders.find(o => o.status !== 'paid')
                         setSelectedOrder(active || userOrders[0])
                     }
@@ -40,8 +46,14 @@ const Order = () => {
                 setLoading(false)
             }
         }
+        
         fetchOrders()
-    }, [user, token])
+
+        // Poll for updates every 5 seconds
+        const pollInterval = setInterval(fetchOrders, 5000)
+        
+        return () => clearInterval(pollInterval)
+    }, [user, token, selectedOrder?._id])
 
     const getStatusInfo = (status) => {
         switch (status) {

@@ -94,6 +94,8 @@ const ActiveOrderStatus = ({ order }) => {
                 return 'Your order is being prepared'
             case 'served':
                 return 'Your order has been served'
+            case 'paid':
+                return 'Order completed - Thank you!'
             default:
                 return 'Your order status'
         }
@@ -107,13 +109,24 @@ const ActiveOrderStatus = ({ order }) => {
                 return 'text-blue-600'
             case 'served':
                 return 'text-green-600'
+            case 'paid':
+                return 'text-gray-600'
             default:
                 return 'text-gray-600'
         }
     }
 
     return (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-8">
+        <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-8 relative">
+            {/* Live indicator */}
+            <div className="absolute top-4 right-4 flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <span className="text-xs text-green-600 font-medium">Live</span>
+            </div>
+
             <div className="flex items-center gap-3 mb-4">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${getStatusColor().replace('text-', 'bg-').replace('600', '100')}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
@@ -293,7 +306,7 @@ const StepFood = ({ menu, cart, onAdd, onRemove, onNext, hasActiveOrder }) => {
 const StepPayment = ({ table, cart, onBack, onSuccess, activeOrder }) => {
     const [method, setMethod] = React.useState('cash')
     const [note, setNote] = React.useState('')
-    const [tableNumber, setTableNumber] = React.useState(table || '')
+    const [tableNumber, setTableNumber] = React.useState(String(table || ''))
     const [loading, setLoading] = React.useState(false)
     const { user, token } = React.useContext(AppContext)
 
@@ -478,7 +491,7 @@ const StepPayment = ({ table, cart, onBack, onSuccess, activeOrder }) => {
 
                     <button
                         onClick={handlePlace}
-                        disabled={loading || (!!table && !tableNumber.trim())}
+                        disabled={loading || (!!table && !String(tableNumber).trim())}
                         className="mt-5 w-full bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold py-3.5 rounded-xl transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -515,6 +528,7 @@ const OrderForm = () => {
     const [loading, setLoading] = React.useState(true)
     const [error, setError] = React.useState('')
     const [activeOrder, setActiveOrder] = React.useState(location.state?.activeOrder || null)
+    const [placedOrder, setPlacedOrder] = React.useState(null)
 
     // Redirect admins away if admin
     React.useEffect(() => {
@@ -583,6 +597,35 @@ const OrderForm = () => {
         }
         init()
     }, [searchParams, user])
+
+    // Poll for active order updates (QR orders only)
+    React.useEffect(() => {
+        const token = searchParams.get('token')
+        if (!token || !table) return
+
+        const pollActiveOrder = async () => {
+            try {
+                const orderRes = await fetch(`${backendUrl}/api/orders/table/${table}/active`)
+                if (orderRes.ok) {
+                    const orderData = await orderRes.json()
+                    if (orderData) {
+                        setActiveOrder(orderData)
+                        // Also update placedOrder if it exists
+                        if (placedOrder && placedOrder._id === orderData._id) {
+                            setPlacedOrder(orderData)
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('Error polling active order:', err)
+            }
+        }
+
+        // Poll every 5 seconds
+        const pollInterval = setInterval(pollActiveOrder, 5000)
+        
+        return () => clearInterval(pollInterval)
+    }, [searchParams, table, placedOrder?._id])
 
     const addToCart = (item) => {
         setCart(prev => {
@@ -661,6 +704,24 @@ const OrderForm = () => {
 
             {/* Content */}
             <div className="max-w-4xl mx-auto px-4 md:px-8 py-12">
+                {/* QR order success banner */}
+                {placedOrder && (
+                    <div className="bg-green-50 border border-green-200 rounded-2xl p-4 mb-6 flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center shrink-0 mt-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M20 6 9 17l-5-5"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold text-green-900">Order placed successfully!</p>
+                            <p className="text-xs text-green-700 mt-0.5">
+                                Your order is being processed. Want to add more items?
+                            </p>
+                        </div>
+                    </div>
+                )}
+
                 {/* Always show active order status if it exists */}
                 {activeOrder && (
                     <ActiveOrderStatus order={activeOrder} />
@@ -699,7 +760,16 @@ const OrderForm = () => {
                             onBack={() => setStep(1)}
                             activeOrder={activeOrder}
                             onSuccess={(order) => {
-                                navigate('/order/confirmation', { state: { order } })
+                                if (searchParams.get('token')) {
+                                    // QR order — stay on page, show success + allow adding more
+                                    setPlacedOrder(order)
+                                    setActiveOrder(order)
+                                    setCart([])
+                                    setStep(1)
+                                } else {
+                                    // Website order — go to order confirmation page
+                                    navigate('/order/confirmation', { state: { order } })
+                                }
                             }}
                         />
                     )
