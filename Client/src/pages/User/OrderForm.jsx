@@ -372,21 +372,7 @@ const StepPayment = ({ table, cart, onBack, onSuccess, activeOrder }) => {
             {/* Left — payment method + note (only for new orders) */}
             {!activeOrder && (
                 <div className="lg:col-span-3 space-y-6">
-                    {!table && (
-                        <div className="bg-white rounded-2xl border border-neutral-100 p-6">
-                            <label className="text-sm font-semibold text-neutral-800 block mb-2">
-                                Table Number <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                value={tableNumber}
-                                onChange={e => setTableNumber(e.target.value)}
-                                placeholder="Enter your table number (e.g. 5)"
-                                className="w-full border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-700 placeholder-neutral-400 outline-none focus:border-orange-500 transition"
-                                required
-                            />
-                        </div>
-                    )}
+
 
                     <div>
                         <h2 className="text-2xl font-semibold text-neutral-900 mb-1">Payment</h2>
@@ -455,7 +441,7 @@ const StepPayment = ({ table, cart, onBack, onSuccess, activeOrder }) => {
                             <path d="M3 6h18M3 12h18M3 18h18"/>
                         </svg>
                         <h3 className="text-sm font-semibold">
-                            {activeOrder ? 'Adding More to Order' : `Table ${table}`}
+                            {activeOrder ? 'Adding More to Order' : table ? `Table ${table}` : 'Your Order'}
                         </h3>
                     </div>
 
@@ -492,7 +478,7 @@ const StepPayment = ({ table, cart, onBack, onSuccess, activeOrder }) => {
 
                     <button
                         onClick={handlePlace}
-                        disabled={loading || (!table && !tableNumber.trim())}
+                        disabled={loading || (!!table && !tableNumber.trim())}
                         className="mt-5 w-full bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold py-3.5 rounded-xl transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
