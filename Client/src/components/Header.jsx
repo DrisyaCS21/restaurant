@@ -79,7 +79,15 @@ const Header = () => {
                                     >
                                         Cart
                                     </button>
-                                    <a href="#order" onClick={() => setMobileOpen(false)} className="text-white hover:text-white/90">Order</a>
+                                    {user && (
+                                        <Link 
+                                            to="/order/confirmation" 
+                                            onClick={() => setMobileOpen(false)} 
+                                            className="text-white hover:text-white/90"
+                                        >
+                                            My Orders
+                                        </Link>
+                                    )}
                                 </>
                             )}
 

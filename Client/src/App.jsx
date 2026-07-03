@@ -6,6 +6,7 @@ import Menu from './pages/Menu.jsx'
 import Footer from './components/Footer.jsx'
 import Dashboard from './pages/User/Dashboard.jsx'
 import OrderForm from './pages/User/OrderForm.jsx'
+import Order from './pages/User/Order.jsx'
 import Cart from './components/Cart.jsx'
 import { AppProvider } from './context/AppContext.jsx'
 import AdminDashboard from './pages/Admin/AdminDashboard.jsx'
@@ -23,6 +24,7 @@ function App() {
             <Route path="/menu" element={<Menu />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/order" element={<OrderForm />} />
+            <Route path="/order/confirmation" element={<Order />} />
             <Route path="/admindashboard/*" element={<AdminDashboard />} />
           </Routes>
           <Footer />

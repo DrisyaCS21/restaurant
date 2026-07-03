@@ -329,7 +329,7 @@ const StepPayment = ({ table, cart, onBack, onSuccess, activeOrder }) => {
             } else {
                 // New order
                 const orderData = {
-                    tableNumber: tableNumber,
+                    tableNumber: table || tableNumber || 'Online Order',
                     items: cart.map(item => ({
                         name: item.name,
                         menuItem: item._id,
@@ -514,7 +514,7 @@ const OrderForm = () => {
     const [menu, setMenu] = React.useState([])
     const [loading, setLoading] = React.useState(true)
     const [error, setError] = React.useState('')
-    const [activeOrder, setActiveOrder] = React.useState(null)
+    const [activeOrder, setActiveOrder] = React.useState(location.state?.activeOrder || null)
 
     // Redirect admins away if admin
     React.useEffect(() => {
@@ -651,11 +651,10 @@ const OrderForm = () => {
                         {activeOrder ? 'Your Order' : 'Place Your Order'}
                     </h1>
                     <p className="text-sm text-neutral-300 mt-2 max-w-md">
-                        Table <span className="font-semibold text-white">{table}</span> — {
-                            activeOrder 
-                                ? 'Your order is being prepared' 
-                                : 'Pick your dishes and pay'
-                        }.
+                        {table 
+                            ? <>Table <span className="font-semibold text-white">{table}</span> — {activeOrder ? 'Your order is being prepared' : 'Pick your dishes and pay'}.</>
+                            : activeOrder ? 'Your order is being prepared' : 'Pick your dishes and pay.'
+                        }
                     </p>
                 </div>
             </div>
@@ -700,9 +699,7 @@ const OrderForm = () => {
                             onBack={() => setStep(1)}
                             activeOrder={activeOrder}
                             onSuccess={(order) => {
-                                setActiveOrder(order)
-                                setStep(1)
-                                setCart([])
+                                navigate('/order/confirmation', { state: { order } })
                             }}
                         />
                     )
