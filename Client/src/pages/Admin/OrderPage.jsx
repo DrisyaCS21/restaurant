@@ -11,9 +11,11 @@ function OrderPage() {
   const [updatingId, setUpdatingId] = React.useState(null);
   const [deletingId, setDeletingId] = React.useState(null);
 
-  const fetchOrders = React.useCallback(async () => {
+  const [countdown, setCountdown] = React.useState(60);
+
+  const fetchOrders = React.useCallback(async (silent = false) => {
     if (!token) return;
-    setLoading(true);
+    if (!silent) setLoading(true);
     setError("");
     try {
       const res = await fetch(`${backendUrl}/api/orders`, {
@@ -28,12 +30,28 @@ function OrderPage() {
     } catch {
       setError("Unable to connect to server. Please try again.");
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [token]);
 
   React.useEffect(() => {
+    const tick = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          return 60 // reset after auto-refresh
+        }
+        return prev - 1
+      })
+    }, 1000)
+    return () => clearInterval(tick)
+  }, [])
+
+  React.useEffect(() => {
     fetchOrders();
+
+    // Auto-refresh every 60 seconds (silent — no loading spinner)
+    const interval = setInterval(() => fetchOrders(true), 60000);
+    return () => clearInterval(interval);
   }, [fetchOrders]);
 
   const updateStatus = async (orderId, newStatus) => {
@@ -93,14 +111,23 @@ function OrderPage() {
           <h2 className="text-2xl font-semibold text-gray-800 mb-1">Order History</h2>
           <p className="text-gray-500 text-sm">View and manage all customer orders.</p>
         </div>
-        <button
-          type="button"
-          onClick={fetchOrders}
-          className="px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm hover:bg-gray-50"
-          disabled={loading}
-        >
-          {loading ? "Refreshing..." : "Refresh"}
-        </button>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+            </span>
+            Auto-refresh in {countdown}s
+          </div>
+          <button
+            type="button"
+            onClick={() => { fetchOrders(); setCountdown(60); }}
+            className="px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm hover:bg-gray-50"
+            disabled={loading}
+          >
+            {loading ? "Refreshing..." : "Refresh Now"}
+          </button>
+        </div>
       </div>
 
       {error && (
