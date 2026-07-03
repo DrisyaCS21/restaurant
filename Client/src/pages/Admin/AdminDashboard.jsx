@@ -5,6 +5,7 @@ import {
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
     ResponsiveContainer, BarChart, Bar, Legend
 } from 'recharts'
+import ManageTable from './ManageTable.jsx'
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 const monthlyRevenue = [
@@ -247,6 +248,17 @@ const navItems = [
         ),
     },
     {
+        label: 'Manage Tables',
+        to: '/admindashboard/manage-tables',
+        icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <rect x="7" y="7" width="10" height="10" rx="1"/>
+            </svg>
+        ),
+    },
+    {
         label: 'Add Product',
         to: '/admindashboard/add-product',
         icon: (
@@ -364,6 +376,7 @@ const AdminDashboard = () => {
                     <Route index element={<Navigate to="revenue" replace />} />
                     <Route path="revenue" element={<Revenue />} />
                     <Route path="orders" element={<OrderHistory />} />
+                    <Route path="manage-tables" element={<ManageTable />} />
                     <Route path="add-product" element={<AddProduct />} />
                     <Route path="update-product" element={<UpdateProduct />} />
                 </Routes>
