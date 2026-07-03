@@ -40,6 +40,10 @@ app.use("/api/orders", orderRoutes);
 import authRoutes from "./routes/authRoutes.js";
 app.use("/api/auth", authRoutes);
 
+// qr routes
+import qrRoutes from "./routes/qrRoutes.js";
+app.use("/api/qr", qrRoutes);
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

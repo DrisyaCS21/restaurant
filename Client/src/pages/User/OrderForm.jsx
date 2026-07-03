@@ -1,18 +1,8 @@
 import React from 'react'
+import { useSearchParams, useNavigate } from 'react-router-dom'
+import { AppContext } from '../../context/AppContext'
 
-// ── Mock menu data (matches backend Menu model shape) ─────────────────────────
-const mockMenu = [
-    { _id: '1', name: 'Grilled Salmon', price: 649, category: 'Main Course', image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600', available: true },
-    { _id: '2', name: 'Truffle Pasta', price: 499, category: 'Pasta', image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600', available: true },
-    { _id: '3', name: 'Beef Tenderloin', price: 899, category: 'Main Course', image: 'https://images.unsplash.com/photo-1546964124-0cce460f38ef?w=600', available: true },
-    { _id: '4', name: 'Margherita Pizza', price: 349, category: 'Pizza', image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600', available: true },
-    { _id: '5', name: 'Caesar Salad', price: 249, category: 'Salad', image: 'https://images.unsplash.com/photo-1512852939750-1305098529bf?w=600', available: true },
-    { _id: '6', name: 'Chocolate Lava Cake', price: 199, category: 'Dessert', image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=600', available: true },
-    { _id: '7', name: 'Chicken Tikka', price: 399, category: 'Main Course', image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600', available: true },
-    { _id: '8', name: 'Mushroom Risotto', price: 379, category: 'Rice', image: 'https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=600', available: true },
-]
-
-const TABLES = Array.from({ length: 12 }, (_, i) => i + 1)
+const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:1000"
 
 const PAYMENT_METHODS = [
     {
@@ -56,7 +46,7 @@ const PAYMENT_METHODS = [
 
 // ── Step indicator ────────────────────────────────────────────────────────────
 const StepBar = ({ current }) => {
-    const steps = ['Select Table', 'Choose Food', 'Payment']
+    const steps = ['Choose Food', 'Payment']
     return (
         <div className="flex items-center justify-center gap-0 mb-10">
             {steps.map((label, i) => {
@@ -91,71 +81,17 @@ const StepBar = ({ current }) => {
     )
 }
 
-// ── Step 1 — Table selection ──────────────────────────────────────────────────
-const StepTable = ({ selected, onSelect, onNext }) => (
-    <div>
-        <h2 className="text-2xl font-semibold text-neutral-900 mb-1">Pick your table</h2>
-        <p className="text-neutral-500 text-sm mb-8">Select the table number you are seated at</p>
-
-        <div className="grid grid-cols-4 sm:grid-cols-6 gap-3 mb-10">
-            {TABLES.map(n => (
-                <button
-                    key={n}
-                    onClick={() => onSelect(n)}
-                    className={'h-16 rounded-2xl border-2 text-base font-semibold transition-all ' +
-                        (selected === n
-                            ? 'border-orange-500 bg-orange-500 text-white shadow-md shadow-orange-500/30'
-                            : 'border-neutral-200 bg-white text-neutral-700 hover:border-orange-300 hover:text-orange-500')}
-                >
-                    <div className="flex flex-col items-center gap-0.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M3 6h18M3 12h18M3 18h18"/>
-                        </svg>
-                        <span className="text-sm">{n}</span>
-                    </div>
-                </button>
-            ))}
-        </div>
-
-        {selected && (
-            <div className="flex items-center gap-3 bg-orange-50 border border-orange-200 rounded-2xl px-5 py-4 mb-8">
-                <div className="w-9 h-9 rounded-xl bg-orange-500 flex items-center justify-center shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                        fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M20 6 9 17l-5-5"/>
-                    </svg>
-                </div>
-                <p className="text-sm text-neutral-700">
-                    Table <span className="font-semibold text-neutral-900">{selected}</span> selected
-                </p>
-            </div>
-        )}
-
-        <button
-            onClick={onNext}
-            disabled={!selected}
-            className={'w-full py-3.5 rounded-xl text-sm font-semibold transition-all ' +
-                (selected
-                    ? 'bg-neutral-900 hover:bg-neutral-800 text-white cursor-pointer'
-                    : 'bg-neutral-100 text-neutral-400 cursor-not-allowed')}
-        >
-            Continue to Menu
-        </button>
-    </div>
-)
-
-// ── Step 2 — Food selection ───────────────────────────────────────────────────
-const StepFood = ({ cart, onAdd, onRemove, onNext, onBack }) => {
+// ── Step 1 — Food selection ───────────────────────────────────────────────────
+const StepFood = ({ menu, cart, onAdd, onRemove, onNext }) => {
     const [search, setSearch] = React.useState('')
     const [activeCategory, setActiveCategory] = React.useState('All')
 
-    const categories = ['All', ...Array.from(new Set(mockMenu.map(i => i.category)))]
+    const categories = ['All', ...Array.from(new Set(menu.map(i => i.category)))]
 
-    const visible = mockMenu.filter(item => {
+    const visible = menu.filter(item => {
         const matchCat = activeCategory === 'All' || item.category === activeCategory
         const matchSearch = item.name.toLowerCase().includes(search.toLowerCase())
-        return matchCat && matchSearch
+        return matchCat && matchSearch && item.available
     })
 
     const qty = (id) => cart.find(c => c._id === id)?.qty || 0
@@ -199,56 +135,68 @@ const StepFood = ({ cart, onAdd, onRemove, onNext, onBack }) => {
             </div>
 
             {/* Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                {visible.map(item => {
-                    const q = qty(item._id)
-                    return (
-                        <div key={item._id} className={'rounded-2xl border overflow-hidden transition-all ' +
-                            (q > 0 ? 'border-orange-300 shadow-sm shadow-orange-100' : 'border-neutral-100')}>
-                            {/* Image */}
-                            <div className="relative h-40 overflow-hidden">
-                                <img src={item.image} alt={item.name}
-                                    className="absolute inset-0 w-full h-full object-cover" />
-                                <span className="absolute top-2 left-2 bg-black/60 backdrop-blur text-white text-xs px-2.5 py-1 rounded-full">
-                                    {item.category}
-                                </span>
-                                <span className="absolute top-2 right-2 bg-white text-neutral-900 text-xs font-semibold px-2.5 py-1 rounded-full shadow">
-                                    Rs {item.price}
-                                </span>
-                                {q > 0 && (
-                                    <span className="absolute bottom-2 right-2 bg-orange-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow">
-                                        {q}
+            {visible.length === 0 ? (
+                <div className="bg-white rounded-2xl border border-neutral-100 p-12 text-center">
+                    <p className="text-neutral-500">No menu items available yet.</p>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                    {visible.map(item => {
+                        const q = qty(item._id)
+                        // Fix image URL - if it's a relative path, prepend backend URL
+                        const imageUrl = item.image && !item.image.startsWith('http') 
+                            ? `${backendUrl}/uploads/${item.image}` 
+                            : item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600'
+                        return (
+                            <div key={item._id} className={'rounded-2xl border overflow-hidden transition-all ' +
+                                (q > 0 ? 'border-orange-300 shadow-sm shadow-orange-100' : 'border-neutral-100')}>
+                                {/* Image */}
+                                <div className="relative h-40 overflow-hidden">
+                                    <img src={imageUrl} alt={item.name}
+                                        className="absolute inset-0 w-full h-full object-cover" />
+                                    <span className="absolute top-2 right-2 bg-white text-neutral-900 text-xs font-semibold px-2.5 py-1 rounded-full shadow">
+                                        Rs {item.price}
                                     </span>
-                                )}
-                            </div>
-                            {/* Info + controls */}
-                            <div className="p-3 flex items-center justify-between gap-2">
-                                <p className="text-sm font-medium text-neutral-900 truncate">{item.name}</p>
-                                {q === 0 ? (
-                                    <button
-                                        onClick={() => onAdd(item)}
-                                        className="shrink-0 bg-neutral-900 hover:bg-neutral-700 text-white text-xs px-3 py-1.5 rounded-lg transition cursor-pointer"
-                                    >
-                                        Add
-                                    </button>
-                                ) : (
-                                    <div className="flex items-center gap-2 shrink-0">
-                                        <button onClick={() => onRemove(item._id)}
-                                            className="w-7 h-7 rounded-lg bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-700 font-bold transition cursor-pointer">
-                                            −
-                                        </button>
-                                        <span className="text-sm font-semibold w-4 text-center">{q}</span>
-                                        <button onClick={() => onAdd(item)}
-                                            className="w-7 h-7 rounded-lg bg-orange-500 hover:bg-orange-400 flex items-center justify-center text-white font-bold transition cursor-pointer">
-                                            +
-                                        </button>
+                                    {q > 0 && (
+                                        <span className="absolute bottom-2 right-2 bg-orange-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow">
+                                            {q}
+                                        </span>
+                                    )}
+                                </div>
+                                {/* Info + controls */}
+                                <div className="p-3">
+                                    <span className="inline-block bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full mb-2">
+                                        {item.category}
+                                    </span>
+                                    <div className="flex items-center justify-between gap-2">
+                                        <p className="text-sm font-medium text-neutral-900 truncate">{item.name}</p>
+                                        {q === 0 ? (
+                                            <button
+                                                onClick={() => onAdd(item)}
+                                                className="shrink-0 bg-neutral-900 hover:bg-neutral-700 text-white text-xs px-3 py-1.5 rounded-lg transition cursor-pointer"
+                                            >
+                                                Add
+                                            </button>
+                                        ) : (
+                                            <div className="flex items-center gap-2 shrink-0">
+                                                <button onClick={() => onRemove(item._id)}
+                                                    className="w-7 h-7 rounded-lg bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-700 font-bold transition cursor-pointer">
+                                                    −
+                                                </button>
+                                                <span className="text-sm font-semibold w-4 text-center">{q}</span>
+                                                <button onClick={() => onAdd(item)}
+                                                    className="w-7 h-7 rounded-lg bg-orange-500 hover:bg-orange-400 flex items-center justify-center text-white font-bold transition cursor-pointer">
+                                                    +
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
-                                )}
+                                </div>
                             </div>
-                        </div>
-                    )
-                })}
-            </div>
+                        )
+                    })}
+                </div>
+            )}
 
             {/* Order summary bar */}
             {totalItems > 0 && (
@@ -263,32 +211,58 @@ const StepFood = ({ cart, onAdd, onRemove, onNext, onBack }) => {
                     </button>
                 </div>
             )}
-
-            <button onClick={onBack}
-                className="text-sm text-neutral-500 hover:text-neutral-800 transition flex items-center gap-1.5 cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="m15 18-6-6 6-6"/>
-                </svg>
-                Back to Table Selection
-            </button>
         </div>
     )
 }
 
-// ── Step 3 — Payment ─────────────────────────────────────────────────────────
+// ── Step 2 — Payment ─────────────────────────────────────────────────────────
 const StepPayment = ({ table, cart, onBack, onPlace }) => {
     const [method, setMethod] = React.useState('cash')
     const [note, setNote] = React.useState('')
     const [placed, setPlaced] = React.useState(false)
+    const [loading, setLoading] = React.useState(false)
+    const { user, token } = React.useContext(AppContext)
 
     const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0)
     const tax = Math.round(subtotal * 0.13)
     const total = subtotal + tax
 
-    const handlePlace = () => {
-        onPlace({ table, cart, method, note, total })
-        setPlaced(true)
+    const handlePlace = async () => {
+        setLoading(true)
+        try {
+            const orderData = {
+                tableNumber: table,
+                items: cart.map(item => ({
+                    menuItem: item._id,
+                    quantity: item.qty,
+                    price: item.price
+                })),
+                paymentMethod: method,
+                specialInstructions: note
+            }
+
+            const headers = { 'Content-Type': 'application/json' }
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`
+            }
+
+            const res = await fetch(`${backendUrl}/api/orders`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(orderData)
+            })
+
+            if (res.ok) {
+                setPlaced(true)
+            } else {
+                alert('Failed to place order')
+            }
+        } catch (err) {
+            console.error(err)
+            alert('Error placing order')
+        } finally {
+            setLoading(false)
+        }
     }
 
     if (placed) {
@@ -423,13 +397,14 @@ const StepPayment = ({ table, cart, onBack, onPlace }) => {
 
                     <button
                         onClick={handlePlace}
-                        className="mt-5 w-full bg-orange-500 hover:bg-orange-400 text-white text-sm font-seVmibold py-3.5 rounded-xl transition cursor-pointer flex items-center justify-center gap-2"
+                        disabled={loading}
+                        className="mt-5 w-full bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold py-3.5 rounded-xl transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M20 6 9 17l-5-5"/>
                         </svg>
-                        Place Order
+                        {loading ? 'Placing...' : 'Place Order'}
                     </button>
                 </div>
             </div>
@@ -439,9 +414,60 @@ const StepPayment = ({ table, cart, onBack, onPlace }) => {
 
 // ── Main component ────────────────────────────────────────────────────────────
 const OrderForm = () => {
+    const [searchParams] = useSearchParams()
+    const navigate = useNavigate()
+    const { user } = React.useContext(AppContext)
     const [step, setStep] = React.useState(1)
     const [table, setTable] = React.useState(null)
     const [cart, setCart] = React.useState([])
+    const [menu, setMenu] = React.useState([])
+    const [loading, setLoading] = React.useState(true)
+    const [error, setError] = React.useState('')
+
+    // Redirect admins away if admin
+    React.useEffect(() => {
+        if (user && user.role === 'admin') {
+            navigate('/admindashboard')
+        }
+    }, [user, navigate])
+
+    // Verify token and fetch menu
+    React.useEffect(() => {
+        const init = async () => {
+            const token = searchParams.get('token')
+            if (!token) {
+                setError('No QR token found. Please scan a valid table QR code.')
+                setLoading(false)
+                return
+            }
+
+            try {
+                // Verify token
+                const verifyRes = await fetch(`${backendUrl}/api/qr/verify/${token}`)
+                if (!verifyRes.ok) {
+                    setError('Invalid or expired QR code.')
+                    setLoading(false)
+                    return
+                }
+                const verifyData = await verifyRes.json()
+                setTable(verifyData.tableNumber)
+
+                // Fetch menu from backend
+                const menuRes = await fetch(`${backendUrl}/api/menu`)
+                if (menuRes.ok) {
+                    const menuData = await menuRes.json()
+                    console.log('Fetched menu:', menuData) // Debug log
+                    setMenu(menuData)
+                }
+            } catch (err) {
+                console.error(err)
+                setError('Error loading data.')
+            } finally {
+                setLoading(false)
+            }
+        }
+        init()
+    }, [searchParams])
 
     const addToCart = (item) => {
         setCart(prev => {
@@ -458,9 +484,38 @@ const OrderForm = () => {
         )
     }
 
-    const handlePlace = (orderData) => {
-        console.log('Order placed:', orderData)
-        // TODO: POST to /api/orders
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-white flex items-center justify-center py-20">
+                <div className="text-center">
+                    <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-neutral-500">Loading...</p>
+                </div>
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-white flex items-center justify-center py-20">
+                <div className="text-center max-w-md px-4">
+                    <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                            fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                    </div>
+                    <h2 className="text-xl font-semibold text-neutral-900 mb-2">Oops!</h2>
+                    <p className="text-neutral-500 mb-6">{error}</p>
+                    <a href="/"
+                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 transition">
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -477,7 +532,7 @@ const OrderForm = () => {
                     <p className="text-orange-400 text-xs font-medium uppercase tracking-widest mb-2">Dine In</p>
                     <h1 className="text-3xl md:text-4xl font-semibold text-white">Place Your Order</h1>
                     <p className="text-sm text-neutral-300 mt-2 max-w-md">
-                        Select your table, pick your dishes, and pay — all in a few steps.
+                        Table <span className="font-semibold text-white">{table}</span> — Pick your dishes and pay.
                     </p>
                 </div>
             </div>
@@ -487,29 +542,20 @@ const OrderForm = () => {
                 <StepBar current={step} />
 
                 {step === 1 && (
-                    <StepTable
-                        selected={table}
-                        onSelect={setTable}
+                    <StepFood
+                        menu={menu}
+                        cart={cart}
+                        onAdd={addToCart}
+                        onRemove={removeFromCart}
                         onNext={() => setStep(2)}
                     />
                 )}
 
                 {step === 2 && (
-                    <StepFood
-                        cart={cart}
-                        onAdd={addToCart}
-                        onRemove={removeFromCart}
-                        onNext={() => setStep(3)}
-                        onBack={() => setStep(1)}
-                    />
-                )}
-
-                {step === 3 && (
                     <StepPayment
                         table={table}
                         cart={cart}
-                        onBack={() => setStep(2)}
-                        onPlace={handlePlace}
+                        onBack={() => setStep(1)}
                     />
                 )}
             </div>

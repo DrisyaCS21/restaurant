@@ -45,8 +45,6 @@ function ManageTable() {
       return;
     }
 
-    const url = `${window.location.origin}/order?table=${encodeURIComponent(String(n))}`;
-
     setGenerating(true);
     try {
       const res = await fetch(`${backendUrl}/api/qr`, {
@@ -55,7 +53,7 @@ function ManageTable() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token || ""}`,
         },
-        body: JSON.stringify({ data: url, tableNumber: n, url }),
+        body: JSON.stringify({ tableNumber: n }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -66,7 +64,8 @@ function ManageTable() {
 
       setItems((prev) => {
         const next = prev.filter((x) => x.tableNumber !== n);
-        next.unshift(data);
+        // Add _id if not present to use as key instead of tableNumber for safety
+        next.unshift({ ...data, _id: data._id || `table-${n}` });
         return next;
       });
 
@@ -156,7 +155,7 @@ function ManageTable() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {items.map((item) => (
-              <div key={item.tableNumber} className="bg-white rounded-2xl border border-gray-200 p-5">
+              <div key={item._id || item.tableNumber} className="bg-white rounded-2xl border border-gray-200 p-5">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-sm font-semibold text-gray-900">Table {item.tableNumber}</p>

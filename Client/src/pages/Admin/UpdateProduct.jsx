@@ -297,56 +297,69 @@ function UpdateProduct() {
           No products found
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-          <div className="divide-y divide-gray-100">
-            {products.map((product) => (
-              <div key={product._id} className="p-5 flex items-center justify-between gap-4">
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 truncate">{product.name}</p>
-                  <p className="text-xs text-gray-500">
-                    {product.category} • {product.available === false ? "Unavailable" : "Available"} • {product.price}
-                  </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {products.map((product) => {
+            const imageUrl = product.image && !product.image.startsWith('http') 
+              ? `${backendUrl}/uploads/${product.image}` 
+              : product.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
+            
+            return (
+              <div key={product._id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+                <div className="relative h-32 overflow-hidden">
+                  <img src={imageUrl} alt={product.name} className="absolute inset-0 w-full h-full object-cover" />
+                  <span className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-semibold ${
+                    product.available === false ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
+                  }`}>
+                    {product.available === false ? "Unavailable" : "Available"}
+                  </span>
                 </div>
-                <div className="shrink-0 flex items-center gap-2">
-                  {product.available === false ? (
+                <div className="p-4">
+                  <h3 className="text-sm font-semibold text-gray-900 truncate">{product.name}</h3>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {product.category} • Rs {product.price}
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {product.available === false ? (
+                      <button
+                        type="button"
+                        onClick={() => setAvailability(product._id, true)}
+                        disabled={togglingId === product._id || deletingId === product._id}
+                        className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-lg text-xs font-medium transition disabled:opacity-60 disabled:cursor-not-allowed"
+                      >
+                        {togglingId === product._id ? "Working..." : "Activate"}
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setAvailability(product._id, false)}
+                        disabled={togglingId === product._id || deletingId === product._id}
+                        className="flex-1 bg-amber-500 hover:bg-amber-400 text-white px-3 py-2 rounded-lg text-xs font-medium transition disabled:opacity-60 disabled:cursor-not-allowed"
+                      >
+                        {togglingId === product._id ? "Working..." : "Deactivate"}
+                      </button>
+                    )}
                     <button
                       type="button"
-                      onClick={() => setAvailability(product._id, true)}
-                      disabled={togglingId === product._id || deletingId === product._id}
-                      className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-medium transition disabled:opacity-60 disabled:cursor-not-allowed"
+                      onClick={() => startEdit(product)}
+                      disabled={deletingId === product._id}
+                      className="flex-1 bg-orange-500 hover:bg-orange-400 text-white px-3 py-2 rounded-lg text-xs font-medium transition disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                      {togglingId === product._id ? "Working..." : "Activate"}
+                      Update
                     </button>
-                  ) : (
                     <button
                       type="button"
-                      onClick={() => setAvailability(product._id, false)}
-                      disabled={togglingId === product._id || deletingId === product._id}
-                      className="bg-amber-500 hover:bg-amber-400 text-white px-4 py-2 rounded-xl text-sm font-medium transition disabled:opacity-60 disabled:cursor-not-allowed"
+                      onClick={() => deleteProduct(product._id)}
+                      disabled={deletingId === product._id || togglingId === product._id}
+                      className="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-medium transition disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                      {togglingId === product._id ? "Working..." : "Deactivate"}
+                      {deletingId === product._id ? "Deleting..." : "Delete"}
                     </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => startEdit(product)}
-                    disabled={deletingId === product._id}
-                    className="bg-orange-500 hover:bg-orange-400 text-white px-4 py-2 rounded-xl text-sm font-medium transition disabled:opacity-60 disabled:cursor-not-allowed"
-                  >
-                    Update
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => deleteProduct(product._id)}
-                    disabled={deletingId === product._id || togglingId === product._id}
-                    className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-xl text-sm font-medium transition disabled:opacity-60 disabled:cursor-not-allowed"
-                  >
-                    {deletingId === product._id ? "Deleting..." : "Delete"}
-                  </button>
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
+            )
+          })}
         </div>
       )}
     </div>
