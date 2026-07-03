@@ -1,8 +1,9 @@
 import express from "express";
-import { protect, adminOnly } from "../middleware/authMiddleware.js";
+import { protect, adminOnly, optionalAuth } from "../middleware/authMiddleware.js";
 import {
   createOrder,
   getOrders,
+  getMyOrders,
   updateOrderStatus,
   deleteOrder,
   getActiveOrderForTable,
@@ -12,7 +13,10 @@ import {
 const router = express.Router();
 
 // user can create order (no auth OR optional auth)
-router.post("/", createOrder);
+router.post("/", optionalAuth, createOrder);
+
+// authenticated user can view their own orders
+router.get("/my-orders", protect, getMyOrders);
 
 // public routes
 router.get("/table/:tableNumber/active", getActiveOrderForTable);

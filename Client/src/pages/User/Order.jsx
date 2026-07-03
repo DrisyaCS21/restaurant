@@ -22,25 +22,20 @@ const Order = () => {
 
             try {
                 const headers = {}
-                if (token) {
-                    headers['Authorization'] = `Bearer ${token}`
-                }
+                if (token) headers['Authorization'] = `Bearer ${token}`
 
-                const res = await fetch(`${backendUrl}/api/orders`, { headers })
+                const res = await fetch(`${backendUrl}/api/orders/my-orders`, { headers })
                 if (res.ok) {
-                    const allOrders = await res.json()
-                    // Filter orders for current user
-                    const userOrders = allOrders.filter(o => o.user === user._id)
-                    setOrders(userOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
+                    const userOrders = await res.json()
+                    setOrders(userOrders) // already sorted by backend
                     
-                    // If no order selected from navigation, select the latest active one
                     if (!selectedOrder && userOrders.length > 0) {
-                        const activeOrder = userOrders.find(o => o.status !== 'paid')
-                        setSelectedOrder(activeOrder || userOrders[0])
+                        const active = userOrders.find(o => o.status !== 'paid')
+                        setSelectedOrder(active || userOrders[0])
                     }
                 }
             } catch (err) {
-                console.error(err)
+                console.error('Error fetching orders:', err)
             } finally {
                 setLoading(false)
             }
@@ -188,32 +183,74 @@ const Order = () => {
             </div>
 
             {/* Content */}
-            <div className="max-w-4xl mx-auto px-4 md:px-8 py-12">
-                {/* Success Message */}
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 mb-8">
-                    <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center shrink-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M20 6 9 17l-5-5"/>
-                            </svg>
-                        </div>
-                        <div className="flex-1">
-                            <h2 className="text-lg font-semibold text-green-900 mb-1">Order Placed Successfully!</h2>
-                            <p className="text-sm text-green-700">
-                                Your order has been received and is being processed. 
-                                {order.tableNumber !== 'Online Order' && ` Table: ${order.tableNumber}`}
-                            </p>
-                            <p className="text-xs text-green-600 mt-2">
-                                Order ID: <span className="font-mono">{order._id}</span>
-                            </p>
+            <div className="max-w-6xl mx-auto px-4 md:px-8 py-12">
+                {/* Success Message - Only show if coming from order placement */}
+                {location.state?.order && (
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 mb-8">
+                        <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                            </div>
+                            <div className="flex-1">
+                                <h2 className="text-lg font-semibold text-green-900 mb-1">Order Placed Successfully!</h2>
+                                <p className="text-sm text-green-700">
+                                    Your order has been received and is being processed. 
+                                    {order.tableNumber !== 'Online Order' && ` Table: ${order.tableNumber}`}
+                                </p>
+                                <p className="text-xs text-green-600 mt-2">
+                                    Order ID: <span className="font-mono">{order._id}</span>
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Left - Order Details */}
-                    <div className="lg:col-span-2 space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    {/* Left - Order List */}
+                    <div className="lg:col-span-1 space-y-4">
+                        <h2 className="text-lg font-semibold text-neutral-900 mb-3">All Orders ({orders.length})</h2>
+                        <div className="space-y-3">
+                            {orders.map((o) => {
+                                const oStatusInfo = getStatusInfo(o.status)
+                                const isSelected = order._id === o._id
+                                return (
+                                    <button
+                                        key={o._id}
+                                        onClick={() => setSelectedOrder(o)}
+                                        className={`w-full text-left p-4 rounded-xl border-2 transition ${
+                                            isSelected 
+                                                ? 'border-orange-500 bg-orange-50' 
+                                                : 'border-neutral-200 bg-white hover:border-neutral-300'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <div className={`w-2 h-2 rounded-full ${oStatusInfo.bg}`} />
+                                            <span className={`text-xs font-medium ${oStatusInfo.color}`}>
+                                                {oStatusInfo.label}
+                                            </span>
+                                        </div>
+                                        <p className="text-sm font-semibold text-neutral-900 mb-1">
+                                            Rs {o.totalAmount.toLocaleString()}
+                                        </p>
+                                        <p className="text-xs text-neutral-500">
+                                            {new Date(o.createdAt).toLocaleDateString()} • {o.items.length} items
+                                        </p>
+                                        {o.tableNumber !== 'Online Order' && (
+                                            <p className="text-xs text-neutral-400 mt-1">
+                                                Table {o.tableNumber}
+                                            </p>
+                                        )}
+                                    </button>
+                                )
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Right - Selected Order Details */}
+                    <div className="lg:col-span-3 space-y-6">
                         {/* Status Card */}
                         <div className="bg-white rounded-2xl border border-neutral-200 p-6">
                             <div className="flex items-center gap-3 mb-4">
@@ -286,11 +323,9 @@ const Order = () => {
                                 Add More Items to Order
                             </button>
                         )}
-                    </div>
 
-                    {/* Right - Summary */}
-                    <div className="lg:col-span-1">
-                        <div className="bg-neutral-950 rounded-2xl p-6 text-white sticky top-6">
+                        {/* Order Summary Card */}
+                        <div className="bg-neutral-950 rounded-2xl p-6 text-white">
                             <h3 className="text-base font-semibold mb-4">Order Summary</h3>
                             
                             <div className="space-y-3 mb-5 pb-5 border-b border-neutral-800">
@@ -321,6 +356,7 @@ const Order = () => {
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
