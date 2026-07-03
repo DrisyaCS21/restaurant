@@ -93,7 +93,10 @@ export const addItemsToOrder = async (req, res) => {
     order.totalAmount += additionalAmount;
 
     // Save the updated order
-    const updatedOrder = await order.save();
+    await order.save();
+    
+    // Fetch the updated order to return
+    const updatedOrder = await Order.findById(orderId);
     res.json(updatedOrder);
   } catch (err) {
     res.status(500).json({ message: err.message });

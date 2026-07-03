@@ -44,9 +44,11 @@ const PAYMENT_METHODS = [
     },
 ]
 
-// ── Step indicator ────────────────────────────────────────────────────────────
-const StepBar = ({ current }) => {
-    const steps = ['Choose Food', 'Payment']
+// ── Step indicator ───────────────────────────────────────────────────────────
+const StepBar = ({ current, hasActiveOrder }) => {
+    const steps = hasActiveOrder 
+        ? ['Add More Food', 'Add to Order']
+        : ['Choose food', 'Payment']
     return (
         <div className="flex items-center justify-center gap-0 mb-10">
             {steps.map((label, i) => {
@@ -81,8 +83,64 @@ const StepBar = ({ current }) => {
     )
 }
 
+// ── Active Order Display ───────────────────────────────────────────────────
+const ActiveOrderStatus = ({ order }) => {
+    const getStatusMessage = () => {
+        switch (order.status) {
+            case 'processing':
+                return 'Your order is being processed'
+            case 'preparing':
+                return 'Your order is being prepared'
+            case 'served':
+                return 'Your order has been served'
+            default:
+                return 'Your order status'
+        }
+    }
+
+    const getStatusColor = () => {
+        switch (order.status) {
+            case 'processing':
+                return 'text-yellow-600'
+            case 'preparing':
+                return 'text-blue-600'
+            case 'served':
+                return 'text-green-600'
+            default:
+                return 'text-gray-600'
+        }
+    }
+
+    return (
+        <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-8">
+            <div className="flex items-center gap-3 mb-4">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${getStatusColor().replace('text-', 'bg-').replace('600', '100')}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                        fill="none" stroke={getStatusColor().replace('text-', '#').replace('600', '')} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 6 9 17l-5-5"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 className="text-base font-semibold text-neutral-900">{getStatusMessage()}</h3>
+                    <p className="text-xs text-neutral-500">Total: Rs {order.totalAmount}</p>
+                </div>
+            </div>
+
+            <div className="space-y-2">
+                <p className="text-sm font-medium text-neutral-700">Current Items:</p>
+                {order.items.map((item, i) => (
+                    <div key={i} className="flex items-center justify-between text-sm">
+                        <span className="text-neutral-600">{item.quantity}x {item.name}</span>
+                        <span className="font-medium text-neutral-900">Rs {item.price * item.quantity}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    )
+}
+
 // ── Step 1 — Food selection ───────────────────────────────────────────────────
-const StepFood = ({ menu, cart, onAdd, onRemove, onNext }) => {
+const StepFood = ({ menu, cart, onAdd, onRemove, onNext, hasActiveOrder }) => {
     const [search, setSearch] = React.useState('')
     const [activeCategory, setActiveCategory] = React.useState('All')
 
@@ -100,8 +158,12 @@ const StepFood = ({ menu, cart, onAdd, onRemove, onNext }) => {
 
     return (
         <div>
-            <h2 className="text-2xl font-semibold text-neutral-900 mb-1">Choose your food</h2>
-            <p className="text-neutral-500 text-sm mb-6">Add items to your order</p>
+            <h2 className="text-2xl font-semibold text-neutral-900 mb-1">
+                Choose your food
+            </h2>
+            <p className="text-neutral-500 text-sm mb-6">
+                Add items to your order
+            </p>
 
             {/* Search */}
             <div className="flex items-center border border-gray-200 bg-white pl-4 gap-2 h-11 rounded-xl overflow-hidden mb-4">
@@ -126,7 +188,7 @@ const StepFood = ({ menu, cart, onAdd, onRemove, onNext }) => {
                         className={'shrink-0 px-4 py-1.5 rounded-full text-xs font-medium transition-all border ' +
                             (activeCategory === cat
                                 ? 'bg-neutral-900 text-white border-neutral-900'
-                                : 'bg-white text-neutral-500 border-neutral-200 hover:border-neutral-400')}
+                                : 'bg-white text-neutral-500 border-neutral-200 hover:border-neutral-300')}
                     >
                         {cat}
                     </button>
@@ -184,18 +246,20 @@ const StepFood = ({ menu, cart, onAdd, onRemove, onNext }) => {
                                                 <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
                                                 <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
                                             </svg>
-                                            Add to Cart
+                                            {isAddingMore ? 'Add' : 'Add to Cart'}
                                         </button>
                                     ) : (
                                         <div className="mt-4 flex items-center justify-between gap-2">
                                             <div className="flex items-center gap-2">
                                                 <button onClick={() => onRemove(item._id)}
-                                                    className="w-8 h-8 rounded-md bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-700 font-bold transition cursor-pointer"
-                                                >−</button>
+                                                    className="w-8 h-8 rounded-md bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-700 font-bold transition cursor-pointer">
+                                                    −
+                                                </button>
                                                 <span className="text-sm font-semibold w-5 text-center">{q}</span>
                                                 <button onClick={() => onAdd(item)}
-                                                    className="w-8 h-8 rounded-md bg-orange-500 hover:bg-orange-400 flex items-center justify-center text-white font-bold transition cursor-pointer"
-                                                >+</button>
+                                                    className="w-8 h-8 rounded-md bg-orange-500 hover:bg-orange-400 flex items-center justify-center text-white font-bold transition cursor-pointer">
+                                                    +
+                                                </button>
                                             </div>
                                         </div>
                                     )}
@@ -216,7 +280,7 @@ const StepFood = ({ menu, cart, onAdd, onRemove, onNext }) => {
                     <button onClick={onNext}
                         className="bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition cursor-pointer"
                     >
-                        Continue to Payment
+                        {hasActiveOrder ? 'Add to Order' : 'Continue'}
                     </button>
                 </div>
             )}
@@ -225,47 +289,72 @@ const StepFood = ({ menu, cart, onAdd, onRemove, onNext }) => {
 }
 
 // ── Step 2 — Payment ─────────────────────────────────────────────────────────
-const StepPayment = ({ table, cart, onBack, onPlace }) => {
+const StepPayment = ({ table, cart, onBack, onSuccess, activeOrder }) => {
     const [method, setMethod] = React.useState('cash')
     const [note, setNote] = React.useState('')
-    const [placed, setPlaced] = React.useState(false)
     const [loading, setLoading] = React.useState(false)
     const { user, token } = React.useContext(AppContext)
 
     const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0)
-    const tax = Math.round(subtotal * 0.13)
+    const tax = activeOrder ? 0 : Math.round(subtotal * 0.13) // If adding more items, no extra tax
     const total = subtotal + tax
 
     const handlePlace = async () => {
         setLoading(true)
         try {
-            const orderData = {
-                tableNumber: table,
-                items: cart.map(item => ({
-                    name: item.name,
-                    menuItem: item._id,
-                    quantity: item.qty,
-                    price: item.price
-                })),
-                paymentMethod: method,
-                specialInstructions: note
-            }
+            if (activeOrder) {
+                // Adding more items to existing order
+                const res = await fetch(`${backendUrl}/api/orders/${activeOrder._id}/add-items`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        items: cart.map(item => ({
+                            name: item.name,
+                            quantity: item.qty,
+                            price: item.price
+                        }))
+                    })
+                })
 
-            const headers = { 'Content-Type': 'application/json' }
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`
-            }
-
-            const res = await fetch(`${backendUrl}/api/orders`, {
-                method: 'POST',
-                headers,
-                body: JSON.stringify(orderData)
-            })
-
-            if (res.ok) {
-                setPlaced(true)
+                if (res.ok) {
+                    const updatedOrder = await res.json()
+                    onSuccess(updatedOrder)
+                } else {
+                    alert('Failed to add items to order')
+                }
             } else {
-                alert('Failed to place order')
+                // New order
+                const orderData = {
+                    tableNumber: table,
+                    items: cart.map(item => ({
+                        name: item.name,
+                        menuItem: item._id,
+                        quantity: item.qty,
+                        price: item.price
+                    })),
+                    paymentMethod: method,
+                    specialInstructions: note
+                }
+
+                const headers = { 'Content-Type': 'application/json' }
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`
+                }
+
+                const res = await fetch(`${backendUrl}/api/orders`, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify(orderData)
+                })
+
+                if (res.ok) {
+                    const newOrder = await res.json()
+                    onSuccess(newOrder)
+                } else {
+                    alert('Failed to place order')
+                }
             }
         } catch (err) {
             console.error(err)
@@ -275,105 +364,81 @@ const StepPayment = ({ table, cart, onBack, onPlace }) => {
         }
     }
 
-    if (placed) {
-        return (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
-                        fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M20 6 9 17l-5-5"/>
-                    </svg>
-                </div>
-                <h3 className="text-2xl font-semibold text-neutral-900 mb-2">Order Placed!</h3>
-                <p className="text-neutral-500 text-sm max-w-xs">
-                    Your order for Table <span className="font-semibold text-neutral-900">{table}</span> has been
-                    sent to the kitchen. Total: <span className="font-semibold text-neutral-900">Rs {total.toLocaleString()}</span>
-                </p>
-                <div className="mt-8 flex gap-3">
-                    <a href="/menu"
-                        className="px-6 py-2.5 rounded-xl bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 transition">
-                        Back to Menu
-                    </a>
-                    <a href="/"
-                        className="px-6 py-2.5 rounded-xl border border-neutral-200 text-neutral-700 text-sm font-medium hover:bg-neutral-50 transition">
-                        Home
-                    </a>
-                </div>
-            </div>
-        )
-    }
-
     return (
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
 
-            {/* Left — payment method + note */}
-            <div className="lg:col-span-3 space-y-6">
-                <div>
-                    <h2 className="text-2xl font-semibold text-neutral-900 mb-1">Payment</h2>
-                    <p className="text-neutral-500 text-sm">Choose how you'd like to pay</p>
-                </div>
+            {/* Left — payment method + note (only for new orders) */}
+            {!activeOrder && (
+                <div className="lg:col-span-3 space-y-6">
+                    <div>
+                        <h2 className="text-2xl font-semibold text-neutral-900 mb-1">Payment</h2>
+                        <p className="text-neutral-500 text-sm">Choose how you'd like to pay</p>
+                    </div>
 
-                <div className="space-y-3">
-                    {PAYMENT_METHODS.map(pm => (
-                        <button
-                            key={pm.id}
-                            onClick={() => setMethod(pm.id)}
-                            className={'w-full flex items-center gap-4 px-5 py-4 rounded-2xl border-2 text-left transition-all ' +
-                                (method === pm.id
-                                    ? 'border-orange-500 bg-orange-50'
-                                    : 'border-neutral-200 bg-white hover:border-neutral-300')}
-                        >
-                            <div className={'w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ' +
-                                (method === pm.id ? 'bg-orange-500 text-white' : 'bg-neutral-100 text-neutral-500')}>
-                                {pm.icon}
-                            </div>
-                            <div className="flex-1">
-                                <p className={'text-sm font-semibold ' + (method === pm.id ? 'text-neutral-900' : 'text-neutral-700')}>
-                                    {pm.label}
-                                </p>
-                                <p className="text-xs text-neutral-400 mt-0.5">{pm.description}</p>
-                            </div>
-                            <div className={'w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ' +
-                                (method === pm.id ? 'border-orange-500' : 'border-neutral-300')}>
-                                {method === pm.id && <div className="w-2.5 h-2.5 rounded-full bg-orange-500" />}
-                            </div>
-                        </button>
-                    ))}
-                </div>
+                    <div className="space-y-3">
+                        {PAYMENT_METHODS.map(pm => (
+                            <button
+                                key={pm.id}
+                                onClick={() => setMethod(pm.id)}
+                                className={'w-full flex items-center gap-4 px-5 py-4 rounded-2xl border-2 text-left transition-all ' +
+                                    (method === pm.id
+                                        ? 'border-orange-500 bg-orange-50'
+                                        : 'border-neutral-200 bg-white hover:border-neutral-300')}
+                            >
+                                <div className={'w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ' +
+                                    (method === pm.id ? 'bg-orange-500 text-white' : 'bg-neutral-100 text-neutral-500')}>
+                                    {pm.icon}
+                                </div>
+                                <div className="flex-1">
+                                    <p className={'text-sm font-semibold ' + (method === pm.id ? 'text-neutral-900' : 'text-neutral-700')}>
+                                        {pm.label}
+                                    </p>
+                                    <p className="text-xs text-neutral-400 mt-0.5">{pm.description}</p>
+                                </div>
+                                <div className={'w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ' +
+                                    (method === pm.id ? 'border-orange-500' : 'border-neutral-300')}>
+                                    {method === pm.id && <div className="w-2.5 h-2.5 rounded-full bg-orange-500" />}
+                                </div>
+                            </button>
+                        ))}
+                    </div>
 
-                {/* Special note */}
-                <div>
-                    <label className="text-sm font-medium text-neutral-700 block mb-2">
-                        Special instructions <span className="text-neutral-400 font-normal">(optional)</span>
-                    </label>
-                    <textarea
-                        value={note}
-                        onChange={e => setNote(e.target.value)}
-                        rows={3}
-                        placeholder="e.g. No onions, extra spicy, allergy notes..."
-                        className="w-full border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-700 placeholder-neutral-400 outline-none focus:border-orange-400 resize-none transition"
-                    />
-                </div>
+                    {/* Special note */}
+                    <div>
+                        <label className="text-sm font-medium text-neutral-700 block mb-2">
+                            Special instructions <span className="text-neutral-400 font-normal">(optional)</span>
+                        </label>
+                        <textarea
+                            value={note}
+                            onChange={e => setNote(e.target.value)}
+                            rows={3}
+                            placeholder="e.g. No onions, extra spicy, allergy notes..."
+                            className="w-full border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-700 placeholder-neutral-400 outline-none focus:border-orange-400 resize-none transition"
+                        />
+                    </div>
 
-                <button onClick={onBack}
-                    className="text-sm text-neutral-500 hover:text-neutral-800 transition flex items-center gap-1.5 cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="m15 18-6-6 6-6"/>
-                    </svg>
-                    Back to Food Selection
-                </button>
-            </div>
+                    <button onClick={onBack}
+                        className="text-sm text-neutral-500 hover:text-neutral-800 transition flex items-center gap-1.5 cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="m15 18-6-6 6-6"/>
+                        </svg>
+                        Back to Food Selection
+                    </button>
+                </div>
+            )}
 
             {/* Right — order summary */}
-            <div className="lg:col-span-2">
+            <div className={activeOrder ? 'lg:col-span-5' : 'lg:col-span-2'}>
                 <div className="bg-neutral-950 rounded-2xl p-5 text-white sticky top-6">
                     <div className="flex items-center gap-2 mb-5">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                             fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M3 6h18M3 12h18M3 18h18"/>
                         </svg>
-                        <h3 className="text-sm font-semibold">Table {table}</h3>
+                        <h3 className="text-sm font-semibold">
+                            {activeOrder ? 'Adding More to Order' : `Table ${table}`}
+                        </h3>
                     </div>
 
                     <div className="space-y-3 mb-5">
@@ -395,12 +460,14 @@ const StepPayment = ({ table, cart, onBack, onPlace }) => {
                             <span>Subtotal</span>
                             <span>Rs {subtotal.toLocaleString()}</span>
                         </div>
-                        <div className="flex justify-between text-sm text-neutral-400">
-                            <span>VAT (13%)</span>
-                            <span>Rs {tax.toLocaleString()}</span>
-                        </div>
+                        {!activeOrder && (
+                            <div className="flex justify-between text-sm text-neutral-400">
+                                <span>VAT (13%)</span>
+                                <span>Rs {tax.toLocaleString()}</span>
+                            </div>
+                        )}
                         <div className="flex justify-between text-base font-semibold text-white pt-2 border-t border-neutral-800">
-                            <span>Total</span>
+                            <span>{activeOrder ? 'Additional Total' : 'Total'}</span>
                             <span>Rs {total.toLocaleString()}</span>
                         </div>
                     </div>
@@ -414,8 +481,17 @@ const StepPayment = ({ table, cart, onBack, onPlace }) => {
                             fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M20 6 9 17l-5-5"/>
                         </svg>
-                        {loading ? 'Placing...' : 'Place Order'}
+                        {loading ? 'Adding...' : (activeOrder ? 'Add to Order' : 'Place Order')}
                     </button>
+
+                    {activeOrder && (
+                        <button
+                            onClick={onBack}
+                            className="mt-2 w-full bg-neutral-800 hover:bg-neutral-700 text-white text-sm font-medium py-2.5 rounded-xl transition"
+                        >
+                            Back
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
@@ -433,6 +509,7 @@ const OrderForm = () => {
     const [menu, setMenu] = React.useState([])
     const [loading, setLoading] = React.useState(true)
     const [error, setError] = React.useState('')
+    const [activeOrder, setActiveOrder] = React.useState(null)
 
     // Redirect admins away if admin
     React.useEffect(() => {
@@ -461,6 +538,13 @@ const OrderForm = () => {
                 }
                 const verifyData = await verifyRes.json()
                 setTable(verifyData.tableNumber)
+
+                // Check for active order
+                const orderRes = await fetch(`${backendUrl}/api/orders/table/${verifyData.tableNumber}/active`)
+                if (orderRes.ok) {
+                    const orderData = await orderRes.json()
+                    setActiveOrder(orderData)
+                }
 
                 // Fetch menu from backend
                 const menuRes = await fetch(`${backendUrl}/api/menu`)
@@ -493,6 +577,8 @@ const OrderForm = () => {
             .filter(c => c.qty > 0)
         )
     }
+
+
 
     if (loading) {
         return (
@@ -540,17 +626,32 @@ const OrderForm = () => {
                 <div className="absolute inset-0 bg-black/65" />
                 <div className="relative z-10 h-full flex flex-col justify-center px-4 md:px-16 lg:px-24">
                     <p className="text-orange-400 text-xs font-medium uppercase tracking-widest mb-2">Dine In</p>
-                    <h1 className="text-3xl md:text-4xl font-semibold text-white">Place Your Order</h1>
+                    <h1 className="text-3xl md:text-4xl font-semibold text-white">
+                        {activeOrder ? 'Your Order' : 'Place Your Order'}
+                    </h1>
                     <p className="text-sm text-neutral-300 mt-2 max-w-md">
-                        Table <span className="font-semibold text-white">{table}</span> — Pick your dishes and pay.
+                        Table <span className="font-semibold text-white">{table}</span> — {
+                            activeOrder 
+                                ? 'Your order is being prepared' 
+                                : 'Pick your dishes and pay'
+                        }.
                     </p>
                 </div>
             </div>
 
             {/* Content */}
             <div className="max-w-4xl mx-auto px-4 md:px-8 py-12">
-                <StepBar current={step} />
+                {/* Always show active order status if it exists */}
+                {activeOrder && (
+                    <ActiveOrderStatus order={activeOrder} />
+                )}
 
+                {/* Show step indicator only when not viewing the active order or when actively adding items */}
+                {(!activeOrder || step === 2) && (
+                    <StepBar current={step} hasActiveOrder={!!activeOrder} />
+                )}
+
+                {/* Step 1: Food Selection */}
                 {step === 1 && (
                     <StepFood
                         menu={menu}
@@ -558,14 +659,22 @@ const OrderForm = () => {
                         onAdd={addToCart}
                         onRemove={removeFromCart}
                         onNext={() => setStep(2)}
+                        hasActiveOrder={!!activeOrder}
                     />
                 )}
 
+                {/* Step 2: Payment / Add to Order */}
                 {step === 2 && (
                     <StepPayment
                         table={table}
                         cart={cart}
                         onBack={() => setStep(1)}
+                        activeOrder={activeOrder}
+                        onSuccess={(order) => {
+                            setActiveOrder(order)
+                            setStep(1)
+                            setCart([])
+                        }}
                     />
                 )}
             </div>
