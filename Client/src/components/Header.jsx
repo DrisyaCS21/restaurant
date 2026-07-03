@@ -59,17 +59,29 @@ const Header = () => {
                         <div id="menu" className={`${mobileOpen ? 'max-md:w-full' : 'max-md:w-0'} max-md:fixed max-md:top-0 max-md:z-50 max-md:left-0 max-md:transition-all max-md:duration-300 max-md:overflow-hidden max-md:h-screen max-md:bg-black/50 max-md:backdrop-blur max-md:flex-col max-md:justify-center flex items-center gap-9 text-sm`}>
                             <Link to="/" onClick={() => setMobileOpen(false)} className="text-white hover:text-white/90">Home</Link>
                             <Link to="/menu" onClick={() => setMobileOpen(false)} className="text-white hover:text-white/90">Menu</Link>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setMobileOpen(false)
-                                    setCartOpen(true)
-                                }}
-                                className="text-white hover:text-white/90"
-                            >
-                                Cart
-                            </button>
-                            <a href="#order" onClick={() => setMobileOpen(false)} className="text-white hover:text-white/90">Order</a>
+                            {user?.role === 'admin' ? (
+                                <Link 
+                                    to="/admindashboard" 
+                                    onClick={() => setMobileOpen(false)} 
+                                    className="text-white hover:text-white/90"
+                                >
+                                    Admin Dashboard
+                                </Link>
+                            ) : (
+                                <>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setMobileOpen(false)
+                                            setCartOpen(true)
+                                        }}
+                                        className="text-white hover:text-white/90"
+                                    >
+                                        Cart
+                                    </button>
+                                    <a href="#order" onClick={() => setMobileOpen(false)} className="text-white hover:text-white/90">Order</a>
+                                </>
+                            )}
 
                             <button id="close-menu" onClick={() => setMobileOpen(false)} className="md:hidden bg-neutral-900 hover:bg-neutral-800 text-white p-2 rounded-md aspect-square font-medium transition z-50">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
