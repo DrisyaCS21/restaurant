@@ -105,8 +105,7 @@ const StepFood = ({ menu, cart, onAdd, onRemove, onNext }) => {
 
             {/* Search */}
             <div className="flex items-center border border-gray-200 bg-white pl-4 gap-2 h-11 rounded-xl overflow-hidden mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                    fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
                 </svg>
                 <input
@@ -136,61 +135,70 @@ const StepFood = ({ menu, cart, onAdd, onRemove, onNext }) => {
 
             {/* Grid */}
             {visible.length === 0 ? (
-                <div className="bg-white rounded-2xl border border-neutral-100 p-12 text-center">
+                <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center">
                     <p className="text-neutral-500">No menu items available yet.</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                     {visible.map(item => {
-                        const q = qty(item._id)
+                        const q = qty(item._id);
                         // Fix image URL - if it's a relative path, prepend backend URL
                         const imageUrl = item.image && !item.image.startsWith('http') 
                             ? `${backendUrl}/uploads/${item.image}` 
-                            : item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600'
+                            : item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
                         return (
-                            <div key={item._id} className={'rounded-2xl border overflow-hidden transition-all ' +
-                                (q > 0 ? 'border-orange-300 shadow-sm shadow-orange-100' : 'border-neutral-100')}>
+                            <div key={item._id} className="group rounded-2xl overflow-hidden border border-neutral-100 shadow-sm hover:shadow-md transition-shadow flex flex-col">
                                 {/* Image */}
-                                <div className="relative h-40 overflow-hidden">
-                                    <img src={imageUrl} alt={item.name}
-                                        className="absolute inset-0 w-full h-full object-cover" />
-                                    <span className="absolute top-2 right-2 bg-white text-neutral-900 text-xs font-semibold px-2.5 py-1 rounded-full shadow">
-                                        Rs {item.price}
+                                <div className="relative overflow-hidden h-48">
+                                    <img
+                                        src={imageUrl}
+                                        alt={item.name}
+                                        className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                                    />
+                                    {/* Category badge */}
+                                    <span className="absolute top-3 left-3 bg-black/60 backdrop-blur text-white text-xs px-2.5 py-1 rounded-full">
+                                        {item.category}
                                     </span>
+                                    {/* Price tag */}
+                                    <span className="absolute top-3 right-3 bg-white text-neutral-900 text-xs font-semibold px-2.5 py-1 rounded-full shadow">
+                                        Rs{item.price}
+                                    </span>
+                                    {/* Quantity badge */}
                                     {q > 0 && (
-                                        <span className="absolute bottom-2 right-2 bg-orange-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow">
+                                        <span className="absolute bottom-3 right-3 bg-orange-500 text-white text-xs font-bold w-7 h-7 rounded-full flex items-center justify-center shadow-lg">
                                             {q}
                                         </span>
                                     )}
                                 </div>
-                                {/* Info + controls */}
-                                <div className="p-3">
-                                    <span className="inline-block bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full mb-2">
-                                        {item.category}
-                                    </span>
-                                    <div className="flex items-center justify-between gap-2">
-                                        <p className="text-sm font-medium text-neutral-900 truncate">{item.name}</p>
-                                        {q === 0 ? (
-                                            <button
-                                                onClick={() => onAdd(item)}
-                                                className="shrink-0 bg-neutral-900 hover:bg-neutral-700 text-white text-xs px-3 py-1.5 rounded-lg transition cursor-pointer"
-                                            >
-                                                Add
-                                            </button>
-                                        ) : (
-                                            <div className="flex items-center gap-2 shrink-0">
+
+                                {/* Content */}
+                                <div className="flex flex-col flex-1 p-4">
+                                    <h3 className="text-neutral-900 font-semibold text-base">{item.name}</h3>
+                                    
+                                    {q === 0 ? (
+                                        <button
+                                            onClick={() => onAdd(item)}
+                                            className="mt-4 w-full bg-orange-950 hover:bg-orange-800 text-white text-sm py-2 rounded-lg transition cursor-pointer flex items-center justify-center gap-2"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
+                                                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                                            </svg>
+                                            Add to Cart
+                                        </button>
+                                    ) : (
+                                        <div className="mt-4 flex items-center justify-between gap-2">
+                                            <div className="flex items-center gap-2">
                                                 <button onClick={() => onRemove(item._id)}
-                                                    className="w-7 h-7 rounded-lg bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-700 font-bold transition cursor-pointer">
-                                                    −
-                                                </button>
-                                                <span className="text-sm font-semibold w-4 text-center">{q}</span>
+                                                    className="w-8 h-8 rounded-md bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-700 font-bold transition cursor-pointer"
+                                                >−</button>
+                                                <span className="text-sm font-semibold w-5 text-center">{q}</span>
                                                 <button onClick={() => onAdd(item)}
-                                                    className="w-7 h-7 rounded-lg bg-orange-500 hover:bg-orange-400 flex items-center justify-center text-white font-bold transition cursor-pointer">
-                                                    +
-                                                </button>
+                                                    className="w-8 h-8 rounded-md bg-orange-500 hover:bg-orange-400 flex items-center justify-center text-white font-bold transition cursor-pointer"
+                                                >+</button>
                                             </div>
-                                        )}
-                                    </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         )
@@ -206,7 +214,8 @@ const StepFood = ({ menu, cart, onAdd, onRemove, onNext }) => {
                         <p className="text-base font-semibold mt-0.5">Rs {subtotal.toLocaleString()}</p>
                     </div>
                     <button onClick={onNext}
-                        className="bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition cursor-pointer">
+                        className="bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition cursor-pointer"
+                    >
                         Continue to Payment
                     </button>
                 </div>
@@ -233,6 +242,7 @@ const StepPayment = ({ table, cart, onBack, onPlace }) => {
             const orderData = {
                 tableNumber: table,
                 items: cart.map(item => ({
+                    name: item.name,
                     menuItem: item._id,
                     quantity: item.qty,
                     price: item.price

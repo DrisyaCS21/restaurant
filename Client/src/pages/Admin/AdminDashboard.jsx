@@ -6,6 +6,9 @@ import {
     ResponsiveContainer, BarChart, Bar, Legend
 } from 'recharts'
 import ManageTable from './ManageTable.jsx'
+import UpdateProduct from './UpdateProduct.jsx'
+import AddProduct from './AddProduct.jsx'
+import OrderPage from './OrderPage.jsx'
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 const monthlyRevenue = [
@@ -192,36 +195,9 @@ const Revenue = () => (
     </div>
 )
 
-// ── Placeholder pages ─────────────────────────────────────────────────────────
-const OrderHistory = () => (
-    <div>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-1">Order History</h2>
-        <p className="text-gray-500 text-sm">View and manage all customer orders.</p>
-        <div className="mt-6 bg-white rounded-2xl border border-gray-200 p-8 text-center text-gray-400">
-            Orders will appear here
-        </div>
-    </div>
-)
 
-const AddProduct = () => (
-    <div>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-1">Add Product</h2>
-        <p className="text-gray-500 text-sm">Add a new item to the menu.</p>
-        <div className="mt-6 bg-white rounded-2xl border border-gray-200 p-8 text-center text-gray-400">
-            Add product form will appear here
-        </div>
-    </div>
-)
 
-const UpdateProduct = () => (
-    <div>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-1">Update Product</h2>
-        <p className="text-gray-500 text-sm">Edit or remove existing menu items.</p>
-        <div className="mt-6 bg-white rounded-2xl border border-gray-200 p-8 text-center text-gray-400">
-            Product list will appear here
-        </div>
-    </div>
-)
+
 
 // ── Nav items ─────────────────────────────────────────────────────────────────
 const navItems = [
@@ -375,7 +351,7 @@ const AdminDashboard = () => {
                 <Routes>
                     <Route index element={<Navigate to="revenue" replace />} />
                     <Route path="revenue" element={<Revenue />} />
-                    <Route path="orders" element={<OrderHistory />} />
+                    <Route path="orders" element={<OrderPage />} />
                     <Route path="manage-tables" element={<ManageTable />} />
                     <Route path="add-product" element={<AddProduct />} />
                     <Route path="update-product" element={<UpdateProduct />} />
