@@ -67,7 +67,7 @@ export const getActiveOrderForTable = async (req, res) => {
 // add items to an existing order
 export const addItemsToOrder = async (req, res) => {
   try {
-    const { orderId } = req.params;
+    const { id: orderId } = req.params;
     const { items } = req.body;
 
     const order = await Order.findById(orderId);

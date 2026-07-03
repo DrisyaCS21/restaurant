@@ -3,10 +3,10 @@ import { AppContext } from '../context/AppContext'
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL
 
-const Auth = ({ onSuccess = () => {} }) => {
+const Auth = ({ onSuccess = () => {}, defaultState = "login" }) => {
     const { login } = React.useContext(AppContext)
 
-    const [state, setState] = React.useState("login")
+    const [state, setState] = React.useState(defaultState)
     const [loading, setLoading] = React.useState(false)
     const [error, setError] = React.useState('')
 

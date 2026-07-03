@@ -1,6 +1,7 @@
 import React from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom'
 import { AppContext } from '../../context/AppContext'
+import Auth from '../../components/Auth'
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:1000"
 
@@ -246,7 +247,7 @@ const StepFood = ({ menu, cart, onAdd, onRemove, onNext, hasActiveOrder }) => {
                                                 <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
                                                 <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
                                             </svg>
-                                            {isAddingMore ? 'Add' : 'Add to Cart'}
+                                            {hasActiveOrder ? 'Add' : 'Add to Cart'}
                                         </button>
                                     ) : (
                                         <div className="mt-4 flex items-center justify-between gap-2">
@@ -292,6 +293,7 @@ const StepFood = ({ menu, cart, onAdd, onRemove, onNext, hasActiveOrder }) => {
 const StepPayment = ({ table, cart, onBack, onSuccess, activeOrder }) => {
     const [method, setMethod] = React.useState('cash')
     const [note, setNote] = React.useState('')
+    const [tableNumber, setTableNumber] = React.useState(table || '')
     const [loading, setLoading] = React.useState(false)
     const { user, token } = React.useContext(AppContext)
 
@@ -327,7 +329,7 @@ const StepPayment = ({ table, cart, onBack, onSuccess, activeOrder }) => {
             } else {
                 // New order
                 const orderData = {
-                    tableNumber: table,
+                    tableNumber: tableNumber,
                     items: cart.map(item => ({
                         name: item.name,
                         menuItem: item._id,
@@ -370,6 +372,22 @@ const StepPayment = ({ table, cart, onBack, onSuccess, activeOrder }) => {
             {/* Left — payment method + note (only for new orders) */}
             {!activeOrder && (
                 <div className="lg:col-span-3 space-y-6">
+                    {!table && (
+                        <div className="bg-white rounded-2xl border border-neutral-100 p-6">
+                            <label className="text-sm font-semibold text-neutral-800 block mb-2">
+                                Table Number <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                value={tableNumber}
+                                onChange={e => setTableNumber(e.target.value)}
+                                placeholder="Enter your table number (e.g. 5)"
+                                className="w-full border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-700 placeholder-neutral-400 outline-none focus:border-orange-500 transition"
+                                required
+                            />
+                        </div>
+                    )}
+
                     <div>
                         <h2 className="text-2xl font-semibold text-neutral-900 mb-1">Payment</h2>
                         <p className="text-neutral-500 text-sm">Choose how you'd like to pay</p>
@@ -474,7 +492,7 @@ const StepPayment = ({ table, cart, onBack, onSuccess, activeOrder }) => {
 
                     <button
                         onClick={handlePlace}
-                        disabled={loading}
+                        disabled={loading || (!table && !tableNumber.trim())}
                         className="mt-5 w-full bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold py-3.5 rounded-xl transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -502,10 +520,11 @@ const StepPayment = ({ table, cart, onBack, onSuccess, activeOrder }) => {
 const OrderForm = () => {
     const [searchParams] = useSearchParams()
     const navigate = useNavigate()
+    const location = useLocation()
     const { user } = React.useContext(AppContext)
     const [step, setStep] = React.useState(1)
     const [table, setTable] = React.useState(null)
-    const [cart, setCart] = React.useState([])
+    const [cart, setCart] = React.useState(location.state?.cart || [])
     const [menu, setMenu] = React.useState([])
     const [loading, setLoading] = React.useState(true)
     const [error, setError] = React.useState('')
@@ -523,6 +542,22 @@ const OrderForm = () => {
         const init = async () => {
             const token = searchParams.get('token')
             if (!token) {
+                if (user) {
+                    // Fetch menu from backend
+                    try {
+                        const menuRes = await fetch(`${backendUrl}/api/menu`)
+                        if (menuRes.ok) {
+                            const menuData = await menuRes.json()
+                            setMenu(menuData)
+                        }
+                    } catch (err) {
+                        console.error(err)
+                        setError('Error loading menu.')
+                    } finally {
+                        setLoading(false)
+                    }
+                    return
+                }
                 setError('No QR token found. Please scan a valid table QR code.')
                 setLoading(false)
                 return
@@ -561,7 +596,7 @@ const OrderForm = () => {
             }
         }
         init()
-    }, [searchParams])
+    }, [searchParams, user])
 
     const addToCart = (item) => {
         setCart(prev => {
@@ -665,17 +700,26 @@ const OrderForm = () => {
 
                 {/* Step 2: Payment / Add to Order */}
                 {step === 2 && (
-                    <StepPayment
-                        table={table}
-                        cart={cart}
-                        onBack={() => setStep(1)}
-                        activeOrder={activeOrder}
-                        onSuccess={(order) => {
-                            setActiveOrder(order)
-                            setStep(1)
-                            setCart([])
-                        }}
-                    />
+                    (!user && !searchParams.get('token')) ? (
+                        <div className="flex flex-col items-center justify-center py-10 bg-white rounded-2xl border border-neutral-100 p-8 shadow-sm max-w-md mx-auto">
+                            <p className="text-neutral-600 mb-6 text-sm text-center">
+                                Please login or create an account to complete your order.
+                            </p>
+                            <Auth onSuccess={() => setStep(2)} defaultState="login" />
+                        </div>
+                    ) : (
+                        <StepPayment
+                            table={table}
+                            cart={cart}
+                            onBack={() => setStep(1)}
+                            activeOrder={activeOrder}
+                            onSuccess={(order) => {
+                                setActiveOrder(order)
+                                setStep(1)
+                                setCart([])
+                            }}
+                        />
+                    )
                 )}
             </div>
         </div>
