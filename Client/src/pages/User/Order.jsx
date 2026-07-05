@@ -49,7 +49,7 @@ const Order = () => {
         
         fetchOrders()
 
-        // Poll for updates every 5 seconds
+
         const pollInterval = setInterval(fetchOrders, 5000)
         
         return () => clearInterval(pollInterval)

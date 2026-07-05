@@ -7,7 +7,8 @@ import {
   updateOrderStatus,
   deleteOrder,
   getActiveOrderForTable,
-  addItemsToOrder
+  addItemsToOrder,
+  getDashboardStats
 } from "../controllers/orderController.js";
 
 const router = express.Router();
@@ -24,6 +25,7 @@ router.put("/:id/add-items", addItemsToOrder);
 
 // admin only
 router.get("/", protect, adminOnly, getOrders);
+router.get("/stats", protect, adminOnly, getDashboardStats);
 router.put("/:id/status", protect, adminOnly, updateOrderStatus);
 router.delete("/:id", protect, adminOnly, deleteOrder);
 

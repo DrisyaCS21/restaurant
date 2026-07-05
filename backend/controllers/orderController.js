@@ -157,3 +157,54 @@ export const deleteOrder = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// Get dashboard stats (admin only)
+export const getDashboardStats = async (req, res) => {
+  try {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+    // Total revenue (all time)
+    const allOrders = await Order.find({ status: "paid" });
+    const totalRevenue = allOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+
+    // Total orders count
+    const totalOrders = allOrders.length;
+
+    // Average order value
+    const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
+    // This month's revenue
+    const monthOrders = await Order.find({
+      status: "paid",
+      createdAt: { $gte: startOfMonth }
+    });
+    const monthRevenue = monthOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+
+    // Last month's revenue (for comparison)
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
+    const lastMonthOrders = await Order.find({
+      status: "paid",
+      createdAt: { $gte: lastMonthStart, $lte: lastMonthEnd }
+    });
+    const lastMonthRevenue = lastMonthOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+
+    // Calculate percentage changes
+    const monthChange = lastMonthRevenue > 0 
+      ? ((monthRevenue - lastMonthRevenue) / lastMonthRevenue * 100).toFixed(1)
+      : 0;
+
+    res.json({
+      totalRevenue,
+      totalOrders,
+      avgOrderValue: Math.round(avgOrderValue),
+      monthRevenue,
+      monthChange: parseFloat(monthChange),
+      lastMonthRevenue
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

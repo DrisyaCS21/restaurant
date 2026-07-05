@@ -1,9 +1,32 @@
 import React from "react";
+
 const Home = () => {
     const [mobileOpen, setMobileOpen] = React.useState(false);
+    
     const IntersectionDot = ({ className = '' }) => (
         <span className={`absolute size-1 -translate-x-1/2 -translate-y-1/2 rounded-xs border border-neutral-800 bg-white z-30 ${className}`} />
     );
+
+    // Scroll animation hook
+    React.useEffect(() => {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        const animatedElements = document.querySelectorAll('.animate-on-scroll');
+        animatedElements.forEach(el => observer.observe(el));
+
+        return () => observer.disconnect();
+    }, []);
 
 
     return (
@@ -21,10 +44,32 @@ const Home = () => {
                         0% {
                             transform: translateX(0%);
                         }
-
                         100% {
                             transform: translateX(-50%);
                         }
+                    }
+
+                    /* Scroll animations */
+                    .animate-on-scroll {
+                        opacity: 0;
+                        transform: translateY(30px);
+                        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+                    }
+                    .animate-on-scroll.animate-in {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                    .animate-on-scroll.delay-1 {
+                        transition-delay: 0.1s;
+                    }
+                    .animate-on-scroll.delay-2 {
+                        transition-delay: 0.2s;
+                    }
+                    .animate-on-scroll.delay-3 {
+                        transition-delay: 0.3s;
+                    }
+                    .animate-on-scroll.delay-4 {
+                        transition-delay: 0.4s;
                     }
                 `}
             </style>
@@ -58,7 +103,7 @@ const Home = () => {
                         </p>
 
                         <div className='flex gap-5 mt-11'>
-                            <button className="flex items-center gap-1 bg-black hover:bg-neutral-700 px-5 text-sm py-2.5 text-white rounded-lg cursor-pointer">
+                            <button className="flex items-center gap-1 bg-orange-500 hover:bg-orange-700 px-5 text-sm py-2.5 text-white rounded-lg cursor-pointer">
                                 Order your meal
                             </button>
                         </div>
@@ -87,12 +132,12 @@ const Home = () => {
 {/* Dining space  */}
            <section className="py-16 bg-white">
     <div className="max-w-6xl mx-auto px-4 md:px-8">
-        <h2 className="text-3xl font-semibold text-neutral-900 text-center mb-3">Our Dining Spaces</h2>
-        <p className="text-neutral-500 text-center mb-10">Experience luxury dining in beautifully designed spaces</p>
+        <h2 className="text-3xl font-semibold text-neutral-900 text-center mb-3 animate-on-scroll">Our Dining Spaces</h2>
+        <p className="text-neutral-500 text-center mb-10 animate-on-scroll delay-1">Experience luxury dining in beautifully designed spaces</p>
 
         <div className="flex flex-col md:flex-row gap-6">
 
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col animate-on-scroll delay-1">
                 <div className="relative overflow-hidden rounded-xl">
                     <img
                         src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800"
@@ -107,7 +152,7 @@ const Home = () => {
                 <p className="text-neutral-500 text-sm mt-1">Elegant indoor dining with ambient lighting and comfortable seating</p>
             </div>
 
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col animate-on-scroll delay-2">
                 <div className="relative overflow-hidden rounded-xl">
                     <img
                         src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800"
@@ -122,7 +167,7 @@ const Home = () => {
                 <p className="text-neutral-500 text-sm mt-1">Beautiful outdoor seating surrounded by lush greenery</p>
             </div>
 
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col animate-on-scroll delay-3">
                 <div className="relative overflow-hidden rounded-xl">
                     <img
                         src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800"
@@ -146,13 +191,13 @@ const Home = () => {
         {/* Banquet */}
         <section id="banquet" className="py-16 bg-white">
             <div className="max-w-6xl mx-auto px-4 md:px-8">
-                <h2 className="text-3xl font-semibold text-neutral-900 text-center mb-3">Grand Banquet Hall</h2>
-                <p className="text-neutral-500 text-center mb-10">Perfect venue for weddings, parties, and corporate events</p>
+                <h2 className="text-3xl font-semibold text-neutral-900 text-center mb-3 animate-on-scroll">Grand Banquet Hall</h2>
+                <p className="text-neutral-500 text-center mb-10 animate-on-scroll delay-1">Perfect venue for weddings, parties, and corporate events</p>
 
                 <div className="flex flex-col lg:flex-row gap-6">
 
                     {/* Big featured image — left */}
-                    <div className="lg:w-1/2 relative overflow-hidden rounded-2xl group min-h-[400px]">
+                    <div className="lg:w-1/2 relative overflow-hidden rounded-2xl group min-h-[400px] animate-on-scroll delay-1">
                         <img
                             src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1200"
                             alt="Grand Banquet Hall"
@@ -171,7 +216,7 @@ const Home = () => {
                         </div>
                     </div>
 
-                    <div className="lg:w-1/2 grid grid-cols-2 grid-rows-2 gap-4 min-h-[400px]">
+                    <div className="lg:w-1/2 grid grid-cols-2 grid-rows-2 gap-4 min-h-[400px] animate-on-scroll delay-2">
 
                         <div className="relative overflow-hidden rounded-xl group">
                             <img
