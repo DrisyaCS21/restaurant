@@ -13,7 +13,7 @@ const app = express();
 // middleware
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://restaurant-six-sable.vercel.app",
+  "https://hoteldrisya.vercel.app",
 ];
 
 app.use(
