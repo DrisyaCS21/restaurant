@@ -10,7 +10,7 @@ const Footer = () => {
                     {/* Brand */}
                     <div className="w-full md:w-[45%] lg:w-[35%] flex flex-col items-center md:items-start text-center md:text-left">
                         <a href="/">
-                            <h2 className='text-2xl text-white font-bold'>Brother's Kitchen</h2>
+                            <h2 className='text-2xl text-white font-bold'>Mokshya's Kitchen</h2>
                         </a>
                         <div className='w-full max-w-52 h-px mt-8 bg-linear-to-r from-black via-white/25 to-black'></div>
                         <p className='text-sm text-white/60 mt-6 max-w-sm leading-relaxed'>
@@ -47,7 +47,7 @@ const Footer = () => {
                         <div className="flex flex-col gap-2 mt-6">
                             <p className='text-sm text-white/60'> Kathmandu, City</p>
                             <a href="tel:+1234567890" className='text-sm text-white/60 hover:text-white transition-colors'> 99999999</a>
-                            <a href="mailto:hello@brotherskitchen.com" className='text-sm text-white/60 hover:text-white transition-colors'>hello@brotherskitchen.com</a>
+                            <a href="mailto:hello@Mokshyaskitchen.com" className='text-sm text-white/60 hover:text-white transition-colors'>hello@Mokshyaskitchen.com</a>
                             <p className='text-sm text-white/60'>🕐 Mon–Sun: 10am – 11pm</p>
                         </div>
                     </div>
@@ -57,7 +57,7 @@ const Footer = () => {
                 <div className='w-full h-px mt-16 mb-4 bg-linear-to-r from-black via-white/25 to-black'></div>
 
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                    <p className='text-xs text-white/60'>© 2025 Brother's Kitchen. All rights reserved.</p>
+                    <p className='text-xs text-white/60'>© 2025 Mokshya's Kitchen. All rights reserved.</p>
                     <div className="flex items-center gap-6">
                         <a href='#' className='text-xs text-white/60 hover:text-white transition-colors'>Terms & Conditions</a>
                         <div className='w-px h-4 bg-white/20'></div>

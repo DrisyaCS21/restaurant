@@ -31,7 +31,8 @@ const Menu = () => {
         }
         fetchMenu()
     }, [])
-
+    console.log("Backend URL:", backendUrl);
+    
     const handleViewCart = () => {
         if (!user) {
             setAuthOpen(true)

@@ -51,10 +51,10 @@ const Home = () => {
                         </div>
 
                         <h1 className="text-4xl sm:text-5xl lg:text-6xl/19 text-center font-medium text-white max-w-[770px] mt-3 mx-auto max-sm:px-4">
-                            Stay, Dine, and Enjoy at Brothers Kitchen
+                            Stay, Dine, and Enjoy at Mokshyas Kitchen
                         </h1>
                         <p className="text-m text-center max-w-[510px] mt-2.5 mx-auto max-sm:px-4 text-neutral-200">
-                            Brothers Kitchen offers fresh, flavorful meals and friendly service, creating a welcoming dining experience for families, friends, and travelers alike.
+                            Mokshyas Kitchen offers fresh, flavorful meals and friendly service, creating a welcoming dining experience for families, friends, and travelers alike.
                         </p>
 
                         <div className='flex gap-5 mt-11'>
