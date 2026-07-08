@@ -11,10 +11,26 @@ dotenv.config();
 const app = express();
 
 // middleware
-app.use(cors({
-  origin: "https://hoteldrisya.vercel.app",
-  credentials: true
-}));
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://restaurant-six-sable.vercel.app",
+];
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // test route
