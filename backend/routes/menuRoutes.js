@@ -1,15 +1,18 @@
 import express from "express";
-import { addMenu, getMenu } from "../controllers/menuController.js";
+import { addMenu, getMenu, getAllMenu, updateMenu, updateAvailability, deleteMenu } from "../controllers/menuController.js";
 import upload from "../middleware/upload.js";
 import { protect, adminOnly } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", upload.single("image"), addMenu);
+// Public routes
 router.get("/", getMenu);
 
-console.log("DEBUG:", {
-  protect: typeof protect,
-  adminOnly: typeof adminOnly
-});
+// Admin routes
+router.post("/", protect, adminOnly, upload.single("image"), addMenu);
+router.get("/admin", protect, adminOnly, getAllMenu);
+router.put("/:id", protect, adminOnly, upload.single("image"), updateMenu);
+router.patch("/:id/availability", protect, adminOnly, updateAvailability);
+router.delete("/:id", protect, adminOnly, deleteMenu);
+
 export default router;

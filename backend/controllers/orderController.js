@@ -3,17 +3,31 @@ import Order from "../models/Order.js";
 // create order
 export const createOrder = async (req, res) => {
   try {
-    const { tableNumber, items } = req.body;
+    // Check if user is admin - admins can't place orders
+    if (req.user && req.user.role === "admin") {
+      return res.status(403).json({ message: "Admins cannot place orders" });
+    }
+
+    const { tableNumber, items, paymentMethod, specialInstructions } = req.body;
 
     const totalAmount = items.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
 
+    // Format items for storage (save name, price, quantity)
+    const formattedItems = items.map(item => ({
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+    }));
+
     const order = await Order.create({
       tableNumber,
-      items,
+      items: formattedItems,
       totalAmount,
+      paymentMethod,
+      specialInstructions,
       status: "processing",
       user: req.user?._id || null,
     });
@@ -24,11 +38,82 @@ export const createOrder = async (req, res) => {
   }
 };
 
-// get all orders (admin)
+// get all orders (admin only)
 export const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find().sort({ createdAt: -1 });
+    const orders = await Order.find()
+      .populate('user', 'name email')
+      .sort({ createdAt: -1 });
     res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// get user's own orders (authenticated user)
+export const getMyOrders = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+    
+    const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// get active order for a table (public)
+export const getActiveOrderForTable = async (req, res) => {
+  try {
+    const { tableNumber } = req.params;
+    // Find the latest order that's not paid
+    const activeOrder = await Order.findOne({
+      tableNumber,
+      status: { $ne: "paid" }
+    }).sort({ createdAt: -1 });
+
+    res.json(activeOrder || null);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// add items to an existing order
+export const addItemsToOrder = async (req, res) => {
+  try {
+    const { id: orderId } = req.params;
+    const { items } = req.body;
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Calculate additional amount
+    const additionalAmount = items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+
+    // Format new items
+    const formattedItems = items.map(item => ({
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity
+    }));
+
+    // Add items to existing order
+    order.items.push(...formattedItems);
+    order.totalAmount += additionalAmount;
+
+    // Save the updated order
+    await order.save();
+    
+    // Fetch the updated order to return
+    const updatedOrder = await Order.findById(orderId);
+    res.json(updatedOrder);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -47,12 +132,78 @@ export const updateOrderStatus = async (req, res) => {
     const order = await Order.findByIdAndUpdate(
       req.params.id,
       { status: req.body.status },
-      { returnDocument: "after" }
+      { new: true }
     );
 
     if (!order) return res.status(404).json({ message: "Order not found" });
 
     res.json(order);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Delete order
+export const deleteOrder = async (req, res) => {
+  try {
+    const order = await Order.findByIdAndDelete(req.params.id);
+    
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    
+    res.json({ message: "Order deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Get dashboard stats (admin only)
+export const getDashboardStats = async (req, res) => {
+  try {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+    // Total revenue (all time)
+    const allOrders = await Order.find({ status: "paid" });
+    const totalRevenue = allOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+
+    // Total orders count
+    const totalOrders = allOrders.length;
+
+    // Average order value
+    const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
+    // This month's revenue
+    const monthOrders = await Order.find({
+      status: "paid",
+      createdAt: { $gte: startOfMonth }
+    });
+    const monthRevenue = monthOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+
+    // Last month's revenue (for comparison)
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
+    const lastMonthOrders = await Order.find({
+      status: "paid",
+      createdAt: { $gte: lastMonthStart, $lte: lastMonthEnd }
+    });
+    const lastMonthRevenue = lastMonthOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+
+    // Calculate percentage changes
+    const monthChange = lastMonthRevenue > 0 
+      ? ((monthRevenue - lastMonthRevenue) / lastMonthRevenue * 100).toFixed(1)
+      : 0;
+
+    res.json({
+      totalRevenue,
+      totalOrders,
+      avgOrderValue: Math.round(avgOrderValue),
+      monthRevenue,
+      monthChange: parseFloat(monthChange),
+      lastMonthRevenue
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

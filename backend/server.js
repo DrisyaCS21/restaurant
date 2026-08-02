@@ -13,18 +13,23 @@ const app = express();
 // middleware
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://hoteldrisya.vercel.app",
+  // "https://hoteldrisya.vercel.app",
 ];
 
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin) return callback(null, true);
+      console.log("Incoming Origin:", origin);
 
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
+      if (!origin) {
+        return callback(null, true);
       }
 
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      console.log("Blocked Origin:", origin);
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
@@ -54,6 +59,10 @@ app.use("/api/orders", orderRoutes);
 // auth routes
 import authRoutes from "./routes/authRoutes.js";
 app.use("/api/auth", authRoutes);
+
+// qr routes  
+import qrRoutes from "./routes/qrRoutes.js";
+app.use("/api/qr", qrRoutes);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
