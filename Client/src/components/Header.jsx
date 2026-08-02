@@ -53,7 +53,7 @@ const Header = () => {
                         <IntersectionDot className="left-full bottom-0 translate-y-1/2" />
 
                         <a href="/" className='text-white font-bold text-lg md:text-xl lg:text-2xl transition hover:text-white/90'>
-                            Mokshya's Kitchen
+                            Mokshya's cafe
                         </a>
 
                         <div id="menu" className={`${mobileOpen ? 'max-md:w-full' : 'max-md:w-0'} max-md:fixed max-md:top-0 max-md:z-50 max-md:left-0 max-md:transition-all max-md:duration-300 max-md:overflow-hidden max-md:h-screen max-md:bg-black/50 max-md:backdrop-blur max-md:flex-col max-md:justify-center flex items-center gap-9 text-sm`}>

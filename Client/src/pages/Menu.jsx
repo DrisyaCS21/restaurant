@@ -13,6 +13,7 @@ const Menu = () => {
     const [loading, setLoading] = React.useState(true)
     const [error, setError] = React.useState(null)
     const [cart, setCart] = React.useState([])
+    const [selectedCategory, setSelectedCategory] = React.useState('All')
     const [searchTerm, setSearchTerm] = React.useState('')
 
     React.useEffect(() => {
@@ -31,8 +32,7 @@ const Menu = () => {
         }
         fetchMenu()
     }, [])
-    console.log("Backend URL:", backendUrl);
-    
+   console.log("Backend URL:", backendUrl);
     const handleViewCart = () => {
         if (!user) {
             setAuthOpen(true)
@@ -49,161 +49,190 @@ const Menu = () => {
         })
     }
 
+    // Get unique categories
+    const categories = ['All', ...new Set(menuItems.map(item => item.category).filter(Boolean))]
+
     const filteredMenuItems = menuItems.filter(item => {
         const term = searchTerm.trim().toLowerCase()
-        if (!term) return true
-
-        return (
+        const matchesSearch = !term || 
             (item.name || '').toLowerCase().includes(term) ||
-            (item.description || '').toLowerCase().includes(term) ||
-            (item.category || '').toLowerCase().includes(term)
-        )
+            (item.description || '').toLowerCase().includes(term)
+        const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory
+        return matchesSearch && matchesCategory
     })
 
     const totalItems = cart.reduce((sum, c) => sum + c.qty, 0)
 
     return (
-        <div className="min-h-screen bg-white">
-
-            {/* Page Header */}
-            <div className="relative h-64 md:h-80 overflow-hidden">
-                <img
-                    src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1600"
-                    alt="Menu banner"
-                    className="absolute inset-0 w-full h-full object-cover object-center"
-                />
-                <div className="absolute inset-0 bg-black/60" />
-                <div className="relative z-10 h-full flex flex-col justify-center px-4 md:px-16 lg:px-24">
-                    <h1 className="text-3xl md:text-4xl font-semibold text-white">Our Menu</h1>
-                    <p className="text-sm text-neutral-300 mt-2 max-w-lg">
-                        Fresh ingredients, bold flavors — crafted with care for every appetite.
-                    </p>
-                </div>
-            </div>
-
-            <div className="max-w-6xl mx-auto px-4 md:px-8 py-12">
-
-                {/* Cart indicator */}
-                {totalItems > 0 && (
-                    <div className="flex items-center justify-between bg-neutral-950 text-white px-6 py-3 rounded-xl mb-8">
-                        <p className="text-sm">🛒 {totalItems} item{totalItems > 1 ? 's' : ''} in your cart</p>
+        <div className="min-h-screen bg-[#faf8f6]">
+            {/* Header */}
+            <header className="bg-white border-b border-neutral-100 sticky top-0 z-40">
+                <div className="max-w-7xl mx-auto px-4 md:px-8">
+                    <div className="flex items-center justify-between h-16 md:h-20">
+                        <div className="flex items-center gap-2">
+                            <span className="text-xl md:text-2xl font-serif font-light tracking-wide text-neutral-800">Mokshya</span>
+                            <span className="text-xs text-neutral-400 font-light hidden sm:inline">|</span>
+                            <span className="text-xs text-neutral-500 font-light hidden sm:inline">menu</span>
+                        </div>
                         <button 
                             onClick={handleViewCart}
-                            className="text-sm bg-white text-neutral-900 px-4 py-1.5 rounded-lg font-medium hover:bg-neutral-100 transition cursor-pointer"
+                            className="relative p-2 hover:bg-neutral-50 rounded-full transition"
                         >
-                            View Cart
-                        </button>
-                    </div>
-                )}
-
-                {/* Search */}
-                <div className="flex items-center justify-between w-full mb-8">
-                    <span className="text-lg font-medium text-neutral-700">Menu-</span>
-
-                    <div className="flex items-center gap-2">
-                        <div className="flex items-center border pl-3 gap-2 bg-white border-gray-500/30 h-[46px] rounded-md overflow-hidden w-64">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 30 30" fill="#6B7280">
-                                <path d="M13 3C7.489 3 3 7.489 3 13s4.489 10 10 10a9.95 9.95 0 0 0 6.322-2.264l5.971 5.971a1 1 0 1 0 1.414-1.414l-5.97-5.97A9.95 9.95 0 0 0 23 13c0-5.511-4.489-10-10-10m0 2c4.43 0 8 3.57 8 8s-3.57 8-8 8-8-3.57-8-8 3.57-8 8-8"/>
+                            <svg className="w-5 h-5 md:w-6 md:h-6 text-neutral-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                             </svg>
-                            <input
-                                type="text"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                placeholder="Search for products"
-                                className="w-full h-full outline-none text-gray-500 placeholder-gray-500 text-sm"
-                            />
-                        </div>
-                        <button
-                            type="button"
-                            onClick={() => setSearchTerm('')}
-                            className="bg-orange-500 min-w-24 h-[46px] px-4 rounded-md text-sm text-white hover:bg-orange-600 transition"
-                        >
-                            Clear
+                            {totalItems > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-amber-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium">
+                                    {totalItems}
+                                </span>
+                            )}
                         </button>
                     </div>
                 </div>
+            </header>
 
-                {/* Grid */}
-                {loading ? (
-                    <div className="flex justify-center items-center py-12 w-full col-span-full">
-                        <p className="text-neutral-500 text-sm">Loading menu items...</p>
-                    </div>
-                ) : error ? (
-                    <div className="flex justify-center items-center py-12 w-full col-span-full">
-                        <p className="text-red-500 text-sm">Error: {error}</p>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {filteredMenuItems.length === 0 ? (
-                            <div className="col-span-full text-center py-12 text-neutral-500">
-                                No items found for "{searchTerm}".
+            {/* Main Content - Two Column Layout */}
+            <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8">
+                <div className="flex flex-col md:flex-row gap-8 md:gap-12">
+                    {/* Left Sidebar - Categories */}
+                    <div className="md:w-56 lg:w-64 flex-shrink-0">
+                        {/* Search - only visible on mobile */}
+                        <div className="md:hidden mb-6">
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    placeholder="Search menu..."
+                                    className="w-full px-4 py-2 pl-10 bg-white border border-neutral-200 focus:border-amber-600 focus:ring-0 outline-none text-sm text-neutral-700 placeholder-neutral-400"
+                                />
+                                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
                             </div>
+                        </div>
+
+                        {/* Categories - Vertical List */}
+                        <nav className="space-y-0.5">
+                            {categories.map(cat => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setSelectedCategory(cat)}
+                                    className={`w-full text-left px-3 py-2 text-sm transition-colors ${
+                                        selectedCategory === cat 
+                                            ? 'text-amber-700 bg-amber-50/50 font-medium' 
+                                            : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50'
+                                    }`}
+                                >
+                                    {cat}
+                                </button>
+                            ))}
+                        </nav>
+                    </div>
+
+                    {/* Right Side - Menu Items */}
+                    <div className="flex-1 min-w-0">
+                        {/* Search - hidden on mobile, shown on desktop */}
+                        <div className="hidden md:block mb-8">
+                            <div className="relative max-w-sm">
+                                <input
+                                    type="text"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    placeholder="Search menu..."
+                                    className="w-full px-4 py-2 pl-10 bg-white border border-neutral-200 focus:border-amber-600 focus:ring-0 outline-none text-sm text-neutral-700 placeholder-neutral-400"
+                                />
+                                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        {/* Menu Items Grid */}
+                        {loading ? (
+                            <div className="flex justify-center py-20">
+                                <div className="w-8 h-8 border-2 border-neutral-200 border-t-amber-600 rounded-full animate-spin" />
+                            </div>
+                        ) : error ? (
+                            <div className="text-center py-20 text-red-500 text-sm">{error}</div>
                         ) : (
-                            filteredMenuItems.map(item => {
-                                const imageUrl = item.image && !item.image.startsWith('http') 
-                                    ? `${backendUrl}/uploads/${item.image}` 
-                                    : item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
-                                return (
-                                    <div key={item._id} className="group rounded-2xl overflow-hidden border border-neutral-100 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
-
-                                        {/* Image */}
-                                        <div className="relative overflow-hidden h-48">
-                                            <img
-                                                src={imageUrl}
-                                                alt={item.name}
-                                                className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
-                                            />
-                                            {/* Category badge */}
-                                            <span className="absolute top-3 left-3 bg-black/60 backdrop-blur text-white text-xs px-2.5 py-1 rounded-full">
-                                                {item.category}
-                                            </span>
-                                            {/* Price tag */}
-                                            <span className="absolute top-3 right-3 bg-white text-neutral-900 text-xs font-semibold px-2.5 py-1 rounded-full shadow">
-                                                Rs{item.price}
-                                            </span>
-                                        </div>
-
-                                        {/* Content */}
-                                        <div className="flex flex-col flex-1 p-4">
-                                            <div className="flex-1 flex flex-col">
-                                                <h3 className="text-neutral-900 font-semibold text-base">{item.name}</h3>
-                                                {item.description && (
-                                                    <p className="text-neutral-500 text-xs mt-1 leading-relaxed line-clamp-2">{item.description}</p>
-                                                )}
-                                            </div>
-
-                                            <button
-                                                onClick={() => addToCart(item)}
-                                                className="mt-4 w-full bg-orange-950 hover:bg-orange-800 text-white text-sm py-2 rounded-lg transition cursor-pointer flex items-center justify-center gap-2"
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
-                                                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
-                                                </svg>
-                                                Add to Cart
-                                            </button>
-                                        </div>
+                            <>
+                                {filteredMenuItems.length === 0 ? (
+                                    <div className="text-center py-20 text-neutral-400 text-sm">
+                                        No items found for "{searchTerm}"
                                     </div>
-                                )
-                            })
+                                ) : (
+                                    <div className="space-y-6">
+                                        {filteredMenuItems.map(item => {
+                                            const imageUrl = item.image && !item.image.startsWith('http') 
+                                                ? `${backendUrl}/uploads/${item.image}` 
+                                                : item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
+                                            return (
+                                                <div key={item._id} className="flex items-start gap-4 md:gap-6 group pb-6 border-b border-neutral-100 last:border-0">
+                                                    {/* Circular Image */}
+                                                    <div className="flex-shrink-0">
+                                                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden bg-neutral-100">
+                                                            <img
+                                                                src={imageUrl}
+                                                                alt={item.name}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Content */}
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-start justify-between gap-4">
+                                                            <div className="flex-1 min-w-0">
+                                                                <h3 className="text-base md:text-lg font-serif font-light text-neutral-800 leading-tight">
+                                                                    {item.name}
+                                                                </h3>
+                                                                {item.description && (
+                                                                    <p className="text-xs text-neutral-500 font-light mt-1 leading-relaxed line-clamp-2">
+                                                                        {item.description}
+                                                                    </p>
+                                                                )}
+                                                            </div>
+                                                            <div className="flex items-center gap-3 md:gap-4 flex-shrink-0">
+                                                                <span className="text-sm font-light text-neutral-700 whitespace-nowrap">
+                                                                    Rs. {item.price}
+                                                                </span>
+                                                                <button
+                                                                    onClick={() => addToCart(item)}
+                                                                    className="px-3 md:px-4 py-1.5 border border-neutral-200 hover:border-amber-600 hover:bg-amber-50 text-neutral-700 hover:text-amber-700 text-xs md:text-sm font-light transition duration-300 whitespace-nowrap"
+                                                                >
+                                                                    Add to Cart
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                )}
+                            </>
                         )}
                     </div>
-                )}
+                </div>
             </div>
 
             {/* Auth Modal */}
             {authOpen && (
                 <div
-                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
                     onClick={() => setAuthOpen(false)}
                 >
-                    <div onClick={(e) => e.stopPropagation()} className="relative">
+                    <div 
+                        onClick={(e) => e.stopPropagation()} 
+                        className="relative w-full max-w-md bg-white"
+                    >
                         <button
                             onClick={() => setAuthOpen(false)}
-                            className="absolute -top-3 -right-3 z-10 bg-white rounded-full p-1 shadow-md hover:bg-gray-100 transition cursor-pointer"
+                            className="absolute top-3 right-3 z-10 p-1 hover:bg-neutral-50 transition"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                            <svg className="w-5 h-5 text-neutral-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                         <Auth onSuccess={() => setAuthOpen(false)} />
