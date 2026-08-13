@@ -9,36 +9,69 @@ const Home = () => {
     const [hoveredCard, setHoveredCard] = React.useState(null)
 
     const slides = [
-        {
-            id: 1,
-            name: "Iced Coffee",
-            cupImage: "/images/iced-coffee-cup.png",
-            splashImage: "/images/coffee-splash.png",
-            bgColor: "from-amber-100/20 to-orange-50/20",
-            description: "Rich & Smooth • Perfectly Chilled",
-            glowClass: "glow-coffee",
-            particleType: "coffee"
-        },
-        {
-            id: 2,
-            name: "Matcha",
-            cupImage: "/images/matcha-cup.png",
-            splashImage: "/images/matcha-splash.png",
-            bgColor: "from-emerald-100/20 to-green-50/20",
-            description: "Vibrant & Earthy • Pure Matcha",
-            glowClass: "glow-matcha",
-            particleType: "leaf"
-        },
-        {
-            id: 3,
-            name: "Iced Tea",
-            cupImage: "/images/iced-tea-cup.png",
-            splashImage: "/images/tea-splash.png",
-            bgColor: "from-rose-100/20 to-amber-50/20",
-            description: "Refreshing & Crisp • Lightly Sweet",
-            glowClass: "glow-tea",
-            particleType: "bubble"
-        }
+    {
+        id: 1,
+        name: "Iced Coffee",
+        cupImage: "/images/iced-coffee-cup.png",
+        splashImage: "/images/coffee-splash.png",
+        bgColor: "from-amber-100/20 to-orange-50/20",
+        description: "Rich & Smooth • Perfectly Chilled",
+        glowClass: "glow-coffee",
+        particleType: "coffee",
+        // NEW FIELDS:
+        tagline: "Premium Cold Brew Experience",
+        title: "Artisanal Iced Coffee",
+        longDescription: "Expertly brewed with single-origin Arabica beans, slow-steeped for 16 hours to unlock rich chocolate and caramel notes. Served over crystal-clear ice with your choice of milk — a refined twist on the classic cold brew.",
+        details: [
+            "Slow-steeped for 16 hours",
+            "Single-origin Arabica beans",
+            "Rich chocolate & caramel notes",
+            "Available with oat, almond, or dairy milk"
+        ],
+        price: "Rs.260 / 500ml"
+    },
+    {
+        id: 2,
+        name: "Matcha",
+        cupImage: "/images/matcha-cup.png",
+        splashImage: "/images/matcha-splash.png",
+        bgColor: "from-emerald-100/20 to-green-50/20",
+        description: "Vibrant & Earthy • Pure Matcha",
+        glowClass: "glow-matcha",
+        particleType: "leaf",
+        // NEW FIELDS:
+        tagline: "Ceremonial Grade Matcha",
+        title: "Pure Matcha Latte",
+        longDescription: "Hand-selected ceremonial grade matcha from Uji, Japan, whisked to perfection with micro-foamed milk. Earthy, umami-rich, and vibrantly green — a mindful moment in every sip.",
+        details: [
+            "Ceremonial grade matcha",
+            "Sourced from Uji, Japan",
+            "Rich in antioxidants",
+            "Served hot or iced"
+        ],
+        price: "Rs.280 / 500ml"
+    },
+    {
+        id: 3,
+        name: "Iced Tea",
+        cupImage: "/images/iced-tea-cup.png",
+        splashImage: "/images/tea-splash.png",
+        bgColor: "from-rose-100/20 to-amber-50/20",
+        description: "Refreshing & Crisp • Lightly Sweet",
+        glowClass: "glow-tea",
+        particleType: "bubble",
+        // NEW FIELDS:
+        tagline: "Artisanal Tea Blends",
+        title: "Premium Iced Tea",
+        longDescription: "Handcrafted with premium loose-leaf teas and infused with natural botanicals. Lightly sweetened with pure cane sugar and garnished with fresh citrus — a sophisticated, refreshing escape.",
+        details: [
+            "Premium loose-leaf tea",
+            "Naturally sweetened",
+            "Infused with botanicals",
+            "Available in 4 signature blends"
+        ],
+        price: "Rs.260 / 500ml"
+    }
     ]
 
     const desserts = {
@@ -597,9 +630,10 @@ const Home = () => {
             </style>
 
             {/* Hero Section */}
-           {/* Hero Section - Updated with proper background */}
+           {/* Hero Section - Professional Business Layout */}
+            {/* Hero Section - Professional Business Layout */}
             <main 
-                className="w-full h-screen bg-gradient-to-b from-[#faf6f0] to-white overflow-hidden relative perspective-container"
+                className="w-full min-h-screen bg-gradient-to-b from-[#faf6f0] to-white overflow-hidden relative perspective-container"
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}
             >
@@ -608,167 +642,156 @@ const Home = () => {
                         <motion.div
                             key={currentSlide}
                             custom={direction}
-                            initial={{ 
-                                opacity: 0, 
-                                scale: 0.92,
-                                rotateY: direction > 0 ? 12 : -12,
-                                z: -80
-                            }}
-                            animate={{ 
-                                opacity: 1, 
-                                scale: 1,
-                                rotateY: 0,
-                                z: 0,
-                                transition: {
-                                    duration: 1.4,
-                                    ease: [0.34, 1.56, 0.64, 1],
-                                    opacity: { duration: 0.8 }
-                                }
-                            }}
-                            exit={{ 
-                                opacity: 0, 
-                                scale: 0.88,
-                                rotateY: direction > 0 ? -12 : 12,
-                                z: -60,
-                                transition: {
-                                    duration: 0.8,
-                                    ease: [0.36, 0.07, 0.19, 0.97]
-                                }
-                            }}
-                            className="absolute inset-0 flex items-center justify-center product-3d-wrapper"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.6 }}
+                            className="absolute inset-0 flex items-center"
                         >
                             {/* Background with gradient */}
                             <div className={`absolute inset-0 bg-gradient-to-b ${slides[currentSlide].bgColor}`} />
                             
-                            <div className="relative z-10 w-full max-w-6xl mx-auto px-4 md:px-8 flex flex-col items-center justify-center min-h-screen">
-                                <motion.h1
-                                    initial={{ opacity: 0, y: 40, scale: 0.95 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    transition={{ 
-                                        delay: 0.3, 
-                                        duration: 0.9,
-                                        ease: [0.34, 1.56, 0.64, 1]
-                                    }}
-                                    className="text-4xl md:text-4xl lg:text-4xl font-light text-[#2d1f14] tracking-wide mb-8 md:mb-12 text-center"
-                                >
-                                    {slides[currentSlide].name}
-                                </motion.h1>
-
-                                <motion.div
-                                    initial={{ 
-                                        scale: 0.7, 
-                                        opacity: 0,
-                                        rotateY: 30,
-                                        z: -50
-                                    }}
-                                    animate={{ 
-                                        scale: 1, 
-                                        opacity: 1,
-                                        rotateY: 0,
-                                        z: 0,
-                                        transition: {
-                                            duration: 1.4,
-                                            ease: [0.34, 1.56, 0.64, 1],
-                                            opacity: { duration: 0.8 }
-                                        }
-                                    }}
-                                    whileHover={{
-                                        scale: 1.05,
-                                        rotateY: 5,
-                                        rotateX: 3,
-                                        z: 30,
-                                        transition: {
-                                            duration: 0.4,
-                                            ease: [0.34, 1.56, 0.64, 1]
-                                        }
-                                    }}
-                                    className="relative flex items-center justify-center w-full max-w-2xl cursor-pointer product-hover-scale"
-                                    style={{ transformStyle: 'preserve-3d' }}
-                                >
-                                    {/* Light Rays Background */}
-                                    <div className="absolute inset-0 light-rays" />
+                            <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
+                                {/* ADDED: pt-20 on mobile to account for navbar */}
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center min-h-screen py-16 md:py-20 pt-24 md:pt-0">
                                     
-                                    {/* Colored Glow - Increased opacity and size */}
-                                    <div className={`absolute inset-0 ${slides[currentSlide].glowClass} rounded-full scale-150 blur-3xl opacity-70`} />
-                                    
-                                    {/* Shadow layer for 3D effect */}
-                                    <div 
-                                        className="absolute inset-0 flex items-center justify-center blur-2xl opacity-30"
-                                        style={{ 
-                                            transform: 'translateZ(-50px) translateY(20px)',
-                                            background: 'radial-gradient(circle, rgba(45,31,20,0.3) 0%, transparent 70%)'
-                                        }}
-                                    />
-                                    
-                                    {/* Floating Particles */}
-                                    <div className="absolute inset-0 pointer-events-none">
-                                        {renderParticles(slides[currentSlide].particleType)}
-                                    </div>
-                                    
-                                    {/* Splash Image - Increased opacity and added blend mode */}
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <img
-                                            src={slides[currentSlide].splashImage}
-                                            alt={`${slides[currentSlide].name} splash`}
-                                            className="w-[300px] md:w-[400px] lg:w-[500px] object-contain opacity-70"
-                                            style={{ 
-                                                transform: 'translateZ(-20px)',
-                                                filter: 'blur(1px)',
-                                                mixBlendMode: 'screen'
-                                            }}
-                                        />
-                                    </div>
-                                    
-                                    {/* Cup Image */}
-                                    <div className="relative z-10" style={{ transform: 'translateZ(20px)' }}>
-                                        <motion.img
-                                            src={slides[currentSlide].cupImage}
-                                            alt={slides[currentSlide].name}
-                                            className="w-[200px] md:w-[280px] lg:w-[350px] object-contain"
-                                            style={{ 
-                                                mixBlendMode: 'multiply',
-                                                filter: 'drop-shadow(0 20px 30px rgba(45,31,20,0.2)) drop-shadow(0 8px 15px rgba(45,31,20,0.1))'
-                                            }}
-                                            whileHover={{
-                                                scale: 1.08,
-                                                rotate: 2,
-                                                transition: {
-                                                    duration: 0.4,
-                                                    ease: [0.34, 1.56, 0.64, 1]
-                                                }
-                                            }}
-                                        />
+                                    {/* LEFT COLUMN - Product Information */}
+                                    <motion.div
+                                        initial={{ opacity: 0, x: -40 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+                                        className="order-2 lg:order-1 space-y-4 md:space-y-6"
+                                    >
+                                        {/* Tagline */}
+                                        <span className="inline-block text-[#d4a373] text-xs md:text-sm uppercase tracking-[0.3em] font-light">
+                                            {slides[currentSlide].tagline}
+                                        </span>
                                         
-                                        {/* Glass Reflection Overlay */}
-                                        <div className="glass-reflection" />
-                                    </div>
+                                        {/* Main Title */}
+                                        <h1 className="text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-[#2d1f14] leading-tight">
+                                            {slides[currentSlide].title}
+                                        </h1>
+                                        
+                                        {/* Divider */}
+                                        <div className="w-16 h-0.5 bg-[#d4a373]"></div>
+                                        
+                                        {/* Description */}
+                                        <p className="text-[#5c4a3a] text-sm md:text-base lg:text-lg font-light leading-relaxed max-w-lg">
+                                            {slides[currentSlide].longDescription}
+                                        </p>
+                                        
+                                        {/* Details List - Hidden on very small screens if needed */}
+                                        <ul className="space-y-1.5 md:space-y-2">
+                                            {slides[currentSlide].details.map((detail, idx) => (
+                                                <li key={idx} className="flex items-center gap-3 text-[#5c4a3a] text-xs md:text-sm font-light">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-[#d4a373] flex-shrink-0"></span>
+                                                    {detail}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        
+                                        {/* Price & CTA */}
+                                        <div className="flex flex-wrap items-center gap-3 md:gap-6 pt-2 md:pt-4">
+                                            <span className="text-2xl md:text-3xl lg:text-4xl font-light text-[#2d1f14]">
+                                                {slides[currentSlide].price}
+                                            </span>
+                                            <button className="px-6 md:px-8 py-2.5 md:py-3 bg-[#2d1f14] text-white text-xs md:text-sm font-light tracking-wide hover:bg-[#4a3228] transition duration-300">
+                                                Order Now →
+                                            </button>
+                                            <button className="px-6 md:px-8 py-2.5 md:py-3 border border-[#2d1f14] text-[#2d1f14] text-xs md:text-sm font-light hover:bg-[#2d1f14] hover:text-white transition duration-300">
+                                                Learn More
+                                            </button>
+                                        </div>
+                                        
+                                        {/* Slide Indicator - Text version */}
+                                        <div className="flex items-center gap-3 pt-4 md:pt-6">
+                                            <span className="text-[#8b6b4a] text-xs md:text-sm font-light tracking-wide">
+                                                {currentSlide + 1} / {slides.length}
+                                            </span>
+                                            <div className="flex gap-2">
+                                                {slides.map((_, index) => (
+                                                    <button
+                                                        key={index}
+                                                        onClick={() => goToSlide(index)}
+                                                        className={`transition-all duration-500 rounded-full ${
+                                                            currentSlide === index 
+                                                                ? 'w-8 h-1 bg-[#2d1f14]' 
+                                                                : 'w-1.5 h-1.5 bg-[#2d1f14]/30 hover:bg-[#2d1f14]/50'
+                                                        }`}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </motion.div>
                                     
-                                    {/* Cinema Shadow */}
-                                    <div className="shadow-3d" />
-                                </motion.div>
-
-                                <motion.p
-                                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    transition={{ 
-                                        delay: 0.6, 
-                                        duration: 0.8,
-                                        ease: [0.34, 1.56, 0.64, 1]
-                                    }}
-                                    className="text-[#8b7355] text-sm md:text-base font-light mt-8 md:mt-12 tracking-wider"
-                                >
-                                    {slides[currentSlide].description}
-                                </motion.p>
+                                    {/* RIGHT COLUMN - Product Image */}
+                                    <motion.div
+                                        initial={{ opacity: 0, x: 40 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+                                        className="order-1 lg:order-2 flex items-center justify-center"
+                                    >
+                                        <div className="relative w-full max-w-xs md:max-w-sm lg:max-w-lg mx-auto">
+                                            {/* Colored Glow */}
+                                            <div className={`absolute inset-0 ${slides[currentSlide].glowClass} rounded-full scale-150 blur-3xl opacity-60`} />
+                                            
+                                            {/* Floating Particles */}
+                                            <div className="absolute inset-0 pointer-events-none">
+                                                {renderParticles(slides[currentSlide].particleType)}
+                                            </div>
+                                            
+                                            {/* Product Image Container */}
+                                            <motion.div
+                                                whileHover={{
+                                                    scale: 1.03,
+                                                    transition: { duration: 0.4 }
+                                                }}
+                                                className="relative"
+                                            >
+                                                {/* Splash Image - Background */}
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                    <img
+                                                        src={slides[currentSlide].splashImage}
+                                                        alt=""
+                                                        className="w-[150px] md:w-[250px] lg:w-[350px] object-contain opacity-40"
+                                                        style={{ 
+                                                            filter: 'blur(2px)',
+                                                            mixBlendMode: 'screen'
+                                                        }}
+                                                    />
+                                                </div>
+                                                
+                                                {/* Cup Image - Main Product */}
+                                                <img
+                                                    src={slides[currentSlide].cupImage}
+                                                    alt={slides[currentSlide].name}
+                                                    className="relative z-10 w-[140px] md:w-[220px] lg:w-[280px] mx-auto object-contain"
+                                                    style={{ 
+                                                        filter: 'drop-shadow(0 30px 40px rgba(45,31,20,0.15)) drop-shadow(0 10px 20px rgba(45,31,20,0.08))'
+                                                    }}
+                                                />
+                                                
+                                                {/* Glass Reflection */}
+                                                <div className="absolute inset-0 pointer-events-none">
+                                                    <div className="glass-reflection" />
+                                                </div>
+                                            </motion.div>
+                                            
+                                            {/* Subtle shadow under product */}
+                                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-black/5 rounded-full blur-xl"></div>
+                                        </div>
+                                    </motion.div>
+                                </div>
                             </div>
                         </motion.div>
                     </AnimatePresence>
                 </div>
 
-                {/* Navigation Arrows */}
-                <div className={`absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4 md:px-8 z-40 transition-opacity duration-300 ${isHovering ? 'opacity-100' : 'opacity-0'}`}>
+                {/* Navigation Arrows - Adjusted for mobile */}
+                <div className={`absolute inset-y-0 left-0 right-0 flex items-center justify-between px-2 md:px-8 z-40 transition-opacity duration-300 ${isHovering ? 'opacity-100' : 'opacity-0'}`}>
                     <motion.button 
                         onClick={prevSlide} 
-                        className="p-3 md:p-4 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-md hover:shadow-xl transition-all duration-300"
+                        className="p-2 md:p-4 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-md hover:shadow-xl transition-all duration-300"
                         whileHover={{ 
                             scale: 1.15,
                             x: -5,
@@ -776,13 +799,13 @@ const Home = () => {
                         }}
                         whileTap={{ scale: 0.9 }}
                     >
-                        <svg className="w-5 h-5 md:w-6 md:h-6 text-[#2d1f14]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-4 h-4 md:w-6 md:h-6 text-[#2d1f14]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
                         </svg>
                     </motion.button>
                     <motion.button 
                         onClick={nextSlide} 
-                        className="p-3 md:p-4 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-md hover:shadow-xl transition-all duration-300"
+                        className="p-2 md:p-4 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-md hover:shadow-xl transition-all duration-300"
                         whileHover={{ 
                             scale: 1.15,
                             x: 5,
@@ -790,29 +813,10 @@ const Home = () => {
                         }}
                         whileTap={{ scale: 0.9 }}
                     >
-                        <svg className="w-5 h-5 md:w-6 md:h-6 text-[#2d1f14]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-4 h-4 md:w-6 md:h-6 text-[#2d1f14]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
                         </svg>
                     </motion.button>
-                </div>
-
-                {/* Slide Indicators */}
-                <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-3 z-30">
-                    {slides.map((_, index) => (
-                        <motion.button
-                            key={index}
-                            onClick={() => goToSlide(index)}
-                            className={`transition-all duration-500 rounded-full ${
-                                currentSlide === index 
-                                    ? 'w-8 h-1.5 bg-[#2d1f14] shadow-lg' 
-                                    : 'w-1.5 h-1.5 bg-[#2d1f14]/30 hover:bg-[#2d1f14]/50'
-                            }`}
-                            whileHover={{ 
-                                scale: currentSlide === index ? 1 : 1.5,
-                                transition: { duration: 0.2 }
-                            }}
-                        />
-                    ))}
                 </div>
             </main>
 
