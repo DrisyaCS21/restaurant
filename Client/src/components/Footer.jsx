@@ -2,69 +2,178 @@ import React from 'react'
 
 const Footer = () => {
     return (
-        <footer className='bg-black py-12 px-4 sm:px-6 lg:px-8'>
+        <footer className='bg-[#2d1f14] pt-12 sm:pt-16 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-8 border-t border-[#4a3228]'>
             <div className='w-full max-w-7xl mx-auto'>
 
-                <div className="flex flex-wrap justify-between gap-y-12 lg:gap-x-8">
+                {/* Main Footer Grid - Fully Responsive */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-8">
 
-                    {/* Brand */}
-                    <div className="w-full md:w-[45%] lg:w-[35%] flex flex-col items-center md:items-start text-center md:text-left">
+                    {/* Brand - Full width on mobile, spans 2 cols on tablet */}
+                    <div className="col-span-1 sm:col-span-2 lg:col-span-1 flex flex-col items-center sm:items-start text-center sm:text-left">
                         <a href="/">
-                            <h2 className='text-2xl text-white font-bold'>Mokshya's Kitchen</h2>
+                            <h2 className='text-xl sm:text-2xl font-light text-[#f5e6d3] hover:text-[#d4a373] transition-colors'>
+                                Mokshya's <span className="text-[#d4a373]">Cafe</span>
+                            </h2>
                         </a>
-                        <div className='w-full max-w-52 h-px mt-8 bg-linear-to-r from-black via-white/25 to-black'></div>
-                        <p className='text-sm text-white/60 mt-6 max-w-sm leading-relaxed'>
-                            Fine dining experience in the heart of the city. Savor exquisite flavors crafted by our master chefs, in an elegant ambiance. Join us for an unforgettable culinary journey that delights your senses and creates lasting memories.
+                        <div className='w-12 h-0.5 bg-[#d4a373] mt-3 sm:mt-4 mb-3 sm:mb-4'></div>
+                        <p className='text-xs sm:text-sm text-[#c4b5a5] leading-relaxed max-w-sm font-light'>
+                            Every sip, every bite — crafted with love. A cozy corner 
+                            where flavors meet comfort and every visit feels like home.
                         </p>
+                        {/* Decorative coffee icon - hidden on very small screens */}
+                        <span className="text-2xl mt-4 opacity-30 float-animation hidden xs:block">☕</span>
                     </div>
 
                     {/* Quick Links */}
-                    <div className="w-full md:w-[45%] lg:w-[15%] flex flex-col items-center md:items-start text-center md:text-left">
-                        <h3 className='text-sm text-white font-medium'>Quick Links</h3>
-                        <div className="flex flex-col gap-2 mt-6">
-                            <a href="/" className='text-sm text-white/60 hover:text-white transition-colors'>Home</a>
-                            <a href="#dining" className='text-sm text-white/60 hover:text-white transition-colors'>Dining Spaces</a>
-                            <a href="#banquet" className='text-sm text-white/60 hover:text-white transition-colors'>Banquet Hall</a>
-                            <a href="#menu" className='text-sm text-white/60 hover:text-white transition-colors'>Our Menu</a>
-                            <a href="#order" className='text-sm text-white/60 hover:text-white transition-colors'>Order Online</a>
+                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+                        <h3 className='text-xs sm:text-sm font-medium text-[#f5e6d3] tracking-wider uppercase'>
+                            Explore
+                        </h3>
+                        <div className='w-8 h-0.5 bg-[#d4a373] mt-2 sm:mt-3 mb-4 sm:mb-5'></div>
+                        <div className="flex flex-col gap-2 sm:gap-2.5">
+                            <a href="/" className='text-xs sm:text-sm text-[#c4b5a5] hover:text-[#d4a373] transition-colors font-light'>
+                                Home
+                            </a>
+                            <a href="/menu" className='text-xs sm:text-sm text-[#c4b5a5] hover:text-[#d4a373] transition-colors font-light'>
+                                Menu
+                            </a>
+                            <a href="#" className='text-xs sm:text-sm text-[#c4b5a5] hover:text-[#d4a373] transition-colors font-light'>
+                                About Us
+                            </a>
+                            <a href="#" className='text-xs sm:text-sm text-[#c4b5a5] hover:text-[#d4a373] transition-colors font-light'>
+                                Gallery
+                            </a>
+                            <a href="#" className='text-xs sm:text-sm text-[#c4b5a5] hover:text-[#d4a373] transition-colors font-light'>
+                                Contact
+                            </a>
                         </div>
                     </div>
 
-                    {/* Social Links */}
-                    <div className="w-full md:w-[45%] lg:w-[15%] flex flex-col items-center md:items-start text-center md:text-left">
-                        <h3 className='text-sm text-white font-medium'>Follow Us</h3>
-                        <div className="flex flex-col gap-2 mt-6">
-                            <a href="#" className='text-sm text-white/60 hover:text-white transition-colors'>Instagram</a>
-                            <a href="#" className='text-sm text-white/60 hover:text-white transition-colors'>Facebook</a>
-                            <a href="#" className='text-sm text-white/60 hover:text-white transition-colors'>Twitter / X</a>
-                            <a href="#" className='text-sm text-white/60 hover:text-white transition-colors'>TikTok</a>
+                    {/* Social & Contact */}
+                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+                        <h3 className='text-xs sm:text-sm font-medium text-[#f5e6d3] tracking-wider uppercase'>
+                            Connect
+                        </h3>
+                        <div className='w-8 h-0.5 bg-[#d4a373] mt-2 sm:mt-3 mb-4 sm:mb-5'></div>
+                        <div className="flex flex-col gap-2 sm:gap-2.5">
+                            <a href="#" className='text-xs sm:text-sm text-[#c4b5a5] hover:text-[#d4a373] transition-colors font-light flex items-center gap-2'>
+                                <span className="text-sm">📸</span> 
+                                <span className="hidden xs:inline">Instagram</span>
+                                <span className="xs:hidden">IG</span>
+                            </a>
+                            <a href="#" className='text-xs sm:text-sm text-[#c4b5a5] hover:text-[#d4a373] transition-colors font-light flex items-center gap-2'>
+                                <span className="text-sm">👍</span> 
+                                <span className="hidden xs:inline">Facebook</span>
+                                <span className="xs:hidden">FB</span>
+                            </a>
+                            <a href="#" className='text-xs sm:text-sm text-[#c4b5a5] hover:text-[#d4a373] transition-colors font-light flex items-center gap-2'>
+                                <span className="text-sm">🐦</span> 
+                                <span className="hidden xs:inline">Twitter / X</span>
+                                <span className="xs:hidden">X</span>
+                            </a>
+                            <a href="#" className='text-xs sm:text-sm text-[#c4b5a5] hover:text-[#d4a373] transition-colors font-light flex items-center gap-2'>
+                                <span className="text-sm">📱</span> 
+                                <span className="hidden xs:inline">TikTok</span>
+                                <span className="xs:hidden">TT</span>
+                            </a>
                         </div>
                     </div>
 
-                    {/* Contact */}
-                    <div className="w-full md:w-[45%] lg:w-[15%] flex flex-col items-center md:items-start text-center md:text-left">
-                        <h3 className='text-sm text-white font-medium'>Contact</h3>
-                        <div className="flex flex-col gap-2 mt-6">
-                            <p className='text-sm text-white/60'> Kathmandu, City</p>
-                            <a href="tel:+1234567890" className='text-sm text-white/60 hover:text-white transition-colors'> 99999999</a>
-                            <a href="mailto:hello@Mokshyaskitchen.com" className='text-sm text-white/60 hover:text-white transition-colors'>hello@Mokshyaskitchen.com</a>
-                            <p className='text-sm text-white/60'>🕐 Mon–Sun: 10am – 11pm</p>
+                    {/* Visit Us */}
+                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+                        <h3 className='text-xs sm:text-sm font-medium text-[#f5e6d3] tracking-wider uppercase'>
+                            Visit Us
+                        </h3>
+                        <div className='w-8 h-0.5 bg-[#d4a373] mt-2 sm:mt-3 mb-4 sm:mb-5'></div>
+                        <div className="flex flex-col gap-2 sm:gap-2.5">
+                            <p className='text-xs sm:text-sm text-[#c4b5a5] font-light flex items-center gap-2'>
+                                <span className="text-[#d4a373] text-sm">📍</span> 
+                                <span className="text-left">Kathmandu, Nepal</span>
+                            </p>
+                            <a href="tel:+9779801234567" className='text-xs sm:text-sm text-[#c4b5a5] hover:text-[#d4a373] transition-colors font-light flex items-center gap-2'>
+                                <span className="text-[#d4a373] text-sm">📞</span> 
+                                <span className="text-left">+977 9801234567</span>
+                            </a>
+                            <a href="mailto:hello@Mokshyascafe.com" className='text-xs sm:text-sm text-[#c4b5a5] hover:text-[#d4a373] transition-colors font-light flex items-center gap-2'>
+                                <span className="text-[#d4a373] text-sm">✉️</span> 
+                                <span className="text-left text-xs sm:text-sm break-all">hello@cafe.com</span>
+                            </a>
+                            <p className='text-xs sm:text-sm text-[#c4b5a5] font-light flex items-center gap-2'>
+                                <span className="text-[#d4a373] text-sm">🕐</span> 
+                                <span className="text-left">7AM – 9PM Daily</span>
+                            </p>
                         </div>
                     </div>
-
                 </div>
 
-                <div className='w-full h-px mt-16 mb-4 bg-linear-to-r from-black via-white/25 to-black'></div>
-
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                    <p className='text-xs text-white/60'>© 2025 Mokshya's Kitchen. All rights reserved.</p>
-                    <div className="flex items-center gap-6">
-                        <a href='#' className='text-xs text-white/60 hover:text-white transition-colors'>Terms & Conditions</a>
-                        <div className='w-px h-4 bg-white/20'></div>
-                        <a href='#' className='text-xs text-white/60 hover:text-white transition-colors'>Privacy Policy</a>
+                {/* Decorative Divider */}
+                <div className='relative w-full mt-10 sm:mt-12 mb-6'>
+                    <div className='w-full h-px bg-gradient-to-r from-transparent via-[#d4a373]/30 to-transparent'></div>
+                    {/* Decorative dot in center */}
+                    <div className='absolute left-1/2 -translate-x-1/2 -top-1.5'>
+                        <span className="text-[#d4a373] text-[10px] sm:text-xs">✦</span>
                     </div>
+                </div>
+
+                {/* Bottom Bar - Fully Responsive */}
+                <div className="flex flex-col xs:flex-row flex-wrap items-center justify-center xs:justify-between gap-3 sm:gap-4 pt-1 sm:pt-2">
+                    
+                    {/* Copyright - Full width on very small screens */}
+                    <p className='text-[10px] sm:text-xs text-[#8b6b4a] font-light tracking-wide text-center xs:text-left order-2 xs:order-1'>
+                        © 2025 Mokshya's Cafe. All rights reserved.
+                    </p>
+                    
+                    {/* Legal Links - Wrap on small screens */}
+                    <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-[10px] sm:text-xs order-3 xs:order-2">
+                        <a href='#' className='text-[#8b6b4a] hover:text-[#d4a373] transition-colors font-light tracking-wide whitespace-nowrap'>
+                            Terms
+                        </a>
+                        <span className='w-px h-3 bg-[#4a3228]'></span>
+                        <a href='#' className='text-[#8b6b4a] hover:text-[#d4a373] transition-colors font-light tracking-wide whitespace-nowrap'>
+                            Privacy
+                        </a>
+                        <span className='w-px h-3 bg-[#4a3228]'></span>
+                        <a href='#' className='text-[#8b6b4a] hover:text-[#d4a373] transition-colors font-light tracking-wide whitespace-nowrap'>
+                            Cookies
+                        </a>
+                    </div>
+                    
+                    {/* Made with love - Hidden on very small screens */}
+                    <p className='text-[10px] text-[#4a3228] font-light tracking-wider flex items-center gap-1 order-1 xs:order-3 w-full xs:w-auto justify-center'>
+                        Made with <span className="text-[#d4a373] text-xs">❤️</span> 
+                        <span className="hidden xs:inline">for coffee lovers</span>
+                        <span className="xs:hidden">☕</span>
+                    </p>
+                </div>
+
+                {/* Mobile bottom note - Extra small screens */}
+                <div className="mt-4 pt-4 border-t border-[#4a3228] text-center xs:hidden">
+                    <p className='text-[8px] text-[#4a3228] font-light tracking-wider'>
+                        Crafted with passion for the perfect cup
+                    </p>
                 </div>
             </div>
+
+            {/* Add extra small screen breakpoint */}
+            <style>{`
+                @media (min-width: 480px) {
+                    .xs\\:block { display: block; }
+                    .xs\\:inline { display: inline; }
+                    .xs\\:hidden { display: none; }
+                    .xs\\:flex-row { flex-direction: row; }
+                    .xs\\:text-left { text-align: left; }
+                    .xs\\:order-1 { order: 1; }
+                    .xs\\:order-2 { order: 2; }
+                    .xs\\:order-3 { order: 3; }
+                    .xs\\:w-auto { width: auto; }
+                    .xs\\:justify-between { justify-content: space-between; }
+                }
+                @media (max-width: 479px) {
+                    .xs\\:block { display: none; }
+                    .xs\\:inline { display: none; }
+                    .xs\\:hidden { display: inline; }
+                }
+            `}</style>
         </footer>
     );
 };
