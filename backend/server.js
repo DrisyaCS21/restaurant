@@ -13,25 +13,13 @@ const app = express();
 // middleware
 const allowedOrigins = [
   "http://localhost:5173",
-  // "https://hoteldrisya.vercel.app",
+  "https://hoteldrisya.vercel.app",
+  "https://restaurant-six-sable.vercel.app",
 ];
 
 app.use(
   cors({
-    origin(origin, callback) {
-      console.log("Incoming Origin:", origin);
-
-      if (!origin) {
-        return callback(null, true);
-      }
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      console.log("Blocked Origin:", origin);
-      return callback(new Error("Not allowed by CORS"));
-    },
+    origin: allowedOrigins,
     credentials: true,
   })
 );
