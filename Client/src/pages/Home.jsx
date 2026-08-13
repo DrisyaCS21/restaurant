@@ -15,7 +15,9 @@ const Home = () => {
             cupImage: "/images/iced-coffee-cup.png",
             splashImage: "/images/coffee-splash.png",
             bgColor: "from-amber-100/20 to-orange-50/20",
-            description: "Rich & Smooth • Perfectly Chilled"
+            description: "Rich & Smooth • Perfectly Chilled",
+            glowClass: "glow-coffee",
+            particleType: "coffee"
         },
         {
             id: 2,
@@ -23,7 +25,9 @@ const Home = () => {
             cupImage: "/images/matcha-cup.png",
             splashImage: "/images/matcha-splash.png",
             bgColor: "from-emerald-100/20 to-green-50/20",
-            description: "Vibrant & Earthy • Pure Matcha"
+            description: "Vibrant & Earthy • Pure Matcha",
+            glowClass: "glow-matcha",
+            particleType: "leaf"
         },
         {
             id: 3,
@@ -31,10 +35,13 @@ const Home = () => {
             cupImage: "/images/iced-tea-cup.png",
             splashImage: "/images/tea-splash.png",
             bgColor: "from-rose-100/20 to-amber-50/20",
-            description: "Refreshing & Crisp • Lightly Sweet"
+            description: "Refreshing & Crisp • Lightly Sweet",
+            glowClass: "glow-tea",
+            particleType: "bubble"
         }
     ]
- const desserts = {
+
+    const desserts = {
         pumpkin: {
             name: "Pumpkin Spice",
             emoji: "🎃",
@@ -89,7 +96,6 @@ const Home = () => {
         }
     ]
 
-
     React.useEffect(() => {
         if (!isHovering) {
             const timer = setInterval(() => {
@@ -118,6 +124,74 @@ const Home = () => {
     const dessertKeys = ['pumpkin', 'lemon', 'truffle', 'caramel']
     const currentIndex = dessertKeys.indexOf(activeDessert)
     const nextDessert = dessertKeys[(currentIndex + 1) % dessertKeys.length]
+
+    // Render particles based on drink type
+    const renderParticles = (type) => {
+        const particles = []
+        const count = type === 'coffee' ? 8 : type === 'leaf' ? 6 : 10
+        
+        for (let i = 0; i < count; i++) {
+            const delay = Math.random() * 3
+            const duration = 3 + Math.random() * 2
+            const size = 8 + Math.random() * 12
+            const x = -40 + Math.random() * 80
+            const y = -30 + Math.random() * 60
+            const animation = i % 3 === 0 ? 'particleFloat1' : i % 3 === 1 ? 'particleFloat2' : 'particleFloat3'
+            
+            let className = 'particle '
+            if (type === 'coffee') {
+                className += 'particle-coffee'
+            } else if (type === 'leaf') {
+                className += 'particle-leaf'
+            } else {
+                className += 'particle-bubble'
+            }
+            
+            particles.push(
+                <div
+                    key={i}
+                    className={className}
+                    style={{
+                        left: `${50 + x}%`,
+                        top: `${50 + y}%`,
+                        width: size,
+                        height: size,
+                        animation: `${animation} ${duration}s ease-in-out ${delay}s infinite`,
+                        position: 'absolute',
+                        pointerEvents: 'none',
+                        willChange: 'transform, opacity'
+                    }}
+                />
+            )
+        }
+        
+        // Add sparkles
+        for (let i = 0; i < 4; i++) {
+            const delay = Math.random() * 4
+            const size = 3 + Math.random() * 4
+            const x = -30 + Math.random() * 60
+            const y = -20 + Math.random() * 40
+            
+            particles.push(
+                <div
+                    key={`sparkle-${i}`}
+                    className="particle particle-sparkle"
+                    style={{
+                        left: `${50 + x}%`,
+                        top: `${50 + y}%`,
+                        width: size,
+                        height: size,
+                        animation: `sparkle ${2 + Math.random()}s ease-in-out ${delay}s infinite`,
+                        position: 'absolute',
+                        pointerEvents: 'none',
+                        willChange: 'transform, opacity'
+                    }}
+                />
+            )
+        }
+        
+        return particles
+    }
 
     return (
         <>
@@ -266,107 +340,481 @@ const Home = () => {
                         background-clip: text;
                         animation: shimmer 4s linear infinite;
                     }
+
+                    /* Premium 3D Product Styles */
+                    .perspective-container {
+                        perspective: 1200px;
+                        perspective-origin: 50% 45%;
+                    }
+
+                    .product-3d-wrapper {
+                        transform-style: preserve-3d;
+                        will-change: transform;
+                    }
+
+                    /* Glow colors per drink */
+                    .glow-coffee {
+                        background: radial-gradient(ellipse at center, rgba(212, 163, 115, 0.4) 0%, rgba(212, 163, 115, 0.1) 40%, transparent 70%);
+                    }
+
+                    .glow-matcha {
+                        background: radial-gradient(ellipse at center, rgba(52, 211, 153, 0.35) 0%, rgba(52, 211, 153, 0.08) 40%, transparent 70%);
+                    }
+
+                    .glow-tea {
+                        background: radial-gradient(ellipse at center, rgba(251, 146, 60, 0.3) 0%, rgba(251, 146, 60, 0.08) 40%, transparent 70%);
+                    }
+
+                    /* Light rays */
+                    .light-rays {
+                        position: absolute;
+                        inset: -50%;
+                        background: conic-gradient(from 0deg at 50% 50%, 
+                            transparent 0deg, 
+                            rgba(255, 255, 255, 0.05) 10deg, 
+                            transparent 20deg,
+                            rgba(255, 255, 255, 0.03) 30deg,
+                            transparent 40deg,
+                            rgba(255, 255, 255, 0.06) 50deg,
+                            transparent 60deg,
+                            rgba(255, 255, 255, 0.04) 70deg,
+                            transparent 80deg,
+                            rgba(255, 255, 255, 0.05) 90deg,
+                            transparent 100deg,
+                            rgba(255, 255, 255, 0.03) 110deg,
+                            transparent 120deg,
+                            rgba(255, 255, 255, 0.04) 130deg,
+                            transparent 140deg,
+                            rgba(255, 255, 255, 0.05) 150deg,
+                            transparent 160deg,
+                            rgba(255, 255, 255, 0.03) 170deg,
+                            transparent 180deg,
+                            rgba(255, 255, 255, 0.04) 190deg,
+                            transparent 200deg,
+                            rgba(255, 255, 255, 0.05) 210deg,
+                            transparent 220deg,
+                            rgba(255, 255, 255, 0.03) 230deg,
+                            transparent 240deg,
+                            rgba(255, 255, 255, 0.04) 250deg,
+                            transparent 260deg,
+                            rgba(255, 255, 255, 0.05) 270deg,
+                            transparent 280deg,
+                            rgba(255, 255, 255, 0.03) 290deg,
+                            transparent 300deg,
+                            rgba(255, 255, 255, 0.04) 310deg,
+                            transparent 320deg,
+                            rgba(255, 255, 255, 0.05) 330deg,
+                            transparent 340deg,
+                            rgba(255, 255, 255, 0.03) 350deg,
+                            transparent 360deg
+                        );
+                        animation: rotateRays 20s linear infinite;
+                        opacity: 0.5;
+                        pointer-events: none;
+                    }
+
+                    @keyframes rotateRays {
+                        from { transform: rotate(0deg); }
+                        to { transform: rotate(360deg); }
+                    }
+
+                    /* Floating animation */
+                    @keyframes float3D {
+                        0%, 100% { 
+                            transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+                        }
+                        25% { 
+                            transform: translateY(-12px) rotateX(1deg) rotateY(2deg);
+                        }
+                        50% { 
+                            transform: translateY(-18px) rotateX(-1deg) rotateY(1deg);
+                        }
+                        75% { 
+                            transform: translateY(-8px) rotateX(1.5deg) rotateY(-1deg);
+                        }
+                    }
+
+                    @keyframes floatShadow {
+                        0%, 100% { 
+                            transform: scale(1) translateY(0px);
+                            opacity: 0.6;
+                        }
+                        50% { 
+                            transform: scale(0.85) translateY(15px);
+                            opacity: 0.25;
+                        }
+                    }
+
+                    @keyframes particleFloat1 {
+                        0%, 100% { transform: translateY(0) translateX(0) rotate(0deg) scale(1); opacity: 0.6; }
+                        50% { transform: translateY(-40px) translateX(20px) rotate(180deg) scale(1.3); opacity: 1; }
+                    }
+
+                    @keyframes particleFloat2 {
+                        0%, 100% { transform: translateY(0) translateX(0) rotate(0deg) scale(1); opacity: 0.4; }
+                        50% { transform: translateY(-30px) translateX(-25px) rotate(-120deg) scale(1.2); opacity: 0.9; }
+                    }
+
+                    @keyframes particleFloat3 {
+                        0%, 100% { transform: translateY(0) translateX(0) rotate(0deg) scale(1); opacity: 0.5; }
+                        50% { transform: translateY(-50px) translateX(15px) rotate(240deg) scale(1.4); opacity: 0.8; }
+                    }
+
+                    @keyframes sparkle {
+                        0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+                        50% { opacity: 1; transform: scale(1) rotate(180deg); }
+                    }
+
+                    /* Premium shadow layers */
+                    .shadow-premium {
+                        filter: drop-shadow(0 30px 40px rgba(0,0,0,0.08)) 
+                                drop-shadow(0 15px 25px rgba(0,0,0,0.05))
+                                drop-shadow(0 5px 10px rgba(0,0,0,0.03));
+                    }
+
+                    /* Glass reflection */
+                    .glass-reflection {
+                        position: absolute;
+                        inset: 0;
+                        background: linear-gradient(135deg, 
+                            rgba(255,255,255,0.4) 0%, 
+                            rgba(255,255,255,0) 30%,
+                            rgba(255,255,255,0) 70%,
+                            rgba(255,255,255,0.1) 100%
+                        );
+                        pointer-events: none;
+                        border-radius: inherit;
+                        mix-blend-mode: overlay;
+                    }
+
+                    .glass-reflection::after {
+                        content: '';
+                        position: absolute;
+                        top: 10%;
+                        left: 15%;
+                        width: 30%;
+                        height: 20%;
+                        background: linear-gradient(135deg, 
+                            rgba(255,255,255,0.6) 0%, 
+                            rgba(255,255,255,0) 100%
+                        );
+                        border-radius: 50%;
+                        filter: blur(1px);
+                        transform: rotate(-15deg);
+                    }
+
+                    /* Cinema shadow under product */
+                    .shadow-3d {
+                        position: absolute;
+                        bottom: -30px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        width: 70%;
+                        height: 30px;
+                        border-radius: 50%;
+                        background: radial-gradient(ellipse at center, 
+                            rgba(0,0,0,0.25) 0%, 
+                            rgba(0,0,0,0.1) 40%, 
+                            transparent 70%
+                        );
+                        filter: blur(8px);
+                        animation: floatShadow 4s ease-in-out infinite;
+                        pointer-events: none;
+                    }
+
+                    .shadow-3d::after {
+                        content: '';
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        width: 120%;
+                        height: 200%;
+                        background: radial-gradient(ellipse at center, 
+                            rgba(0,0,0,0.1) 0%, 
+                            transparent 70%
+                        );
+                        filter: blur(15px);
+                    }
+
+                    /* Particle styles */
+                    .particle {
+                        position: absolute;
+                        pointer-events: none;
+                        will-change: transform, opacity;
+                    }
+
+                    .particle-coffee {
+                        width: 12px;
+                        height: 16px;
+                        background: radial-gradient(ellipse at 40% 40%, #5a3a2a, #2d1a0e);
+                        border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                    }
+
+                    .particle-leaf {
+                        width: 14px;
+                        height: 20px;
+                        background: linear-gradient(135deg, #4a9e6b, #2d7a4e);
+                        border-radius: 0% 100% 50% 50% / 100% 50% 50% 0%;
+                        transform: rotate(20deg);
+                        box-shadow: 0 2px 6px rgba(45, 122, 78, 0.3);
+                    }
+
+                    .particle-bubble {
+                        width: 8px;
+                        height: 8px;
+                        border-radius: 50%;
+                        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.1));
+                        border: 1px solid rgba(255,255,255,0.3);
+                        box-shadow: inset 0 -2px 4px rgba(0,0,0,0.05);
+                    }
+
+                    .particle-sparkle {
+                        width: 4px;
+                        height: 4px;
+                        background: white;
+                        border-radius: 50%;
+                        box-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.4);
+                        animation: sparkle 2s ease-in-out infinite;
+                    }
+
+                    /* Hover state for product */
+                    .product-hover-scale {
+                        transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+                    }
+
+                    .product-hover-scale:hover {
+                        transform: scale(1.08) translateY(-8px) rotateX(2deg) rotateY(4deg);
+                    }
+
+                    .product-hover-scale:hover .shadow-3d {
+                        transform: translateX(-50%) scale(0.7);
+                        opacity: 0.3;
+                        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+                    }
                 `}
             </style>
 
             {/* Hero Section */}
-            <main 
-                className="w-full h-screen bg-gradient-to-b from-[#faf6f0] to-white overflow-hidden relative"
-                onMouseEnter={() => setIsHovering(true)}
-                onMouseLeave={() => setIsHovering(false)}
+           {/* Hero Section - Updated with proper background */}
+<main 
+    className="w-full h-screen bg-gradient-to-b from-[#faf6f0] to-white overflow-hidden relative perspective-container"
+    onMouseEnter={() => setIsHovering(true)}
+    onMouseLeave={() => setIsHovering(false)}
+>
+    <div className="absolute inset-0">
+        <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+                key={currentSlide}
+                custom={direction}
+                initial={{ 
+                    opacity: 0, 
+                    scale: 0.92,
+                    rotateY: direction > 0 ? 12 : -12,
+                    z: -80
+                }}
+                animate={{ 
+                    opacity: 1, 
+                    scale: 1,
+                    rotateY: 0,
+                    z: 0,
+                    transition: {
+                        duration: 1.4,
+                        ease: [0.34, 1.56, 0.64, 1],
+                        opacity: { duration: 0.8 }
+                    }
+                }}
+                exit={{ 
+                    opacity: 0, 
+                    scale: 0.88,
+                    rotateY: direction > 0 ? -12 : 12,
+                    z: -60,
+                    transition: {
+                        duration: 0.8,
+                        ease: [0.36, 0.07, 0.19, 0.97]
+                    }
+                }}
+                className="absolute inset-0 flex items-center justify-center product-3d-wrapper"
             >
-                <div className="absolute inset-0">
-                    <AnimatePresence mode="wait" custom={direction}>
-                        <motion.div
-                            key={currentSlide}
-                            custom={direction}
-                            initial={{ opacity: 0, x: direction > 0 ? 80 : -80 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: direction > 0 ? -80 : 80 }}
-                            transition={{ 
-                                duration: 1.0, 
-                                ease: [0.25, 0.1, 0.25, 1],
-                                opacity: { duration: 0.6 }
+                {/* Background with gradient */}
+                <div className={`absolute inset-0 bg-gradient-to-b ${slides[currentSlide].bgColor}`} />
+                
+                <div className="relative z-10 w-full max-w-6xl mx-auto px-4 md:px-8 flex flex-col items-center justify-center min-h-screen">
+                    <motion.h1
+                        initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ 
+                            delay: 0.3, 
+                            duration: 0.9,
+                            ease: [0.34, 1.56, 0.64, 1]
+                        }}
+                        className="text-5xl md:text-7xl lg:text-8xl font-light text-[#2d1f14] tracking-wide mb-8 md:mb-12 text-center"
+                    >
+                        {slides[currentSlide].name}
+                    </motion.h1>
+
+                    <motion.div
+                        initial={{ 
+                            scale: 0.7, 
+                            opacity: 0,
+                            rotateY: 30,
+                            z: -50
+                        }}
+                        animate={{ 
+                            scale: 1, 
+                            opacity: 1,
+                            rotateY: 0,
+                            z: 0,
+                            transition: {
+                                duration: 1.4,
+                                ease: [0.34, 1.56, 0.64, 1],
+                                opacity: { duration: 0.8 }
+                            }
+                        }}
+                        whileHover={{
+                            scale: 1.05,
+                            rotateY: 5,
+                            rotateX: 3,
+                            z: 30,
+                            transition: {
+                                duration: 0.4,
+                                ease: [0.34, 1.56, 0.64, 1]
+                            }
+                        }}
+                        className="relative flex items-center justify-center w-full max-w-2xl cursor-pointer product-hover-scale"
+                        style={{ transformStyle: 'preserve-3d' }}
+                    >
+                        {/* Light Rays Background */}
+                        <div className="absolute inset-0 light-rays" />
+                        
+                        {/* Colored Glow - Increased opacity and size */}
+                        <div className={`absolute inset-0 ${slides[currentSlide].glowClass} rounded-full scale-150 blur-3xl opacity-70`} />
+                        
+                        {/* Shadow layer for 3D effect */}
+                        <div 
+                            className="absolute inset-0 flex items-center justify-center blur-2xl opacity-30"
+                            style={{ 
+                                transform: 'translateZ(-50px) translateY(20px)',
+                                background: 'radial-gradient(circle, rgba(45,31,20,0.3) 0%, transparent 70%)'
                             }}
-                            className="absolute inset-0 flex items-center justify-center"
-                        >
-                            <div className={`absolute inset-0 bg-gradient-to-b ${slides[currentSlide].bgColor}`} />
-                            
-                            <div className="relative z-10 w-full max-w-6xl mx-auto px-4 md:px-8 flex flex-col items-center justify-center min-h-screen">
-                                <motion.h1
-                                    initial={{ opacity: 0, y: 30 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.2, duration: 0.8 }}
-                                    className="text-5xl md:text-7xl lg:text-8xl font-light text-[#2d1f14] tracking-wide mb-8 md:mb-12 text-center"
-                                >
-                                    {slides[currentSlide].name}
-                                </motion.h1>
-
-                                <motion.div
-                                    initial={{ scale: 0.9, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    transition={{ delay: 0.3, duration: 1.0, ease: [0.25, 0.1, 0.25, 1] }}
-                                    className="relative flex items-center justify-center w-full max-w-2xl"
-                                >
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <img
-                                            src={slides[currentSlide].splashImage}
-                                            alt={`${slides[currentSlide].name} splash`}
-                                            className="w-[300px] md:w-[400px] lg:w-[500px] object-contain opacity-50"
-                                        />
-                                    </div>
-                                    <div className="relative z-10">
-                                        <img
-                                            src={slides[currentSlide].cupImage}
-                                            alt={slides[currentSlide].name}
-                                            className="w-[200px] md:w-[280px] lg:w-[350px] object-contain"
-                                            style={{ mixBlendMode: 'multiply' }}
-                                        />
-                                    </div>
-                                </motion.div>
-
-                                <motion.p
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.5, duration: 0.8 }}
-                                    className="text-[#8b7355] text-sm md:text-base font-light mt-8 md:mt-12 tracking-wider"
-                                >
-                                    {slides[currentSlide].description}
-                                </motion.p>
-                            </div>
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
-
-                {/* Navigation Arrows */}
-                <div className={`absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4 md:px-8 z-40 transition-opacity duration-300 ${isHovering ? 'opacity-100' : 'opacity-0'}`}>
-                    <button onClick={prevSlide} className="p-3 md:p-4 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                        <svg className="w-5 h-5 md:w-6 md:h-6 text-[#2d1f14]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-                    <button onClick={nextSlide} className="p-3 md:p-4 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                        <svg className="w-5 h-5 md:w-6 md:h-6 text-[#2d1f14]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
-                </div>
-
-                {/* Slide Indicators */}
-                <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-3 z-30">
-                    {slides.map((_, index) => (
-                        <button
-                            key={index}
-                            onClick={() => goToSlide(index)}
-                            className={`transition-all duration-500 rounded-full ${
-                                currentSlide === index 
-                                    ? 'w-8 h-1.5 bg-[#2d1f14]' 
-                                    : 'w-1.5 h-1.5 bg-[#2d1f14]/30 hover:bg-[#2d1f14]/50'
-                            }`}
                         />
-                    ))}
+                        
+                        {/* Floating Particles */}
+                        <div className="absolute inset-0 pointer-events-none">
+                            {renderParticles(slides[currentSlide].particleType)}
+                        </div>
+                        
+                        {/* Splash Image - Increased opacity and added blend mode */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <img
+                                src={slides[currentSlide].splashImage}
+                                alt={`${slides[currentSlide].name} splash`}
+                                className="w-[300px] md:w-[400px] lg:w-[500px] object-contain opacity-70"
+                                style={{ 
+                                    transform: 'translateZ(-20px)',
+                                    filter: 'blur(1px)',
+                                    mixBlendMode: 'screen'
+                                }}
+                            />
+                        </div>
+                        
+                        {/* Cup Image */}
+                        <div className="relative z-10" style={{ transform: 'translateZ(20px)' }}>
+                            <motion.img
+                                src={slides[currentSlide].cupImage}
+                                alt={slides[currentSlide].name}
+                                className="w-[200px] md:w-[280px] lg:w-[350px] object-contain"
+                                style={{ 
+                                    mixBlendMode: 'multiply',
+                                    filter: 'drop-shadow(0 20px 30px rgba(45,31,20,0.2)) drop-shadow(0 8px 15px rgba(45,31,20,0.1))'
+                                }}
+                                whileHover={{
+                                    scale: 1.08,
+                                    rotate: 2,
+                                    transition: {
+                                        duration: 0.4,
+                                        ease: [0.34, 1.56, 0.64, 1]
+                                    }
+                                }}
+                            />
+                            
+                            {/* Glass Reflection Overlay */}
+                            <div className="glass-reflection" />
+                        </div>
+                        
+                        {/* Cinema Shadow */}
+                        <div className="shadow-3d" />
+                    </motion.div>
+
+                    <motion.p
+                        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ 
+                            delay: 0.6, 
+                            duration: 0.8,
+                            ease: [0.34, 1.56, 0.64, 1]
+                        }}
+                        className="text-[#8b7355] text-sm md:text-base font-light mt-8 md:mt-12 tracking-wider"
+                    >
+                        {slides[currentSlide].description}
+                    </motion.p>
                 </div>
-            </main>
+            </motion.div>
+        </AnimatePresence>
+    </div>
+
+    {/* Navigation Arrows */}
+    <div className={`absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4 md:px-8 z-40 transition-opacity duration-300 ${isHovering ? 'opacity-100' : 'opacity-0'}`}>
+        <motion.button 
+            onClick={prevSlide} 
+            className="p-3 md:p-4 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-md hover:shadow-xl transition-all duration-300"
+            whileHover={{ 
+                scale: 1.15,
+                x: -5,
+                boxShadow: '0 20px 40px rgba(0,0,0,0.15)'
+            }}
+            whileTap={{ scale: 0.9 }}
+        >
+            <svg className="w-5 h-5 md:w-6 md:h-6 text-[#2d1f14]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
+            </svg>
+        </motion.button>
+        <motion.button 
+            onClick={nextSlide} 
+            className="p-3 md:p-4 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-md hover:shadow-xl transition-all duration-300"
+            whileHover={{ 
+                scale: 1.15,
+                x: 5,
+                boxShadow: '0 20px 40px rgba(0,0,0,0.15)'
+            }}
+            whileTap={{ scale: 0.9 }}
+        >
+            <svg className="w-5 h-5 md:w-6 md:h-6 text-[#2d1f14]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+            </svg>
+        </motion.button>
+    </div>
+
+    {/* Slide Indicators */}
+    <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-3 z-30">
+        {slides.map((_, index) => (
+            <motion.button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`transition-all duration-500 rounded-full ${
+                    currentSlide === index 
+                        ? 'w-8 h-1.5 bg-[#2d1f14] shadow-lg' 
+                        : 'w-1.5 h-1.5 bg-[#2d1f14]/30 hover:bg-[#2d1f14]/50'
+                }`}
+                whileHover={{ 
+                    scale: currentSlide === index ? 1 : 1.5,
+                    transition: { duration: 0.2 }
+                }}
+            />
+        ))}
+    </div>
+</main>
 
             {/* ===== OFFER BANNER - NEW SECTION ===== */}
             <section className="offer-banner py-4 md:py-5 overflow-hidden relative">
@@ -385,6 +833,7 @@ const Home = () => {
                 <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-2xl md:text-3xl opacity-30 float-animation" style={{ animationDelay: '1.5s' }}>
                     ☕
                 </div>
+                
 
                 {/* Marquee Container */}
                 <div className="relative overflow-hidden">

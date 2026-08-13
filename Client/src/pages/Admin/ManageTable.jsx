@@ -79,7 +79,7 @@ function ManageTable() {
 
   const download = (item) => {
     const a = document.createElement("a");
-    a.href = item.dataUrl;
+   a.href = `${backendUrl}${item.image}`;
     a.download = `table-${item.tableNumber}.png`;
     a.click();
   };
@@ -154,9 +154,14 @@ function ManageTable() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {items.map((item) => (
-              <div key={item._id || item.tableNumber} className="bg-white rounded-2xl border border-gray-200 p-5">
-                <div className="flex items-start justify-between gap-4">
+           {items.map((item) => {
+  console.log("ITEM =>", item);
+
+  return (
+    <div
+      key={item._id || item.tableNumber}
+      className="bg-white rounded-2xl border border-gray-200 p-5"
+    > <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-sm font-semibold text-gray-900">Table {item.tableNumber}</p>
                     <p className="text-xs text-gray-500 break-all mt-1">{item.url}</p>
@@ -172,7 +177,7 @@ function ManageTable() {
 
                 <div className="mt-4 flex items-center justify-center bg-gray-50 rounded-xl border border-gray-100 p-4">
                   <img
-                    src={item.dataUrl}
+                src={`${backendUrl}${item.image}`}
                     alt={`Table ${item.tableNumber} QR`}
                     className="w-44 h-44"
                   />
@@ -195,8 +200,9 @@ function ManageTable() {
                     Open Link
                   </a>
                 </div>
-              </div>
-            ))}
+           </div>
+);
+})}
           </div>
         )}
       </div>
