@@ -27,7 +27,7 @@ app.use(
 app.use(express.json());
 
 // test route
-app.get("/", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.send("API Running...");
 });
 
