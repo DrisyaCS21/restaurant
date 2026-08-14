@@ -1500,65 +1500,111 @@ const Home = () => {
             </section>
 
             {/* ===== LOCATION & HOURS ===== */}
-            <section className="py-20 bg-[#faf6f0]">
-                <div className="max-w-6xl mx-auto px-4 md:px-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                        {/* Left - Map / Location */}
-                        <div className="space-y-6">
-                            <span className="text-[#d4a373] text-xs uppercase tracking-[0.3em] font-light">
-                                Visit Us
-                            </span>
-                            <h2 className="text-3xl md:text-4xl font-light text-[#2d1f14]">
-                                Find Your <span className="craving-text">Perfect Cup</span>
-                            </h2>
-                            <div className="w-12 h-0.5 bg-[#d4a373]"></div>
-                            
-                            <div className="space-y-3 text-[#5c4a3a] font-light">
-                                <p className="flex items-start gap-3">
-                                    <span className="text-[#d4a373] text-xl">📍</span>
-                                    <span>123 Coffee Lane, Kathmandu, Nepal</span>
-                                </p>
-                                <p className="flex items-start gap-3">
-                                    <span className="text-[#d4a373] text-xl">📞</span>
-                                    <span>+977 9801234567</span>
-                                </p>
-                                <p className="flex items-start gap-3">
-                                    <span className="text-[#d4a373] text-xl">✉️</span>
-                                    <span>hello@yourcafe.com</span>
-                                </p>
-                            </div>
-                            
-                            <div className="pt-4">
-                                <button className="px-8 cursor-pointer py-3 bg-[#2d1f14] text-white text-sm font-light tracking-wide hover:bg-[#4a3228] transition duration-300">
-                                    Get Directions →
-                                </button>
-                            </div>
-                        </div>
-                        
-                        {/* Right - Hours */}
-                        <div className="bg-white rounded-2xl p-8 md:p-10 shadow-md border border-[#f0e6d8]">
-                            <h3 className="text-xl font-light text-[#2d1f14] mb-6 handwritten">
-                                Opening Hours
-                            </h3>
-                            <div className="space-y-3">
-                                {[
-                                    { day: 'Monday - Friday', hours: '7:00 AM - 9:00 PM' },
-                                    { day: 'Saturday', hours: '8:00 AM - 10:00 PM' },
-                                    { day: 'Sunday', hours: '8:00 AM - 8:00 PM' },
-                                ].map((item, i) => (
-                                    <div key={i} className="flex justify-between py-2 border-b border-[#f5ede5] last:border-0">
-                                        <span className="text-[#5c4a3a] font-light">{item.day}</span>
-                                        <span className="text-[#2d1f14] font-medium">{item.hours}</span>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="mt-4 pt-4 border-t border-[#f5ede5] text-xs text-[#d4a373] font-light">
-                                ✦ Open 365 days a year
-                            </div>
-                        </div>
-                    </div>
+            {/* ===== LOCATION & HOURS ===== */}
+<section className="py-20 bg-[#faf6f0]">
+    <div className="max-w-6xl mx-auto px-4 md:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            
+            {/* Left - Map / Location */}
+            <div className="space-y-6">
+                <span className="text-[#d4a373] text-xs uppercase tracking-[0.3em] font-light">
+                    Visit Us
+                </span>
+                <h2 className="text-3xl md:text-4xl font-light text-[#2d1f14]">
+                    Find Your <span className="craving-text">Perfect Cup</span>
+                </h2>
+                <div className="w-12 h-0.5 bg-[#d4a373]"></div>
+                
+                <div className="space-y-3 text-[#5c4a3a] font-light">
+                    {/* Clickable Address - Opens Google Maps */}
+                    <a 
+                        href="https://maps.app.goo.gl/mwGnPBhonAPNF7t98" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-start gap-3 hover:text-[#d4a373] transition-colors group"
+                    >
+                        <span className="text-[#d4a373] text-xl group-hover:scale-110 transition-transform">📍</span>
+                        <span className="hover:underline">Zero point, Dharan, Nepal</span>
+                    </a>
+                    
+                    {/* Clickable Phone - Opens phone app */}
+                    <a 
+                        href="tel:+9779801234567" 
+                        className="flex items-start gap-3 hover:text-[#d4a373] transition-colors group"
+                    >
+                        <span className="text-[#d4a373] text-xl group-hover:scale-110 transition-transform">📞</span>
+                        <span>+977 9801234567</span>
+                    </a>
+                    
+                    {/* Clickable Email - Opens email app */}
+                    <a 
+                        href="mailto:hello@yourcafe.com" 
+                        className="flex items-start gap-3 hover:text-[#d4a373] transition-colors group"
+                    >
+                        <span className="text-[#d4a373] text-xl group-hover:scale-110 transition-transform">✉️</span>
+                        <span>mokshyacafe@gmail.com</span>
+                    </a>
                 </div>
-            </section>
+                
+                <div className="pt-4 flex flex-wrap gap-3">
+                    {/* Get Directions Button - Opens Google Maps in new tab */}
+                    <a 
+                        href="https://maps.app.goo.gl/mwGnPBhonAPNF7t98" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="px-8 py-3 bg-[#2d1f14] text-white text-sm font-light tracking-wide hover:bg-[#4a3228] transition duration-300 inline-flex items-center gap-2 cursor-pointer"
+                    >
+                        Get Directions 
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </a>
+                    
+                    {/* View on Google Maps - Alternative button */}
+                    <a 
+                        href="https://maps.app.goo.gl/mwGnPBhonAPNF7t98" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="px-8 py-3 border border-[#2d1f14] text-[#2d1f14] text-sm font-light tracking-wide hover:bg-[#2d1f14] hover:text-white transition duration-300 inline-flex items-center gap-2 cursor-pointer"
+                    >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                        View on Maps
+                    </a>
+                </div>
+            </div>
+            
+            {/* Right - Hours */}
+            <div className="bg-white rounded-2xl p-8 md:p-10 shadow-md border border-[#f0e6d8]">
+                <h3 className="text-xl font-light text-[#2d1f14] mb-6 handwritten">
+                    Opening Hours
+                </h3>
+                <div className="space-y-3">
+                    {[
+                        { day: 'Monday - Friday', hours: '7:00 AM - 9:00 PM' },
+                        { day: 'Saturday', hours: '8:00 AM - 10:00 PM' },
+                        { day: 'Sunday', hours: '8:00 AM - 8:00 PM' },
+                    ].map((item, i) => (
+                        <div key={i} className="flex justify-between py-2 border-b border-[#f5ede5] last:border-0">
+                            <span className="text-[#5c4a3a] font-light">{item.day}</span>
+                            <span className="text-[#2d1f14] font-medium">{item.hours}</span>
+                        </div>
+                    ))}
+                </div>
+                <div className="mt-4 pt-4 border-t border-[#f5ede5] text-xs text-[#d4a373] font-light flex items-center gap-2">
+                    <span>Open 365 days a year</span>
+                </div>
+                
+                {/* Small note about directions */}
+                <div className="mt-4 pt-4 border-t border-[#f5ede5] text-xs text-[#8b6b4a] font-light flex items-center gap-2">
+                    <span>📍</span>
+                    <span>Click on the address or button above for directions</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
         </>
     )
 }
