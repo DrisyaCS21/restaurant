@@ -1,5 +1,6 @@
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Link } from 'react-router-dom'
 
 const Home = () => {
     const [currentSlide, setCurrentSlide] = React.useState(0)
@@ -915,9 +916,13 @@ const Home = () => {
                                 Guest <span className="craving-text">Favorites</span>
                             </h2>
                         </div>
-                        <button className="text-sm cursor-pointer text-[#8b6b4a] hover:text-[#d4a373] transition flex items-center gap-1">
-                            View All →
-                        </button>
+                        {/* View All Link - Navigates to Menu page */}
+                    <Link 
+                        to="/menu" 
+                        className="text-sm cursor-pointer text-[#8b6b4a] hover:text-[#d4a373] transition flex items-center gap-1"
+                    >
+                        View All →
+                    </Link>
                     </div>
                     
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
@@ -941,12 +946,14 @@ const Home = () => {
                     </div>
                 </div>
             </section>
+
+
             {/* What Are You Craving For Section */}
             <section className="py-20 bg-gradient-to-br from-[#faf0e6] to-[#f5e6d3]">
                 <div className="max-w-6xl mx-auto px-4 md:px-8">
                     <div className="text-center mb-16">
                         <h2 className="text-5xl md:text-6xl lg:text-7xl craving-text mb-2">
-                            What Are You Craving For ???
+                            What Are You Craving For 😋 ???
                         </h2>
                         <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-[#d4a373] to-transparent mx-auto mt-4"></div>
                     </div>
@@ -1167,8 +1174,15 @@ const Home = () => {
                                 <li className="flex items-center gap-2">✦ Customized menu options</li>
                                 <li className="flex items-center gap-2">✦ Professional event coordination</li>
                             </ul>
-                            <button className="px-8 cursor-pointer py-3 border border-[#2d1f14] text-[#2d1f14] text-sm font-light hover:bg-[#2d1f14] hover:text-white transition duration-300">
-                                Inquire Now →
+                            <button className="px-8 cursor-pointer py-3 border bg-amber-700 border-[#2d1f14] text-[#2d1f14] text-sm font-light hover:bg-[#2d1f14] hover:text-white transition duration-300">
+                                <a 
+                                    href="https://wa.me/97430858437?text=Hi%20Mokshya's%20Cafe%2C%20I'd%20like%20to%20book%20a%20table%20for%20%5Bnumber%5D%20people%20on%20%5Bdate%5D%20at%20%5Btime%5D." 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="px-5 cursor-pointer py-3 text-[#2d1f14] font-medium hover:bg-[#c4956a] transition duration-300 inline-block"
+                                >
+                                    Inquire Now
+                                </a>
                             </button>
                         </div>
                         
@@ -1214,11 +1228,20 @@ const Home = () => {
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
                         <button className="px-10 cursor-pointer py-3 bg-[#d4a373] text-[#2d1f14] font-medium hover:bg-[#c4956a] transition duration-300">
+                        <a 
+                            href="https://wa.me/97430858437?text=Hi%20Mokshya's%20Cafe%2C%20I'd%20like%20to%20book%20a%20table%20for%20%5Bnumber%5D%20people%20on%20%5Bdate%5D%20at%20%5Btime%5D." 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="px-10 cursor-pointer py-3 bg-[#d4a373] text-[#2d1f14] font-medium hover:bg-[#c4956a] transition duration-300 inline-block"
+                        >
                             Book a Table
+                        </a>
                         </button>
-                        <button className="px-10 cursor-pointer py-3 border border-white/30 text-white font-light hover:bg-white/10 transition duration-300">
+                        <Link
+                             to="/menu"
+                             className="px-10 cursor-pointer py-3 border border-white/30 text-white font-light hover:bg-white/10 transition duration-300">
                             View Menu
-                        </button>
+                        </Link>
                     </div>
                     <p className="text-white/30 text-xs mt-4 font-light">
                         No booking fee • Walk-ins welcome • Groups of 8+ please call ahead
