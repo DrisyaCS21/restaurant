@@ -695,10 +695,10 @@ const Home = () => {
                                             <span className="text-2xl md:text-3xl lg:text-4xl font-light text-[#2d1f14]">
                                                 {slides[currentSlide].price}
                                             </span>
-                                            <button className="px-6 md:px-8 py-2.5 md:py-3 bg-[#2d1f14] text-white text-xs md:text-sm font-light tracking-wide hover:bg-[#4a3228] transition duration-300">
+                                            <button className="px-6 cursor-pointer md:px-8 py-2.5 md:py-3 bg-[#2d1f14] text-white text-xs md:text-sm font-light tracking-wide hover:bg-[#4a3228] transition duration-300">
                                                 Order Now →
                                             </button>
-                                            <button className="px-6 md:px-8 py-2.5 md:py-3 border border-[#2d1f14] text-[#2d1f14] text-xs md:text-sm font-light hover:bg-[#2d1f14] hover:text-white transition duration-300">
+                                            <button className="px-6 cursor-pointer md:px-8 py-2.5 md:py-3 border border-[#2d1f14] text-[#2d1f14] text-xs md:text-sm font-light hover:bg-[#2d1f14] hover:text-white transition duration-300">
                                                 Learn More
                                             </button>
                                         </div>
@@ -915,7 +915,7 @@ const Home = () => {
                                 Guest <span className="craving-text">Favorites</span>
                             </h2>
                         </div>
-                        <button className="text-sm text-[#8b6b4a] hover:text-[#d4a373] transition flex items-center gap-1">
+                        <button className="text-sm cursor-pointer text-[#8b6b4a] hover:text-[#d4a373] transition flex items-center gap-1">
                             View All →
                         </button>
                     </div>
@@ -927,7 +927,7 @@ const Home = () => {
                             { name: 'Affogato', emoji: '🍨', price: '$6.00', popular: false },
                             { name: 'Hazelnut Mocha', emoji: '🌰', price: '$5.50', popular: true },
                         ].map((item, i) => (
-                            <div key={i} className="bg-white rounded-2xl p-5 text-center border border-[#f0e6d8] hover:shadow-lg transition-shadow duration-300">
+                            <div key={i} className="bg-white rounded-2xl cursor-pointer p-5 text-center border border-[#f0e6d8] hover:shadow-lg transition-shadow duration-300">
                                 <div className="text-4xl mb-2">{item.emoji}</div>
                                 <h4 className="text-[#2d1f14] font-medium text-sm">{item.name}</h4>
                                 <p className="text-[#8b6b4a] text-xs font-light mt-1">{item.price}</p>
@@ -976,7 +976,7 @@ const Home = () => {
                         <div className="grid grid-cols-2 gap-4">
                             <button 
                                 onClick={() => document.getElementById('newly-launched').scrollIntoView({ behavior: 'smooth' })}
-                                className="group relative bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-md hover:shadow-xl transition-all duration-300 card-hover border border-white/50"
+                                className="group cursor-pointer relative bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-md hover:shadow-xl transition-all duration-300 card-hover border border-white/50"
                             >
                                 <div className="text-center">
                                     <div className="text-5xl mb-3 float-animation">🍰</div>
@@ -991,7 +991,7 @@ const Home = () => {
 
                             <button 
                                 onClick={() => document.getElementById('hero').scrollIntoView({ behavior: 'smooth' })}
-                                className="group relative bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-md hover:shadow-xl transition-all duration-300 card-hover border border-white/50"
+                                className="group cursor-pointer relative bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-md hover:shadow-xl transition-all duration-300 card-hover border border-white/50"
                             >
                                 <div className="text-center">
                                     <div className="text-5xl mb-3 float-animation">☕</div>
@@ -1045,7 +1045,7 @@ const Home = () => {
                                     <p className="text-sm font-medium text-[#8b6b4a]">Price: {item.price}</p>
                                     <div className="mt-3 pt-3 border-t border-[#f0e6d8] flex items-center justify-between">
                                         <span className="text-xs text-[#d4a373]">✨ new</span>
-                                        <button className="text-xs text-[#8b6b4a] hover:text-[#d4a373] transition flex items-center gap-1">
+                                        <button className="text-xs cursor-pointer text-[#8b6b4a] hover:text-[#d4a373] transition flex items-center gap-1">
                                             Order now →
                                         </button>
                                     </div>
@@ -1167,7 +1167,7 @@ const Home = () => {
                                 <li className="flex items-center gap-2">✦ Customized menu options</li>
                                 <li className="flex items-center gap-2">✦ Professional event coordination</li>
                             </ul>
-                            <button className="px-8 py-3 border border-[#2d1f14] text-[#2d1f14] text-sm font-light hover:bg-[#2d1f14] hover:text-white transition duration-300">
+                            <button className="px-8 cursor-pointer py-3 border border-[#2d1f14] text-[#2d1f14] text-sm font-light hover:bg-[#2d1f14] hover:text-white transition duration-300">
                                 Inquire Now →
                             </button>
                         </div>
@@ -1213,10 +1213,10 @@ const Home = () => {
                         we can't wait to welcome you.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-                        <button className="px-10 py-3 bg-[#d4a373] text-[#2d1f14] font-medium hover:bg-[#c4956a] transition duration-300">
+                        <button className="px-10 cursor-pointer py-3 bg-[#d4a373] text-[#2d1f14] font-medium hover:bg-[#c4956a] transition duration-300">
                             Book a Table
                         </button>
-                        <button className="px-10 py-3 border border-white/30 text-white font-light hover:bg-white/10 transition duration-300">
+                        <button className="px-10 cursor-pointer py-3 border border-white/30 text-white font-light hover:bg-white/10 transition duration-300">
                             View Menu
                         </button>
                     </div>
@@ -1529,7 +1529,7 @@ const Home = () => {
                             </div>
                             
                             <div className="pt-4">
-                                <button className="px-8 py-3 bg-[#2d1f14] text-white text-sm font-light tracking-wide hover:bg-[#4a3228] transition duration-300">
+                                <button className="px-8 cursor-pointer py-3 bg-[#2d1f14] text-white text-sm font-light tracking-wide hover:bg-[#4a3228] transition duration-300">
                                     Get Directions →
                                 </button>
                             </div>
