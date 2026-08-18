@@ -629,7 +629,41 @@ const Home = () => {
                     }
                 `}
             </style>
+            
+            {/* ===== BRAND BANNER - Mountain Aesthetic ===== */}
+            <section className="relative w-full bg-[#2d1f14] overflow-hidden py-12 md:py-16">
+                {/* Background Image */}
+                <div className="absolute inset-0 z-0">
+                    <img 
+                        src="/images/mountain-bg.jpg" 
+                        alt="Serene mountain landscape"
+                        className="w-full h-full object-cover opacity-30"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#2d1f14]/80 to-[#2d1f14]/40"></div>
+                </div>
+                
+                <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 text-center">
+                    <span className="text-[#d4a373] text-xs uppercase tracking-[0.3em] font-light block mb-2">
+                        Welcome to
+                    </span>
+                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-light text-white tracking-wider">
+                        Mokshya <span className="text-[#d4a373]">Cafe</span>
+                    </h1>
+                    <div className="flex items-center justify-center gap-4 my-4">
+                        <span className="w-12 h-px bg-[#d4a373]/50"></span>
+                        <span className="text-[#d4a373] text-xs uppercase tracking-[0.3em] font-light">
+                            Peace · Coffee · Energy
+                        </span>
+                        <span className="w-12 h-px bg-[#d4a373]/50"></span>
+                    </div>
+                    <p className="text-white/60 text-sm md:text-base font-light max-w-lg mx-auto">
+                        A serene mountain escape where you sip coffee in peace. 
+                        Grounded in tradition, brewed with intention.
+                    </p>
+                </div>
+            </section>
 
+            
             {/* Hero Section */}
            {/* Hero Section - Professional Business Layout */}
             {/* Hero Section - Professional Business Layout */}
@@ -647,21 +681,21 @@ const Home = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.6 }}
-                            className="absolute inset-0 flex items-center"
+                            className="absolute inset-0 flex items-start lg:items-center"
                         >
                             {/* Background with gradient */}
                             <div className={`absolute inset-0 bg-gradient-to-b ${slides[currentSlide].bgColor}`} />
                             
                             <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
                                 {/* ADDED: pt-20 on mobile to account for navbar */}
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center min-h-screen py-16 md:py-20 pt-24 md:pt-0">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center min-h-screen py-12 md:py-16 lg:py-20">
                                     
                                     {/* LEFT COLUMN - Product Information */}
                                     <motion.div
                                         initial={{ opacity: 0, x: -40 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-                                        className="order-2 lg:order-1 space-y-4 md:space-y-6"
+                                        className="order-2 lg:order-1 space-y-4 md:space-y-6 pt-8 md:pt-0"
                                     >
                                         {/* Tagline */}
                                         <span className="inline-block text-[#d4a373] text-xs md:text-sm uppercase tracking-[0.3em] font-light">
@@ -669,7 +703,7 @@ const Home = () => {
                                         </span>
                                         
                                         {/* Main Title */}
-                                        <h1 className="text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-[#2d1f14] leading-tight">
+                                        <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-[#2d1f14] leading-tight">
                                             {slides[currentSlide].title}
                                         </h1>
                                         
@@ -730,9 +764,9 @@ const Home = () => {
                                         initial={{ opacity: 0, x: 40 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-                                        className="order-1 lg:order-2 flex items-center justify-center"
+                                        className="order-1 lg:order-2 flex items-center justify-center mt-8 md:mt-0"
                                     >
-                                        <div className="relative w-full max-w-xs md:max-w-sm lg:max-w-lg mx-auto">
+                                        <div className="relative w-full max-w-[200px] sm:max-w-xs md:max-w-sm lg:max-w-lg mx-auto">
                                             {/* Colored Glow */}
                                             <div className={`absolute inset-0 ${slides[currentSlide].glowClass} rounded-full scale-150 blur-3xl opacity-60`} />
                                             
@@ -766,7 +800,7 @@ const Home = () => {
                                                 <img
                                                     src={slides[currentSlide].cupImage}
                                                     alt={slides[currentSlide].name}
-                                                    className="relative z-10 w-[140px] md:w-[220px] lg:w-[280px] mx-auto object-contain"
+                                                    className="relative z-10 w-[100px] sm:w-[140px] md:w-[180px] lg:w-[220px] mx-auto object-contain"
                                                     style={{ 
                                                         filter: 'drop-shadow(0 30px 40px rgba(45,31,20,0.15)) drop-shadow(0 10px 20px rgba(45,31,20,0.08))'
                                                     }}
