@@ -171,4 +171,4 @@ const Cart = ({ isOpen = true, onClose = () => {} }) => {
     )
 }
 
-export default Cart
+export default Cart;
