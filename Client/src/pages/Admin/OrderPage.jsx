@@ -10,6 +10,7 @@ function OrderPage() {
   const [error, setError] = React.useState("");
   const [updatingId, setUpdatingId] = React.useState(null);
   const [deletingId, setDeletingId] = React.useState(null);
+  const [billOrder, setBillOrder] = React.useState(null);
 
   const [countdown, setCountdown] = React.useState(60);
 
@@ -54,27 +55,218 @@ function OrderPage() {
     return () => clearInterval(interval);
   }, [fetchOrders]);
 
+  
   const updateStatus = async (orderId, newStatus) => {
     setUpdatingId(orderId);
+    setError("");
+
     try {
-      const res = await fetch(`${backendUrl}/api/orders/${orderId}/status`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
-      const data = await res.json().catch(() => {});
-      if (res.ok) {
-        setOrders((prev) => prev.map((order) => 
-          order._id === orderId ? data : order
-        ));
+      const res = await fetch(
+        `${backendUrl}/api/orders/${orderId}/status`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ status: newStatus }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to update order status");
       }
+
+      setOrders((prev) =>
+        prev.map((order) =>
+          order._id === orderId ? data : order
+        )
+      );
+
+      // Offer to print only after the backend confirms payment status.
+      if (newStatus === "paid") {
+        setBillOrder(data);
+      }
+    } catch (err) {
+      setError(err.message || "Unable to update order status.");
     } finally {
       setUpdatingId(null);
     }
   };
+
+
+const printBill = (order) => {
+  if (!order) return;
+
+  const printWindow = window.open(
+    "",
+    "_blank",
+    "width=450,height=700"
+  );
+
+  if (!printWindow) {
+    setError(
+      "The print window was blocked. Please allow pop-ups and try again."
+    );
+    return;
+  }
+
+  // Escape text before inserting it into the printable HTML.
+  const escapeHtml = (value) =>
+    String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    })[char]);
+
+  const money = (amount) =>
+    `Rs ${Number(amount || 0).toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+
+  const itemsHtml = (order.items || [])
+    .map((item) => `
+      <tr>
+        <td>
+          ${escapeHtml(item.name || "Item")}
+          <div class="muted">
+            ${money(item.price)} × ${Number(item.quantity || 0)}
+          </div>
+        </td>
+        <td class="right">
+          ${money(Number(item.price || 0) * Number(item.quantity || 0))}
+        </td>
+      </tr>
+    `)
+    .join("");
+
+  const date = new Date(order.createdAt).toLocaleString("en-GB");
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Bill - ${escapeHtml(order._id)}</title>
+        <meta charset="UTF-8" />
+        <style>
+          * { box-sizing: border-box; }
+
+          body {
+            font-family: Arial, sans-serif;
+            color: #222;
+            width: 72mm;
+            margin: 0 auto;
+            padding: 5mm 2mm;
+            font-size: 12px;
+          }
+
+          h2 {
+            text-align: center;
+            margin: 0 0 5px;
+            font-size: 19px;
+          }
+
+          p { margin: 5px 0; }
+          .center { text-align: center; }
+          .muted { color: #666; font-size: 10px; margin-top: 3px; }
+          .divider {
+            border: 0;
+            border-top: 1px dashed #777;
+            margin: 10px 0;
+          }
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+          }
+
+          th {
+            text-align: left;
+            border-bottom: 1px solid #aaa;
+            padding: 5px 0;
+          }
+
+          td { padding: 7px 0; vertical-align: top; }
+          .right { text-align: right; white-space: nowrap; }
+          .total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            font-weight: bold;
+            margin-top: 10px;
+          }
+
+          .footer {
+            text-align: center;
+            margin-top: 20px;
+          }
+
+          @media print {
+            body { width: 72mm; }
+            @page { margin: 3mm; }
+          }
+        </style>
+      </head>
+      <body>
+        <h2>Mokshya Cafe</h2>
+        <p class="center">Customer Bill / Receipt</p>
+        <hr class="divider" />
+
+        <p><strong>Bill / Order ID:</strong> ${escapeHtml(order._id)}</p>
+        <p><strong>Table:</strong> ${escapeHtml(order.tableNumber || "N/A")}</p>
+        <p><strong>Date:</strong> ${escapeHtml(date)}</p>
+        <p><strong>Payment:</strong> ${escapeHtml(order.paymentMethod || "N/A")}</p>
+        <p><strong>Status:</strong> ${escapeHtml(order.status)}</p>
+
+        <hr class="divider" />
+
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th class="right">Amount</th>
+            </tr>
+          </thead>
+          <tbody>${itemsHtml}</tbody>
+        </table>
+
+        <hr class="divider" />
+
+        <div class="total">
+          <span>Total</span>
+          <span>${money(order.totalAmount)}</span>
+        </div>
+
+        ${
+          order.specialInstructions
+            ? `<p><strong>Instructions:</strong> ${escapeHtml(order.specialInstructions)}</p>`
+            : ""
+        }
+
+        <hr class="divider" />
+        <div class="footer">
+          <p><strong>Payment received</strong></p>
+          <p>Thank you for dining with us!</p>
+        </div>
+      </body>
+    </html>
+  `);
+
+  
+printWindow.document.close();
+printWindow.focus();
+
+setTimeout(() => {
+  printWindow.print();
+}, 300);
+
+};
 
   const deleteOrder = async (orderId) => {
     if (!window.confirm("Delete this order? This cannot be undone.")) return;
@@ -330,6 +522,90 @@ function OrderPage() {
                     </button>
                   </div>
                 </div>
+
+                
+              {billOrder && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+                  <div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="bill-modal-title"
+                    className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl"
+                  >
+                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-700">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="25"
+                        height="25"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M20 6 9 17l-5-5" />
+                      </svg>
+                    </div>
+
+                    <h3
+                      id="bill-modal-title"
+                      className="text-lg font-semibold text-gray-900 text-center"
+                    >
+                      Payment Recorded!
+                    </h3>
+
+                    <p className="mt-2 text-sm text-gray-500 text-center">
+                      Table {billOrder.tableNumber || "N/A"} ·{" "}
+                      Rs {Number(billOrder.totalAmount || 0).toLocaleString()}
+                    </p>
+
+                    <p className="mt-3 text-sm text-gray-600 text-center">
+                      Would you like to print the customer's bill?
+                    </p>
+
+                    <div className="mt-6 flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setBillOrder(null)}
+                        className="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                      >
+                        No, thanks
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          printBill(billOrder);
+                          setBillOrder(null);
+                        }}
+                        className="flex-1 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
+                      >
+                        <span className="inline-flex items-center justify-center gap-2">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="6 9 6 2 18 2 18 9" />
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                            <rect width="12" height="8" x="6" y="14" />
+                          </svg>
+                          Print Bill
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+
               </div>
             );
           })}
@@ -339,4 +615,4 @@ function OrderPage() {
   );
 }
 
-export default OrderPage;
+export default OrderPage
