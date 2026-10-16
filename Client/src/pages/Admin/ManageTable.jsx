@@ -77,12 +77,21 @@ function ManageTable() {
     }
   };
 
+  
   const download = (item) => {
+    if (!item.dataUrl) {
+      setError("QR image is unavailable. Please regenerate this QR code.");
+      return;
+    }
+
     const a = document.createElement("a");
-   a.href = `${backendUrl}${item.image}`;
+    a.href = item.dataUrl;
     a.download = `table-${item.tableNumber}.png`;
+    document.body.appendChild(a);
     a.click();
+    a.remove();
   };
+
 
   const removeQR = async (tableNumber) => {
     try {
@@ -177,7 +186,7 @@ function ManageTable() {
 
                 <div className="mt-4 flex items-center justify-center bg-gray-50 rounded-xl border border-gray-100 p-4">
                   <img
-                src={`${backendUrl}${item.image}`}
+                src={item.dataUrl}
                     alt={`Table ${item.tableNumber} QR`}
                     className="w-44 h-44"
                   />
